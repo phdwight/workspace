@@ -34,10 +34,29 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
   const handleParticipantChange = (index: number, value: string) => {
     const updated = [...participants];
     updated[index] = value;
+    // Check for duplicates (case-insensitive, trimmed)
+    const normalized = updated.map(p => p.trim().toLowerCase());
+    const hasDuplicate = normalized.some((p, i) => p && normalized.indexOf(p) !== i);
+    if (hasDuplicate) {
+      setError('Duplicate participant names are not allowed.');
+      return;
+    } else {
+      setError(null);
+    }
     setParticipants(updated);
   };
 
   const addParticipant = () => {
+    // Prevent adding if any participant is empty or if there are duplicates
+    if (participants.some(p => !p.trim())) return;
+    const normalized = participants.map(p => p.trim().toLowerCase());
+    const hasDuplicate = normalized.some((p, i) => p && normalized.indexOf(p) !== i);
+    if (hasDuplicate) {
+      setError('Duplicate participant names are not allowed.');
+      return;
+    } else {
+      setError(null);
+    }
     setParticipants([...participants, ""]);
   };
 
@@ -53,6 +72,12 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
     setCreatedTrip(null);
     if (!user || !user.email) {
       setError(i18n.tripCreation.errorNotSignedIn);
+      return;
+    }
+    const normalized = participants.map(p => p.trim().toLowerCase());
+    const hasDuplicate = normalized.some((p, i) => p && normalized.indexOf(p) !== i);
+    if (hasDuplicate) {
+      setError('Duplicate participant names are not allowed.');
       return;
     }
     if (participants.filter(p => p.trim()).length < 2) {
@@ -88,8 +113,8 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
   };
 
   return (
-    <div className="trip-creation-container">
-      <h2 style={{ textAlign: "center", marginBottom: 24 }}>{i18n.tripCreation.title}</h2>
+    <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '24px auto 0 auto', background: '#fff', borderRadius: 14, boxShadow: '0 2px 12px #0002', padding: 0, width: '100%' }}>
+      <h2 style={{ textAlign: "center", color: '#BB3E00', marginBottom: 22, fontWeight: 800, fontSize: 26, letterSpacing: 0.5 }}>{i18n.tripCreation.title}</h2>
       {!user || !user.email ? (
         <div style={{ color: '#888', textAlign: 'center', marginBottom: 16 }}>
           <b>{i18n.tripCreation.signInPrompt}</b>
@@ -120,6 +145,7 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
             placeholder={i18n.tripCreation.tripNamePlaceholder}
             ref={tripNameRef}
             disabled={!user || !user.email}
+            style={{ width: '100%', boxSizing: 'border-box', maxWidth: 400 }}
           />
         </div>
         <div className="form-group">
@@ -175,19 +201,19 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
       )}
       {/* Table of all trips for this user */}
       {user && user.email && trips.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <h3 style={{ textAlign: 'center', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 22, color: '#BB3E00' }}>
+        <div style={{ marginTop: 24, maxWidth: 520, width: '100%', boxSizing: 'border-box', marginLeft: 'auto', marginRight: 'auto' }}>
+          <h3 style={{ textAlign: 'center', marginBottom: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 18, color: '#BB3E00' }}>
             <span role="img" aria-label="Trips">🧳</span>
             {i18n.tripsList.title}
           </h3>
-          <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #0001', overflow: 'hidden' }}>
+          <div style={{ maxWidth: 520, margin: '0 auto' }}>
+            <table style={{ width: '100%', minWidth: 0, borderCollapse: 'separate', borderSpacing: 0, background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', overflow: 'hidden', fontSize: 13 }}>
               <thead>
-                <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700, fontSize: 16 }}>
-                  <th style={{ padding: '12px 8px', textAlign: 'left', borderTopLeftRadius: 12 }}>Trip</th>
-                  <th style={{ padding: '12px 8px', textAlign: 'left' }}>Participants</th>
-                  <th style={{ width: 40 }}></th>
-                  <th style={{ width: 180, borderTopRightRadius: 12 }}></th>
+                <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700, fontSize: 13 }}>
+                  <th style={{ padding: '8px 6px', textAlign: 'left', borderTopLeftRadius: 10 }}>Trip</th>
+                  <th style={{ padding: '8px 6px', textAlign: 'left' }}>Participants</th>
+                  <th style={{ width: 32 }}></th>
+                  <th style={{ width: 120, borderTopRightRadius: 10 }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -200,65 +226,68 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
                       transition: 'background 0.12s',
                     }}
                   >
-                    <td style={{ padding: '12px 8px', fontWeight: 600, fontSize: 16, color: '#2d1a0b', verticalAlign: 'middle' }}>
-                      <span style={{ marginRight: 8, fontSize: 18 }}>🧳</span>{trip.trip_name}
+                    <td style={{ padding: '8px 6px', fontWeight: 600, fontSize: 13, color: '#2d1a0b', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', minHeight: 28 }}>
+                        <span style={{ marginRight: 6, fontSize: 15, display: 'flex', alignItems: 'center' }}>🧳</span>
+                        <span style={{ display: 'block', lineHeight: 1.2 }}>{trip.trip_name}</span>
+                      </div>
                     </td>
-                    <td style={{ padding: '12px 8px', color: '#555', fontSize: 15, verticalAlign: 'middle' }}>
-                      {trip.participants.map((p, i) => (
-                        <span key={i} style={{
-                          display: 'inline-block',
-                          background: '#A2B9A7',
-                          color: '#fff',
-                          borderRadius: 12,
-                          padding: '2px 10px',
-                          marginRight: 6,
-                          fontSize: 14,
-                          fontWeight: 500
-                        }}>{p}</span>
-                      ))}
+                    <td style={{ padding: '8px 6px', color: '#555', fontSize: 13, verticalAlign: 'middle', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', wordBreak: 'break-all' }}
+                        title={trip.participants.join(', ')}
+                    >
+                      <span style={{ display: 'inline-block', maxWidth: 110, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                        {trip.participants.join(', ')}
+                      </span>
                     </td>
-                    <td style={{ padding: '12px 8px', textAlign: 'center', verticalAlign: 'middle' }}>
+                    <td style={{ padding: '8px 6px', textAlign: 'center', verticalAlign: 'middle' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 28 }}>
+                        <button
+                          type="button"
+                          aria-label={i18n.tripsList.deleteAria ? i18n.tripsList.deleteAria(trip.trip_name) : `Delete trip ${trip.trip_name}`}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: '#d32f2f',
+                            fontSize: 18,
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: 28,
+                            width: 28,
+                            borderRadius: 5,
+                            margin: 0,
+                            position: 'relative',
+                            zIndex: 1
+                          }}
+                          onClick={e => {
+                            e.stopPropagation();
+                            if (window.confirm(i18n.tripsList.confirmDelete ? i18n.tripsList.confirmDelete(trip.trip_name) : `Delete trip ${trip.trip_name}?`)) {
+                              fetch(`http://localhost:8000/trips/${encodeURIComponent(trip.trip_name)}?user_email=${encodeURIComponent(user.email)}`, { method: 'DELETE' })
+                                .then(res => {
+                                  if (res.ok) {
+                                    setTrips(trips.filter((t) => t.trip_name !== trip.trip_name));
+                                  }
+                                });
+                            }
+                          }}
+                        >
+                          <span role="img" aria-label="Delete" style={{ display: 'block', lineHeight: 1, fontSize: 18, margin: 0, padding: 0 }}>🗑️</span>
+                        </button>
+                      </div>
+                    </td>
+                    <td style={{ padding: '8px 6px', textAlign: 'center', verticalAlign: 'middle', display: 'flex', gap: 6, justifyContent: 'center' }}>
                       <button
                         type="button"
-                        aria-label={i18n.tripsList.deleteAria ? i18n.tripsList.deleteAria(trip.trip_name) : `Delete trip ${trip.trip_name}`}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          color: '#d32f2f',
-                          fontSize: 22,
-                          padding: 0,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          transition: 'color 0.15s',
-                        }}
-                        onClick={e => {
-                          e.stopPropagation();
-                          if (window.confirm(i18n.tripsList.confirmDelete ? i18n.tripsList.confirmDelete(trip.trip_name) : `Delete trip ${trip.trip_name}?`)) {
-                            fetch(`http://localhost:8000/trips/${encodeURIComponent(trip.trip_name)}?user_email=${encodeURIComponent(user.email)}`, { method: 'DELETE' })
-                              .then(res => {
-                                if (res.ok) {
-                                  setTrips(trips.filter((t) => t.trip_name !== trip.trip_name));
-                                }
-                              });
-                          }
-                        }}
-                      >
-                        <span role="img" aria-label="Delete">🗑️</span>
-                      </button>
-                    </td>
-                    <td style={{ padding: '12px 8px', textAlign: 'center', verticalAlign: 'middle', display: 'flex', gap: 8, justifyContent: 'center' }}>
-                      <button
-                        type="button"
-                        style={{ background: '#BB3E00', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
+                        style={{ background: '#BB3E00', color: '#fff', border: 'none', borderRadius: 5, padding: '4px 12px', fontWeight: 600, fontSize: 12, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
                         onClick={e => { e.stopPropagation(); setSelectedTrip(trip); setPage('addExpense'); }}
                       >
                         {i18n.nav.expense}
                       </button>
                       <button
                         type="button"
-                        style={{ background: '#A2B9A7', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
+                        style={{ background: '#A2B9A7', color: '#fff', border: 'none', borderRadius: 5, padding: '4px 12px', fontWeight: 600, fontSize: 12, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
                         onClick={e => { e.stopPropagation(); setSelectedTrip(trip); setPage('summary'); }}
                       >
                         {i18n.nav.summary}
@@ -465,37 +494,91 @@ function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user:
   };
   if (!tripName) return null;
   return (
-    <div style={{ maxWidth: 500, margin: '18px auto 0 auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', padding: 16 }}>
+    <div
+      className={
+        typeof window !== 'undefined' && window.innerWidth <= 430 ? 'expenses-list-mobile' : 'expenses-list-desktop'
+      }
+      style={{
+        maxWidth: typeof window !== 'undefined' && window.innerWidth <= 430 ? 393 : 600,
+        width: '100%',
+        margin: '18px 0 0 0', // Remove auto left/right margin
+        background: '#fff',
+        borderRadius: 10,
+        boxShadow: '0 2px 8px #0001',
+        padding: 8,
+        overflow: 'hidden',
+      }}
+    >
       <h3 style={{ color: '#BB3E00', margin: '0 0 10px 0', fontWeight: 700, fontSize: 18 }}>Expenses</h3>
       {loading ? <div>Loading...</div> : null}
       {expenses.length === 0 && !loading ? <div style={{ color: '#888' }}>No expenses yet.</div> : null}
       {expenses.length > 0 && (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
-          <thead>
-            <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700 }}>
-              <th style={{ padding: '6px 4px', textAlign: 'left', borderRadius: '6px 0 0 0', minWidth: 80 }}>Date</th>
-              <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 120 }}>Payer</th>
-              <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 80 }}>Amount</th>
-              <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 120 }}>Participants</th>
-              <th style={{ width: 60, textAlign: 'center' }}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((exp, i) => (
-              <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
-                <td style={{ padding: '6px 4px', color: '#A2B9A7', fontWeight: 500 }}>
-                  {exp.date ? exp.date : <span style={{ color: '#bbb' }}>—</span>}
-                </td>
-                <td style={{ padding: '6px 4px', fontWeight: 500 }}>{exp.payer}</td>
-                <td style={{ padding: '6px 4px', color: '#BB3E00', fontWeight: 700 }}>¤{exp.amount.toFixed(2)}</td>
-                <td style={{ padding: '6px 4px', color: '#555' }}>{exp.participants.join(', ')}</td>
-                <td style={{ padding: '6px 4px', textAlign: 'center', display: 'flex', gap: 4 }}>
-                  <button onClick={() => handleDelete(i)} style={{ background: 'none', border: 'none', color: '#d32f2f', fontSize: 18, cursor: 'pointer' }} title="Delete" aria-label="Delete"><span role="img" aria-label="Delete">🗑️</span></button>
-                </td>
+        <div
+          style={
+            typeof window !== 'undefined' && window.innerWidth <= 430
+              ? { overflowX: 'auto', width: '100%' }
+              : { width: '100%' }
+          }
+        >
+          <table
+            style={{
+              width: '100%',
+              minWidth: 360,
+              borderCollapse: 'collapse',
+              fontSize: 15,
+              tableLayout: 'fixed',
+            }}
+          >
+            <thead>
+              <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700 }}>
+                <th style={{ padding: '6px 4px', textAlign: 'left', borderRadius: '6px 0 0 0', minWidth: 70, fontSize: 13 }}>Date</th>
+                <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 80, fontSize: 13 }}>Payer</th>
+                <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 60, fontSize: 13 }}>Amount</th>
+                <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 100, fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Participants</th>
+                <th style={{ width: 40, textAlign: 'center' }}></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {expenses.map((exp, i) => (
+                <tr key={i} style={{ borderBottom: '1px solid #eee' }}>
+                  <td style={{ padding: '6px 4px', color: '#A2B9A7', fontWeight: 500, fontSize: 13, wordBreak: 'break-word' }}>
+                    {exp.date ? exp.date : <span style={{ color: '#bbb' }}>—</span>}
+                  </td>
+                  <td style={{ padding: '6px 4px', fontWeight: 500, fontSize: 13, wordBreak: 'break-word' }}>{exp.payer}</td>
+                  <td style={{ padding: '6px 4px', color: '#BB3E00', fontWeight: 700, fontSize: 13 }}>¤{exp.amount.toFixed(2)}</td>
+                  <td style={{ padding: '6px 4px', color: '#555', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: 100 }} title={exp.participants.join(', ')}>
+                    {exp.participants.join(', ')}
+                  </td>
+                  <td style={{ padding: '6px 2px 6px 4px', textAlign: 'center', verticalAlign: 'middle' }}>
+                    <button
+                      onClick={() => handleDelete(i)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#d32f2f',
+                        fontSize: 18,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 28,
+                        width: 28,
+                        borderRadius: 5,
+                        margin: 0,
+                        position: 'relative',
+                        zIndex: 1
+                      }}
+                      title="Delete"
+                      aria-label="Delete"
+                    >
+                      <span role="img" aria-label="Delete" style={{ display: 'block', lineHeight: 1, fontSize: 18, margin: 0 }}>🗑️</span>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
@@ -526,7 +609,7 @@ function getSettlements(balances: Record<string, number | string>) {
   return settlements;
 }
 
-function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, trips: { trip_name: string; participants: string[] }[] }) {
+function BalanceSummary({ i18n, user, trips, hideTitle }: { i18n: typeof en, user: any, trips: { trip_name: string; participants: string[] }[], hideTitle?: boolean }) {
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -561,7 +644,10 @@ function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, tri
   if (!user || !user.email) return null;
   return (
     <div style={{ maxWidth: 500, margin: '18px auto 0 auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', padding: 16 }}>
-      <h3 style={{ color: '#BB3E00', margin: '0 0 10px 0', fontWeight: 700, fontSize: 18 }}>{i18n.balanceSummary.title}</h3>
+      {/* Only show the title if hideTitle is not true */}
+      {!hideTitle && (
+        <h3 style={{ color: '#BB3E00', margin: '0 0 10px 0', fontWeight: 700, fontSize: 18 }}>{i18n.balanceSummary.title}</h3>
+      )}
       {/* Removed trip dropdown because selectedTrip is already set in App */}
       {loading && <div>Loading...</div>}
       {error && <div style={{ color: 'red' }}>{error}</div>}
@@ -651,7 +737,7 @@ function App() {
   }, [user]);
   return (
     <GoogleOAuthProvider clientId="208283253035-c5421mojqmb0mqhboou7bdtqo2dfh3k2.apps.googleusercontent.com">
-      <div className="App">
+      <div className="App" style={{ minWidth: 393, maxWidth: 800, minHeight: '100vh', margin: '0 auto', background: '#f7ead9', boxSizing: 'border-box', width: '100%' }}>
         <header style={{ marginBottom: 24, padding: '18px 0 0 0' }}>
           <h1 style={{ textAlign: 'center', margin: 0, fontWeight: 700, fontSize: 32, letterSpacing: 1 }}>{i18n.appTitle}</h1>
           <div style={{ textAlign: 'center', marginTop: 8 }}>
@@ -667,28 +753,13 @@ function App() {
             </select>
           </div>
         </header>
-        {user && user.email && (
-          <nav
-            style={{
-              display: 'flex',
-              gap: 16,
-              justifyContent: 'center',
-              marginBottom: 24,
-              maxWidth: 420,
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              width: '100%',
-            }}
-          >
-            <button onClick={() => setPage('trip')}>{i18n.nav.trip}</button>
-            <button onClick={() => setPage('addExpense')} disabled={!selectedTrip || !trips.length}>{i18n.nav.expense.replace('Add Expense', 'Expenses')}</button>
-            <button onClick={() => setPage('summary')} disabled={!selectedTrip || !trips.length}>{i18n.nav.summary}</button>
-          </nav>
+        {/* Removed top navigation menu (Trip, Expenses, Summary) */}
+        {page === 'trip' && (
+          <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => {}} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />
         )}
-        {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => {}} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />}
         {page === 'addExpense' && selectedTrip && (
-          <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 18 }}>{i18n.expenseForm.title.replace('Add Expense', 'Expenses')} - <span style={{ fontWeight: 400 }}>{selectedTrip.trip_name}</span></h2>
+          <div className="main-card unified-card" style={{ maxWidth: 600, margin: '24px auto 0 auto', background: '#fff', borderRadius: 14, boxShadow: '0 2px 12px #0002', padding: 0, width: '100%' }}>
+            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 22, fontWeight: 800, fontSize: 26, letterSpacing: 0.5 }}>{i18n.expenseForm.title.replace('Add Expense', 'Expenses')} <span style={{ fontWeight: 400, fontSize: 18, color: '#555' }}>– {selectedTrip.trip_name}</span></h2>
             <ExpenseForm
               i18n={i18n}
               user={user}
@@ -697,12 +768,48 @@ function App() {
               onExpenseAdded={() => setRefreshKey(k => k + 1)}
             />
             <ExpensesList tripName={selectedTrip.trip_name} user={user} refreshKey={refreshKey} />
+            <div style={{ textAlign: 'center', marginTop: 22, display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center' }}>
+              <button
+                type="button"
+                style={{ background: '#BB3E00', color: '#fff', border: 'none', borderRadius: 7, padding: '10px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 1px 4px #0001', letterSpacing: 0.2 }}
+                onClick={() => setPage('trip')}
+              >
+                {i18n.nav.trip}
+              </button>
+              <button
+                type="button"
+                style={{ background: '#A2B9A7', color: '#fff', border: 'none', borderRadius: 7, padding: '10px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 1px 4px #0001', letterSpacing: 0.2 }}
+                onClick={() => setPage('summary')}
+              >
+                {i18n.nav.summary}
+              </button>
+            </div>
           </div>
         )}
         {page === 'summary' && selectedTrip && (
-          <div style={{ maxWidth: 600, margin: '0 auto' }}>
-            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 18 }}>{i18n.balanceSummary.title} - <span style={{ fontWeight: 400 }}>{selectedTrip.trip_name}</span></h2>
-            <BalanceSummary i18n={i18n} user={user} trips={[selectedTrip]} />
+          <div className="main-card unified-card" style={{ maxWidth: 600, margin: '24px auto 0 auto', background: '#fff', borderRadius: 14, boxShadow: '0 2px 12px #0002', padding: 0, width: '100%' }}>
+            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 22, fontWeight: 800, fontSize: 26, letterSpacing: 0.5 }}>{i18n.balanceSummary.title} <span style={{ fontWeight: 400, fontSize: 18, color: '#555' }}>– {selectedTrip.trip_name}</span></h2>
+            {/* Remove duplicate BalanceSummary title inside BalanceSummary component */}
+            <BalanceSummary i18n={i18n} user={user} trips={[selectedTrip]} hideTitle />
+            <div style={{ textAlign: 'center', marginTop: 22, display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center' }}>
+              <button
+                type="button"
+                style={{ background: '#BB3E00', color: '#fff', border: 'none', borderRadius: 7, padding: '10px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 1px 4px #0001', letterSpacing: 0.2 }}
+                onClick={() => setPage('trip')}
+              >
+                {i18n.nav.trip}
+              </button>
+              <button
+                type="button"
+                style={{ background: '#A2B9A7', color: '#fff', border: 'none', borderRadius: 7, padding: '10px 24px', fontWeight: 700, fontSize: 16, cursor: 'pointer', boxShadow: '0 1px 4px #0001', letterSpacing: 0.2 }}
+                onClick={() => setPage('addExpense')}
+              >
+                {i18n.nav.expense}
+              </button>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: 12, fontSize: 14, color: '#888' }}>
+              {i18n.balanceSummary.note}
+            </div>
           </div>
         )}
         <AuthSection user={user} setUser={setUser} setPage={setPage} i18n={i18n} />

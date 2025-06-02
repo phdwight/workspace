@@ -52,7 +52,8 @@ const fil = {
   },
   balanceSummary: {
     title: "Buod ng Balanse",
-    todo: "Dito ilalagay ang buod ng balanse at kailangang bayaran."
+    todo: "Dito ilalagay ang buod ng balanse at kailangang bayaran.",
+    note: "Ang buod na ito ay batay sa lahat ng gastos para sa napiling biyahe."
   },
   settlements: {
     title: "Bayaran",

@@ -52,7 +52,8 @@ const es = {
   },
   balanceSummary: {
     title: "Resumen de Saldos",
-    todo: "El resumen de saldos y pagos requeridos irá aquí."
+    todo: "El resumen de saldos y pagos requeridos irá aquí.",
+    note: "Este resumen se basa en todos los gastos del viaje seleccionado."
   },
   settlements: {
     title: "Liquidaciones",

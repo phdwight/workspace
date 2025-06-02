@@ -60,10 +60,15 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 - Google Sign-In authentication
 - User-specific trip and expense data
 - Add, view, and delete expenses per trip
-- Per-trip summary page (shows balances and settlements)
-- All navigation is now via: Trip, Expenses, and Summary (Settlements and All Trips pages have been removed)
+- Per-trip summary page (shows balances and settlements, including clear "who owes whom" summary)
+- All navigation is now via page buttons: Trip, Expenses, and Summary (top navigation menu removed; Settlements and All Trips pages have been removed)
 - Responsive, accessible, and visually appealing design
+- Compact trips list/table with improved alignment and no horizontal scroll (max width 520px)
+- Participants in trips list shown as plain text with tooltips for full visibility on hover
+- Trash icon and trip name in trips list aligned with other controls
+- Trip name input field in trip creation form fixed for width and alignment
+- Navigation links order unified: Trip, Expenses, Summary
 
 ---
 
-For more details, see the SRS (not present in this repo) or ask for specific setup instructions.
+For more details, see the SRS or ask for specific setup instructions.
