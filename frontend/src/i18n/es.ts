@@ -39,6 +39,8 @@ const es = {
     confirmDelete: (name: string) => `¿Seguro que deseas eliminar el viaje: ${name}?`,
     errorNotSignedIn: "Debes iniciar sesión para ver tus viajes.",
     errorDelete: "No se pudo eliminar el viaje",
+    showActions: "Mostrar acciones",
+    hideActions: "Ocultar acciones",
   },
   expenseForm: {
     title: "Agregar Gasto",

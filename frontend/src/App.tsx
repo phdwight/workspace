@@ -5,7 +5,7 @@ import en from './i18n/en';
 import es from './i18n/es';
 import fil from './i18n/fil';
 
-function TripCreation({ user, setUser, i18n, onTripCreated }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void }) {
+function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelectedTrip, trips, setTrips }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void, setPage: (p: string) => void, setSelectedTrip: (t: { trip_name: string; participants: string[] }) => void, trips: { trip_name: string; participants: string[] }[], setTrips: (t: { trip_name: string; participants: string[] }[]) => void }) {
   const [tripName, setTripName] = useState("");
   const [participants, setParticipants] = useState<string[]>(["", ""]);
   const [loading, setLoading] = useState(false);
@@ -19,6 +19,16 @@ function TripCreation({ user, setUser, i18n, onTripCreated }: { user: any, setUs
       tripNameRef.current.focus();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (!user || !user.email) {
+      setTrips([]);
+      return;
+    }
+    fetch(`http://localhost:8000/trips?user_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setTrips(data));
+  }, [user, createdTrip]);
 
   const handleParticipantChange = (index: number, value: string) => {
     const updated = [...participants];
@@ -162,6 +172,104 @@ function TripCreation({ user, setUser, i18n, onTripCreated }: { user: any, setUs
           </div>
         </div>
       )}
+      {/* Table of all trips for this user */}
+      {user && user.email && trips.length > 0 && (
+        <div style={{ marginTop: 32 }}>
+          <h3 style={{ textAlign: 'center', marginBottom: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontSize: 22, color: '#BB3E00' }}>
+            <span role="img" aria-label="Trips">🧳</span>
+            {i18n.tripsList.title}
+          </h3>
+          <div style={{ maxWidth: 600, margin: '0 auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #0001', overflow: 'hidden' }}>
+              <thead>
+                <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700, fontSize: 16 }}>
+                  <th style={{ padding: '12px 8px', textAlign: 'left', borderTopLeftRadius: 12 }}>Trip</th>
+                  <th style={{ padding: '12px 8px', textAlign: 'left' }}>Participants</th>
+                  <th style={{ width: 40 }}></th>
+                  <th style={{ width: 180, borderTopRightRadius: 12 }}></th>
+                </tr>
+              </thead>
+              <tbody>
+                {trips.map((trip, idx) => (
+                  <tr
+                    key={trip.trip_name}
+                    style={{
+                      borderBottom: idx === trips.length - 1 ? 'none' : '1px solid #eee',
+                      background: idx % 2 === 0 ? '#fff' : '#f7ead9',
+                      transition: 'background 0.12s',
+                    }}
+                  >
+                    <td style={{ padding: '12px 8px', fontWeight: 600, fontSize: 16, color: '#2d1a0b', verticalAlign: 'middle' }}>
+                      <span style={{ marginRight: 8, fontSize: 18 }}>🧳</span>{trip.trip_name}
+                    </td>
+                    <td style={{ padding: '12px 8px', color: '#555', fontSize: 15, verticalAlign: 'middle' }}>
+                      {trip.participants.map((p, i) => (
+                        <span key={i} style={{
+                          display: 'inline-block',
+                          background: '#A2B9A7',
+                          color: '#fff',
+                          borderRadius: 12,
+                          padding: '2px 10px',
+                          marginRight: 6,
+                          fontSize: 14,
+                          fontWeight: 500
+                        }}>{p}</span>
+                      ))}
+                    </td>
+                    <td style={{ padding: '12px 8px', textAlign: 'center', verticalAlign: 'middle' }}>
+                      <button
+                        type="button"
+                        aria-label={i18n.tripsList.deleteAria ? i18n.tripsList.deleteAria(trip.trip_name) : `Delete trip ${trip.trip_name}`}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          cursor: 'pointer',
+                          color: '#d32f2f',
+                          fontSize: 22,
+                          padding: 0,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          transition: 'color 0.15s',
+                        }}
+                        onClick={e => {
+                          e.stopPropagation();
+                          if (window.confirm(i18n.tripsList.confirmDelete ? i18n.tripsList.confirmDelete(trip.trip_name) : `Delete trip ${trip.trip_name}?`)) {
+                            fetch(`http://localhost:8000/trips/${encodeURIComponent(trip.trip_name)}?user_email=${encodeURIComponent(user.email)}`, { method: 'DELETE' })
+                              .then(res => {
+                                if (res.ok) {
+                                  setTrips(trips.filter((t) => t.trip_name !== trip.trip_name));
+                                }
+                              });
+                          }
+                        }}
+                      >
+                        <span role="img" aria-label="Delete">🗑️</span>
+                      </button>
+                    </td>
+                    <td style={{ padding: '12px 8px', textAlign: 'center', verticalAlign: 'middle', display: 'flex', gap: 8, justifyContent: 'center' }}>
+                      <button
+                        type="button"
+                        style={{ background: '#BB3E00', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
+                        onClick={e => { e.stopPropagation(); setSelectedTrip(trip); setPage('addExpense'); }}
+                      >
+                        {i18n.nav.expense}
+                      </button>
+                      <button
+                        type="button"
+                        style={{ background: '#A2B9A7', color: '#fff', border: 'none', borderRadius: 6, padding: '6px 18px', fontWeight: 600, fontSize: 15, cursor: 'pointer', boxShadow: '0 1px 4px #0001' }}
+                        onClick={e => { e.stopPropagation(); setSelectedTrip(trip); setPage('summary'); }}
+                      >
+                        {i18n.nav.summary}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -169,15 +277,21 @@ function TripCreation({ user, setUser, i18n, onTripCreated }: { user: any, setUs
 function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }: { i18n: typeof en, user: any, participants?: string[], tripName?: string, onExpenseAdded?: () => void }) {
   const [payer, setPayer] = useState('');
   const [amount, setAmount] = useState('');
-  const [expenseParticipants, setExpenseParticipants] = useState<string[]>([]);
-  const [date, setDate] = useState('');
+  const [expenseParticipants, setExpenseParticipants] = useState<string[]>(participants);
+  const [date, setDate] = useState(() => {
+    // Set default date to today in yyyy-mm-dd format
+    const today = new Date();
+    return today.toISOString().slice(0, 10);
+  });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Improved: auto-select all participants by default
+  // Always select all participants by default when participants change
   useEffect(() => {
-    if (participants.length > 0 && expenseParticipants.length === 0) {
-      setExpenseParticipants([...participants]);
+    setExpenseParticipants([...participants]);
+    // If payer is not in new participants, reset payer
+    if (payer && !participants.includes(payer)) {
+      setPayer(participants.length === 1 ? participants[0] : '');
     }
   }, [participants]);
 
@@ -185,8 +299,17 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
   useEffect(() => {
     if (participants.length === 1) {
       setPayer(participants[0]);
+    } else if (participants.length > 1 && !participants.includes(payer)) {
+      setPayer('');
     }
   }, [participants]);
+
+  // Ensure payer is always a valid participant
+  useEffect(() => {
+    if (payer && !participants.includes(payer)) {
+      setPayer('');
+    }
+  }, [participants, payer]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -202,6 +325,10 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
     }
     if (expenseParticipants.length === 0) {
       setError('Please select at least one participant.');
+      return;
+    }
+    if (!date) {
+      setError('Please select a date.');
       return;
     }
     if (!user || !user.email) {
@@ -229,8 +356,11 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
       setSuccess(data.message || 'Expense added!');
       setPayer('');
       setAmount('');
-      setExpenseParticipants([]);
-      setDate('');
+      setExpenseParticipants([...participants]); // Reset to all participants
+      setDate(() => {
+        const today = new Date();
+        return today.toISOString().slice(0, 10);
+      });
       if (onExpenseAdded) onExpenseAdded();
     } catch (err: any) {
       setError(err.message || 'Failed to add expense');
@@ -253,7 +383,7 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
         <div className="form-group">
           <label style={{ fontWeight: 600, color: '#BB3E00', marginBottom: 4 }}>Amount</label>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#A2B9A7', fontWeight: 700, fontSize: 18 }}>$</span>
+            <span style={{ color: '#A2B9A7', fontWeight: 700, fontSize: 18 }}>¤</span>
             <input
               type="number"
               min="0.01"
@@ -294,6 +424,7 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
             onChange={e => setDate(e.target.value)}
             className="input"
             style={{ minHeight: 36 }}
+            required
           />
         </div>
         {error && <div style={{ color: '#d32f2f', marginBottom: 6, fontWeight: 600, textAlign: 'center' }}>{error}</div>}
@@ -304,7 +435,7 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
   )
 }
 
-function ExpensesList({ tripName, user }: { tripName?: string, user: any }) {
+function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user: any, refreshKey?: number }) {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -317,7 +448,20 @@ function ExpensesList({ tripName, user }: { tripName?: string, user: any }) {
       .then(res => res.ok ? res.json() : [])
       .then(data => setExpenses(data))
       .finally(() => setLoading(false));
-  }, [tripName, user]);
+  }, [tripName, user, refreshKey]);
+
+  const handleDelete = async (idx: number) => {
+    const exp = expenses[idx];
+    if (!window.confirm('Delete this expense?')) return;
+    try {
+      await fetch(`http://localhost:8000/expenses/${encodeURIComponent(exp.id ?? idx)}?user_email=${encodeURIComponent(user.email)}`, {
+        method: 'DELETE',
+      });
+      setExpenses(exps => exps.filter((_, i) => i !== idx));
+    } catch (err) {
+      alert('Failed to delete expense');
+    }
+  };
   if (!tripName) return null;
   return (
     <div style={{ maxWidth: 500, margin: '18px auto 0 auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', padding: 16 }}>
@@ -332,6 +476,7 @@ function ExpensesList({ tripName, user }: { tripName?: string, user: any }) {
               <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 120 }}>Payer</th>
               <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 80 }}>Amount</th>
               <th style={{ padding: '6px 4px', textAlign: 'left', minWidth: 120 }}>Participants</th>
+              <th style={{ width: 60, textAlign: 'center' }}></th>
             </tr>
           </thead>
           <tbody>
@@ -341,8 +486,11 @@ function ExpensesList({ tripName, user }: { tripName?: string, user: any }) {
                   {exp.date ? exp.date : <span style={{ color: '#bbb' }}>—</span>}
                 </td>
                 <td style={{ padding: '6px 4px', fontWeight: 500 }}>{exp.payer}</td>
-                <td style={{ padding: '6px 4px', color: '#BB3E00', fontWeight: 700 }}>${exp.amount.toFixed(2)}</td>
+                <td style={{ padding: '6px 4px', color: '#BB3E00', fontWeight: 700 }}>¤{exp.amount.toFixed(2)}</td>
                 <td style={{ padding: '6px 4px', color: '#555' }}>{exp.participants.join(', ')}</td>
+                <td style={{ padding: '6px 4px', textAlign: 'center', display: 'flex', gap: 4 }}>
+                  <button onClick={() => handleDelete(i)} style={{ background: 'none', border: 'none', color: '#d32f2f', fontSize: 18, cursor: 'pointer' }} title="Delete" aria-label="Delete"><span role="img" aria-label="Delete">🗑️</span></button>
+                </td>
               </tr>
             ))}
           </tbody>
@@ -352,13 +500,112 @@ function ExpensesList({ tripName, user }: { tripName?: string, user: any }) {
   );
 }
 
-function BalanceSummary({ i18n }: { i18n: typeof en }) {
+function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, trips: { trip_name: string; participants: string[] }[] }) {
+  const [summary, setSummary] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTrip, setSelectedTrip] = useState<string>(trips.length > 0 ? trips[trips.length - 1].trip_name : '');
+
+  useEffect(() => {
+    if (!user || !user.email || !selectedTrip) {
+      setSummary(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(selectedTrip)}&user_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch'))
+      .then(data => {
+        // Calculate balances
+        const participants = trips.find(t => t.trip_name === selectedTrip)?.participants || [];
+        const balances: Record<string, number> = {};
+        participants.forEach(p => { balances[p] = 0; });
+        data.forEach((exp: any) => {
+          const share = exp.amount / exp.participants.length;
+          exp.participants.forEach((p: string) => {
+            balances[p] -= share;
+          });
+          balances[exp.payer] += exp.amount;
+        });
+        setSummary({ balances, expenses: data });
+      })
+      .catch(() => setError('Failed to load summary'))
+      .finally(() => setLoading(false));
+  }, [user, selectedTrip, trips]);
+
+  if (!user || !user.email) return null;
+  // Helper: compute settlements
+  function computeSettlements(balances: Record<string, number>) {
+    // Clone and sort participants by balance
+    const creditors = Object.entries(balances).filter(([_, b]) => b > 0).sort((a, b) => b[1] - a[1]);
+    const debtors = Object.entries(balances).filter(([_, b]) => b < 0).sort((a, b) => a[1] - b[1]);
+    const settlements: { from: string; to: string; amount: number }[] = [];
+    let i = 0, j = 0;
+    while (i < debtors.length && j < creditors.length) {
+      const [debtor, debt] = debtors[i];
+      const [creditor, credit] = creditors[j];
+      const pay = Math.min(-debt, credit);
+      if (pay > 0.009) { // ignore tiny rounding errors
+        settlements.push({ from: debtor, to: creditor, amount: pay });
+        debtors[i][1] += pay;
+        creditors[j][1] -= pay;
+      }
+      if (Math.abs(debtors[i][1]) < 0.01) i++;
+      if (Math.abs(creditors[j][1]) < 0.01) j++;
+    }
+    return settlements;
+  }
   return (
-    <div>
-      <h2>{i18n.balanceSummary.title}</h2>
-      <p>{i18n.balanceSummary.todo}</p>
+    <div style={{ maxWidth: 500, margin: '18px auto 0 auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', padding: 16 }}>
+      <h3 style={{ color: '#BB3E00', margin: '0 0 10px 0', fontWeight: 700, fontSize: 18 }}>{i18n.balanceSummary.title}</h3>
+      {/* Removed trip dropdown because selectedTrip is already set in App */}
+      {loading && <div>Loading...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {summary && (
+        <>
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, marginTop: 10 }}>
+            <thead>
+              <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700 }}>
+                <th style={{ padding: '6px 4px', textAlign: 'left', borderRadius: '6px 0 0 0' }}>Participant</th>
+                <th style={{ padding: '6px 4px', textAlign: 'right', borderRadius: '0 6px 0 0' }}>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(summary.balances).map(([p, bal]) => {
+                const balNum = typeof bal === 'number' ? bal : Number(bal);
+                return (
+                  <tr key={p}>
+                    <td style={{ padding: '6px 4px', fontWeight: 500 }}>{p}</td>
+                    <td style={{ padding: '6px 4px', textAlign: 'right', color: balNum < 0 ? '#d32f2f' : '#388e3c', fontWeight: 700 }}>
+                      {balNum < 0 ? '-' : ''}¤{Math.abs(balNum).toFixed(2)}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {/* Verbose settlements */}
+          <div style={{ marginTop: 18 }}>
+            <h4 style={{ color: '#BB3E00', fontWeight: 700, fontSize: 16, marginBottom: 8 }}>Who owes whom?</h4>
+            {(() => {
+              const settlements = computeSettlements({ ...summary.balances });
+              if (settlements.length === 0) return <div style={{ color: '#388e3c' }}>All settled up! 🎉</div>;
+              return (
+                <ul style={{ paddingLeft: 18, color: '#2d1a0b', fontSize: 15 }}>
+                  {settlements.map((s, i) => (
+                    <li key={i}>
+                      <b>{s.from}</b> needs to pay <b>{s.to}</b> <span style={{ color: '#BB3E00' }}>¤{s.amount.toFixed(2)}</span>
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
+          </div>
+        </>
+      )}
+      {!loading && !summary && <div style={{ color: '#888', marginTop: 12 }}>No data to summarize.</div>}
     </div>
-  )
+  );
 }
 
 function Settlements({ i18n }: { i18n: typeof en }) {
@@ -368,140 +615,6 @@ function Settlements({ i18n }: { i18n: typeof en }) {
       <p>{i18n.settlements.todo}</p>
     </div>
   )
-}
-
-function TripsList({ user, i18n, onTripSelected, selectedTrip }: { user: any, setUser?: (u: any) => void, i18n: typeof en, onTripSelected?: (trip: { trip_name: string; participants: string[] } | null) => void, selectedTrip?: { trip_name: string; participants: string[] } }) {
-  const [trips, setTrips] = useState<{ trip_name: string; participants: string[] }[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [deleting, setDeleting] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!user || !user.email) {
-      setTrips([]);
-      setError(i18n.tripsList.errorNotSignedIn);
-      return;
-    }
-    setLoading(true);
-    fetch(`http://localhost:8000/trips?user_email=${encodeURIComponent(user.email)}`)
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to fetch trips");
-        return res.json();
-      })
-      .then(data => setTrips(data))
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [user]);
-
-  const handleDelete = async (tripName: string) => {
-    if (!user || !user.email) return;
-    if (!window.confirm(i18n.tripsList.confirmDelete(tripName))) return;
-    setDeleting(tripName);
-    try {
-      const res = await fetch(`http://localhost:8000/trips/${encodeURIComponent(tripName)}?user_email=${encodeURIComponent(user.email)}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.detail || 'Failed to delete trip');
-      }
-      setTrips(trips => trips.filter(t => t.trip_name !== tripName));
-      if (onTripSelected && selectedTrip && selectedTrip.trip_name === tripName) {
-        onTripSelected(null); // Deselect if deleted
-      }
-    } catch (err: any) {
-      setError(err.message || i18n.tripsList.errorDelete);
-    } finally {
-      setDeleting(null);
-    }
-  };
-
-  return (
-    <div className="trips-list-container">
-      <h2 style={{ textAlign: "center", marginBottom: 24 }}>{i18n.tripsList.title}</h2>
-      {!user || !user.email ? (
-        <div style={{ color: '#888', textAlign: 'center', marginBottom: 16 }}>
-          <b>{i18n.tripsList.signInPrompt}</b>
-        </div>
-      ) : null}
-      {loading && <div>{i18n.tripsList.loading}</div>}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
-      {trips.length === 0 && !loading && user && user.email && <div>{i18n.tripsList.noTrips}</div>}
-      <ul className="trips-list">
-        {trips.map((trip, idx) => (
-          <li
-            key={idx}
-            className="trips-list-item"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              margin: 0,
-              listStyle: 'none',
-              marginBottom: 18,
-              boxShadow: 'none',
-              cursor: onTripSelected ? 'pointer' : 'default',
-            }}
-            onClick={() => {
-              if (onTripSelected) {
-                onTripSelected(trip);
-                if (typeof window !== 'undefined') {
-                  const evt = new CustomEvent('navigateToExpenses');
-                  window.dispatchEvent(evt);
-                }
-              }
-            }}
-            tabIndex={onTripSelected ? 0 : -1}
-            onKeyDown={e => {
-              if (onTripSelected && (e.key === 'Enter' || e.key === ' ')) {
-                onTripSelected(trip);
-                if (typeof window !== 'undefined') {
-                  const evt = new CustomEvent('navigateToExpenses');
-                  window.dispatchEvent(evt);
-                }
-              }
-            }}
-            aria-selected={selectedTrip && selectedTrip.trip_name === trip.trip_name}
-          >
-            <div
-              className={`created-trip-card${selectedTrip && selectedTrip.trip_name === trip.trip_name ? ' selected' : ''}`}
-              style={{
-                boxShadow: selectedTrip && selectedTrip.trip_name === trip.trip_name ? '0 2px 12px #A2B9A7' : undefined,
-                border: selectedTrip && selectedTrip.trip_name === trip.trip_name ? '2px solid #A2B9A7' : undefined,
-                transition: 'box-shadow 0.15s, border 0.15s',
-                cursor: onTripSelected ? 'pointer' : 'default',
-                margin: 0,
-              }}
-            >
-              <div className="created-trip-detail">
-                <span className="created-trip-label">{i18n.tripCreation.createdName}</span>
-                <span className="created-trip-value">{trip.trip_name}</span>
-              </div>
-              <div className="created-trip-detail">
-                <span className="created-trip-label">{i18n.tripCreation.createdParticipants}</span>
-                <ul className="created-trip-list">
-                  {trip.participants.map((p, i) => (
-                    <li key={i} className="created-trip-participant">👤 {p}</li>
-                  ))}
-                </ul>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
-                <button
-                  className="delete-btn"
-                  style={{ color: 'white', background: '#d32f2f', border: 'none', borderRadius: 4, padding: '4px 12px', cursor: 'pointer', opacity: deleting === trip.trip_name ? 0.6 : 1 }}
-                  onClick={e => { e.stopPropagation(); handleDelete(trip.trip_name); }}
-                  disabled={deleting === trip.trip_name}
-                  aria-label={i18n.tripsList.deleteAria(trip.trip_name)}
-                >
-                  {deleting === trip.trip_name ? i18n.tripsList.deleting : i18n.tripsList.delete}
-                </button>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
 }
 
 function AuthSection({ user, setUser, setPage, i18n }: { user: any, setUser: (u: any) => void, setPage: (p: string) => void, i18n: typeof en }) {
@@ -526,24 +639,29 @@ function App() {
   const [page, setPage] = useState('trip');
   const [user, setUser] = useState<any>(null);
   const [lang, setLang] = useState<'en' | 'es' | 'fil'>('en');
+  const [trips, setTrips] = useState<{ trip_name: string; participants: string[] }[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<{ trip_name: string; participants: string[] } | null>(null);
-  const [expensesRefreshKey, setExpensesRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0); // Add refreshKey for expenses refresh
   let i18n = en;
   if (lang === 'es') i18n = es;
   else if (lang === 'fil') i18n = fil;
 
-  // Handler to update participants after trip creation
-  const handleTripCreated = (trip: { trip_name: string; participants: string[] }) => {
-    setSelectedTrip(trip); // auto-select newly created trip
-  };
+  // Remove handleTripCreated param
+  const handleTripCreated = () => {};
 
-  // Handler to select a trip from TripsList
-  const handleTripSelected = (trip: { trip_name: string; participants: string[] } | null) => {
-    setSelectedTrip(trip);
-  };
+  // Keep trips in sync with TripCreation
+  useEffect(() => {
+    if (!user || !user.email) {
+      setTrips([]);
+      return;
+    }
+    fetch(`http://localhost:8000/trips?user_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.ok ? res.json() : [])
+      .then(data => setTrips(data));
+  }, [user]);
 
   useEffect(() => {
-    const handler = () => setPage('expense');
+    const handler = () => setPage('trip');
     window.addEventListener('navigateToExpenses', handler);
     return () => window.removeEventListener('navigateToExpenses', handler);
   }, []);
@@ -580,26 +698,31 @@ function App() {
             }}
           >
             <button onClick={() => setPage('trip')}>{i18n.nav.trip}</button>
-            <button onClick={() => setPage('trips')}>{i18n.nav.trips}</button>
-            <button onClick={() => setPage('expense')}>{i18n.nav.expense}</button>
-            <button onClick={() => setPage('summary')}>{i18n.nav.summary}</button>
+            <button onClick={() => setPage('addExpense')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.expense.replace('Add Expense', 'Expenses')}</button>
+            <button onClick={() => setPage('summary')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.summary}</button>
             <button onClick={() => setPage('settlements')}>{i18n.nav.settlements}</button>
           </nav>
         )}
-        {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={handleTripCreated} />}
-        {page === 'trips' && <TripsList user={user} i18n={i18n} onTripSelected={handleTripSelected} selectedTrip={selectedTrip ?? undefined} />}
-        {page === 'expense' && (
-          <>
-            {selectedTrip && (
-              <div style={{ textAlign: 'center', marginBottom: 12, fontWeight: 500 }}>
-                {i18n.tripsList.title}: <span style={{ color: '#BB3E00' }}>{selectedTrip.trip_name}</span>
-              </div>
-            )}
-            <ExpenseForm i18n={i18n} user={user} participants={selectedTrip ? selectedTrip.participants : []} tripName={selectedTrip?.trip_name} onExpenseAdded={() => setExpensesRefreshKey(k => k + 1)} />
-            <ExpensesList tripName={selectedTrip?.trip_name} user={user} key={expensesRefreshKey} />
-          </>
+        {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={handleTripCreated} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />}
+        {page === 'addExpense' && selectedTrip && (
+          <div style={{ maxWidth: 600, margin: '0 auto' }}>
+            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 18 }}>{i18n.expenseForm.title.replace('Add Expense', 'Expenses')} - <span style={{ fontWeight: 400 }}>{selectedTrip.trip_name}</span></h2>
+            <ExpenseForm
+              i18n={i18n}
+              user={user}
+              participants={selectedTrip.participants}
+              tripName={selectedTrip.trip_name}
+              onExpenseAdded={() => setRefreshKey(k => k + 1)}
+            />
+            <ExpensesList tripName={selectedTrip.trip_name} user={user} refreshKey={refreshKey} />
+          </div>
         )}
-        {page === 'summary' && <BalanceSummary i18n={i18n} />}
+        {page === 'summary' && selectedTrip && (
+          <div style={{ maxWidth: 600, margin: '0 auto' }}>
+            <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 18 }}>{i18n.balanceSummary.title} - <span style={{ fontWeight: 400 }}>{selectedTrip.trip_name}</span></h2>
+            <BalanceSummary i18n={i18n} user={user} trips={[selectedTrip]} />
+          </div>
+        )}
         {page === 'settlements' && <Settlements i18n={i18n} />}
         <AuthSection user={user} setUser={setUser} setPage={setPage} i18n={i18n} />
       </div>
