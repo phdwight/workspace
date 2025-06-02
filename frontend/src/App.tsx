@@ -5,7 +5,8 @@ import en from './i18n/en';
 import es from './i18n/es';
 import fil from './i18n/fil';
 
-function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelectedTrip, trips, setTrips }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void, setPage: (p: string) => void, setSelectedTrip: (t: { trip_name: string; participants: string[] }) => void, trips: { trip_name: string; participants: string[] }[], setTrips: (t: { trip_name: string; participants: string[] }[]) => void }) {
+function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelectedTrip: _setSelectedTrip, trips, setTrips }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void, setPage: (p: string) => void, setSelectedTrip: (t: { trip_name: string; participants: string[] }) => void, trips: { trip_name: string; participants: string[] }[], setTrips: (t: { trip_name: string; participants: string[] }[]) => void }) {
+  const setSelectedTrip = _setSelectedTrip;
   const [tripName, setTripName] = useState("");
   const [participants, setParticipants] = useState<string[]>(["", ""]);
   const [loading, setLoading] = useState(false);
@@ -500,24 +501,48 @@ function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user:
   );
 }
 
+function getSettlements(balances: Record<string, number | string>) {
+  // Convert all balances to numbers and round to avoid floating point issues
+  const entries: [string, number][] = Object.entries(balances).map(([p, b]) => [p, Math.round(Number(b) * 100) / 100]);
+  // Filter out near-zero balances
+  const filtered: [string, number][] = entries.filter(([_, b]) => Math.abs(b) > 0.009);
+  // Sort debtors (negative) and creditors (positive)
+  const debtors: [string, number][] = filtered.filter(([_, b]) => b < 0).sort((a, b) => a[1] - b[1]);
+  const creditors: [string, number][] = filtered.filter(([_, b]) => b > 0).sort((a, b) => b[1] - a[1]);
+  const settlements: { from: string; to: string; amount: number }[] = [];
+  let i = 0, j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const [debtor, debt] = debtors[i];
+    const [creditor, credit] = creditors[j];
+    const amount = Math.min(-debt, credit);
+    if (amount > 0.009) {
+      settlements.push({ from: debtor, to: creditor, amount: Math.round(amount * 100) / 100 });
+      debtors[i][1] = Math.round((debtors[i][1] + amount) * 100) / 100;
+      creditors[j][1] = Math.round((creditors[j][1] - amount) * 100) / 100;
+    }
+    if (Math.abs(debtors[i][1]) < 0.009) i++;
+    if (Math.abs(creditors[j][1]) < 0.009) j++;
+  }
+  return settlements;
+}
+
 function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, trips: { trip_name: string; participants: string[] }[] }) {
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedTrip, setSelectedTrip] = useState<string>(trips.length > 0 ? trips[trips.length - 1].trip_name : '');
 
   useEffect(() => {
-    if (!user || !user.email || !selectedTrip) {
+    if (!user || !user.email) {
       setSummary(null);
       return;
     }
     setLoading(true);
     setError(null);
-    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(selectedTrip)}&user_email=${encodeURIComponent(user.email)}`)
+    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(trips[0]?.trip_name)}&user_email=${encodeURIComponent(user.email)}`)
       .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch'))
       .then(data => {
         // Calculate balances
-        const participants = trips.find(t => t.trip_name === selectedTrip)?.participants || [];
+        const participants = trips[0]?.participants || [];
         const balances: Record<string, number> = {};
         participants.forEach(p => { balances[p] = 0; });
         data.forEach((exp: any) => {
@@ -531,7 +556,7 @@ function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, tri
       })
       .catch(() => setError('Failed to load summary'))
       .finally(() => setLoading(false));
-  }, [user, selectedTrip, trips]);
+  }, [user, trips]);
 
   if (!user || !user.email) return null;
   return (
@@ -563,7 +588,23 @@ function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, tri
               })}
             </tbody>
           </table>
-          {/* Verbose settlements removed as per request */}
+          {/* Who owes whom settlements */}
+          <div style={{ marginTop: 18 }}>
+            <h4 style={{ color: '#BB3E00', fontWeight: 700, fontSize: 16, marginBottom: 8 }}>Who owes whom</h4>
+            {(() => {
+              const settlements = getSettlements(summary.balances);
+              if (settlements.length === 0) return <div style={{ color: '#388e3c' }}>All settled up!</div>;
+              return (
+                <ul style={{ paddingLeft: 18, margin: 0 }}>
+                  {settlements.map((s, i) => (
+                    <li key={i} style={{ marginBottom: 4, color: '#444', fontSize: 15 }}>
+                      <span style={{ fontWeight: 500 }}>{s.from}</span> needs to pay <span style={{ fontWeight: 500 }}>{s.to}</span> <span style={{ color: '#BB3E00', fontWeight: 700 }}>¤{s.amount.toFixed(2)}</span>
+                    </li>
+                  ))}
+                </ul>
+              );
+            })()}
+          </div>
         </>
       )}
       {!loading && !summary && <div style={{ color: '#888', marginTop: 12 }}>No data to summarize.</div>}
@@ -594,8 +635,8 @@ function App() {
   const [user, setUser] = useState<any>(null);
   const [lang, setLang] = useState<'en' | 'es' | 'fil'>('en');
   const [trips, setTrips] = useState<{ trip_name: string; participants: string[] }[]>([]);
-  const [selectedTrip, setSelectedTrip] = useState<{ trip_name: string; participants: string[] } | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedTrip, setSelectedTrip] = useState<{ trip_name: string; participants: string[] } | null>(null);
   let i18n = en;
   if (lang === 'es') i18n = es;
   else if (lang === 'fil') i18n = fil;
@@ -640,8 +681,8 @@ function App() {
             }}
           >
             <button onClick={() => setPage('trip')}>{i18n.nav.trip}</button>
-            <button onClick={() => setPage('addExpense')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.expense.replace('Add Expense', 'Expenses')}</button>
-            <button onClick={() => setPage('summary')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.summary}</button>
+            <button onClick={() => setPage('addExpense')} disabled={!selectedTrip || !trips.length}>{i18n.nav.expense.replace('Add Expense', 'Expenses')}</button>
+            <button onClick={() => setPage('summary')} disabled={!selectedTrip || !trips.length}>{i18n.nav.summary}</button>
           </nav>
         )}
         {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => {}} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />}
