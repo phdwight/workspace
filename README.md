@@ -2,34 +2,61 @@
 
 This is a monorepo for a Bill Splitter App with:
 - **Frontend:** React + Vite + TypeScript
-- **Backend:** FastAPI (Python)
-- **Database:** PostgreSQL
+- **Backend:** FastAPI (Python, conda env)
+- **Database:** PostgreSQL (via Docker)
 - **Containerized** with Docker and orchestrated using Docker Compose
+
+## Prerequisites
+- [Node.js](https://nodejs.org/) (for frontend dev)
+- [Conda](https://docs.conda.io/) (for backend dev)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (for full stack/dev DB)
 
 ## Getting Started
 
-### Prerequisites
-- Docker & Docker Compose
+### 1. Clone the repository
+```sh
+git clone <your-repo-url>
+cd bill-splitter-app/workspace
+```
 
-### Running the App
+### 2. Start with Docker Compose (Recommended for full stack)
+This will start frontend (production build), backend, and PostgreSQL database:
+```sh
+docker compose up --build
+```
+- Frontend: [http://localhost:3000](http://localhost:3000)
+- Backend: [http://localhost:8000](http://localhost:8000)
 
-1. Build and start all services:
-   ```sh
-   docker-compose up --build
-   ```
-2. Frontend: [http://localhost:3000](http://localhost:3000)
-3. Backend: [http://localhost:8000](http://localhost:8000)
+### 3. Local Development (Hot Reload)
+#### Frontend (Vite + React)
+```sh
+cd frontend
+npm install
+npm run dev
+```
+- Visit [http://localhost:5173](http://localhost:5173) for the dev UI.
 
-### Development
-- Frontend code: `frontend/`
-- Backend code: `backend/`
-- Database config: `db/`
+#### Backend (FastAPI, Python 3.13 via conda)
+```sh
+cd backend
+conda create -n bill-splitter-py313 python=3.13 -y
+conda activate bill-splitter-py313
+pip install -r requirements.txt
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+- Visit [http://localhost:8000](http://localhost:8000) for the API root.
+- API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-## Project Structure
+### 4. Project Structure
 - `frontend/` - React app (Vite, TypeScript)
 - `backend/` - FastAPI app (Python)
 - `db/` - Database volume/config
 - `docker-compose.yml` - Orchestrates all services
+
+### 5. Features Implemented
+- Trip creation with participant entry (frontend + backend)
+- CORS enabled for local dev and Docker
+- Modern UI for trip creation
 
 ---
 
