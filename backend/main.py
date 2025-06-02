@@ -18,7 +18,7 @@ app.add_middleware(
 class TripCreateRequest(BaseModel):
     trip_name: str
     participants: List[str]
-    user_email: Optional[str] = None
+    user_email: str  # Now required, no default
 
 trips_db = []  # In-memory storage for trips
 
@@ -43,13 +43,13 @@ def create_trip(trip: TripCreateRequest):
     }
 
 @app.get("/trips")
-def get_trips(user_email: str = None):
+def get_trips(user_email: str):  # Now required, no default
     if not user_email:
         raise HTTPException(status_code=400, detail="User email is required as a query parameter.")
     return [trip for trip in trips_db if trip["user_email"] == user_email]
 
 @app.delete("/trips/{trip_name}")
-def delete_trip(trip_name: str, user_email: str):
+def delete_trip(trip_name: str, user_email: str):  # user_email already required
     if not user_email:
         raise HTTPException(status_code=400, detail="User email is required as a query parameter.")
     # Find the trip by name and user_email
