@@ -39,6 +39,8 @@ const en = {
     confirmDelete: (name: string) => `Are you sure you want to delete the trip: ${name}?`,
     errorNotSignedIn: "You must be signed in to view your trips.",
     errorDelete: "Failed to delete trip",
+    showActions: "Show Actions",
+    hideActions: "Hide Actions",
   },
   expenseForm: {
     title: "Add Expense",

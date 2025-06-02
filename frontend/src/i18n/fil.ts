@@ -39,6 +39,8 @@ const fil = {
     confirmDelete: (name: string) => `Sigurado ka bang gusto mong tanggalin ang biyaahe: ${name}?`,
     errorNotSignedIn: "Kailangan mong mag-sign in para makita ang iyong mga biyaahe.",
     errorDelete: "Hindi natanggal ang biyaahe",
+    showActions: "Ipakita ang mga Aksyon",
+    hideActions: "Itago ang mga Aksyon",
   },
   expenseForm: {
     title: "Magdagdag ng Gastos",

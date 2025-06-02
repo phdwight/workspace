@@ -1,8 +1,9 @@
 # FastAPI backend entry point
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Path
 from pydantic import BaseModel
 from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware
+from uuid import uuid4
 
 app = FastAPI()
 
@@ -56,7 +57,10 @@ def delete_trip(trip_name: str, user_email: str):  # user_email already required
     for i, trip in enumerate(trips_db):
         if trip["trip_name"] == trip_name and trip["user_email"] == user_email:
             del trips_db[i]
-            return {"message": f"Trip '{trip_name}' deleted successfully."}
+            # Also delete all expenses for this trip and user
+            global expenses_db
+            expenses_db = [e for e in expenses_db if not (e.get("trip_name") == trip_name and e.get("user_email") == user_email)]
+            return {"message": f"Trip '{trip_name}' and all related data deleted successfully."}
     raise HTTPException(status_code=404, detail="Trip not found or you do not have permission to delete it.")
 
 class ExpenseCreateRequest(BaseModel):
@@ -69,6 +73,7 @@ class ExpenseCreateRequest(BaseModel):
 
 expenses_db = []  # In-memory storage for expenses
 
+# Assign unique IDs to expenses for editing/deleting
 @app.post("/expenses")
 def create_expense(expense: ExpenseCreateRequest):
     if not expense.payer or not expense.payer.strip():
@@ -81,6 +86,7 @@ def create_expense(expense: ExpenseCreateRequest):
     if not expense.user_email:
         raise HTTPException(status_code=400, detail="User email is required.")
     expense_data = {
+        "id": str(uuid4()),  # assign a unique id
         "payer": expense.payer,
         "amount": expense.amount,
         "participants": participants_clean,
@@ -90,6 +96,32 @@ def create_expense(expense: ExpenseCreateRequest):
     }
     expenses_db.append(expense_data)
     return {"message": "Expense added!", **expense_data}
+
+@app.put("/expenses/{expense_id}")
+def update_expense(expense_id: str = Path(...), expense: ExpenseCreateRequest = None, user_email: str = None):
+    # Find the expense by id and user_email
+    for i, exp in enumerate(expenses_db):
+        if exp.get("id") == expense_id and exp.get("user_email") == (user_email or expense.user_email):
+            # Update fields
+            participants_clean = [p for p in expense.participants if p.strip()]
+            expenses_db[i].update({
+                "payer": expense.payer,
+                "amount": expense.amount,
+                "participants": participants_clean,
+                "date": expense.date,
+                "trip_name": expense.trip_name
+            })
+            return expenses_db[i]
+    raise HTTPException(status_code=404, detail="Expense not found or you do not have permission to edit it.")
+
+@app.delete("/expenses/{expense_id}")
+def delete_expense(expense_id: str = Path(...), user_email: str = None):
+    # Find the expense by id and user_email
+    for i, exp in enumerate(expenses_db):
+        if exp.get("id") == expense_id and exp.get("user_email") == user_email:
+            del expenses_db[i]
+            return {"message": "Expense deleted successfully."}
+    raise HTTPException(status_code=404, detail="Expense not found or you do not have permission to delete it.")
 
 @app.get("/expenses")
 def get_expenses(trip_name: Optional[str] = None, user_email: Optional[str] = None):
