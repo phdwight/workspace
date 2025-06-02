@@ -608,13 +608,86 @@ function BalanceSummary({ i18n, user, trips }: { i18n: typeof en, user: any, tri
   );
 }
 
-function Settlements({ i18n }: { i18n: typeof en }) {
+function Settlements({ i18n, user, trips }: { i18n: typeof en, user: any, trips: { trip_name: string; participants: string[] }[] }) {
+  const [selectedTrip, setSelectedTrip] = useState<string>(trips.length > 0 ? trips[trips.length - 1].trip_name : '');
+  const [settlements, setSettlements] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user || !user.email || !selectedTrip) {
+      setSettlements([]);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(selectedTrip)}&user_email=${encodeURIComponent(user.email)}`)
+      .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch'))
+      .then(data => {
+        // Calculate balances
+        const participants = trips.find(t => t.trip_name === selectedTrip)?.participants || [];
+        const balances: Record<string, number> = {};
+        participants.forEach(p => { balances[p] = 0; });
+        data.forEach((exp: any) => {
+          const share = exp.amount / exp.participants.length;
+          exp.participants.forEach((p: string) => {
+            balances[p] -= share;
+          });
+          balances[exp.payer] += exp.amount;
+        });
+        // Compute settlements
+        setSettlements(computeSettlements({ ...balances }));
+      })
+      .catch(() => setError('Failed to load settlements'))
+      .finally(() => setLoading(false));
+  }, [user, selectedTrip, trips]);
+
+  function computeSettlements(balances: Record<string, number>) {
+    const creditors = Object.entries(balances).filter(([_, b]) => b > 0).sort((a, b) => b[1] - a[1]);
+    const debtors = Object.entries(balances).filter(([_, b]) => b < 0).sort((a, b) => a[1] - b[1]);
+    const settlements: { from: string; to: string; amount: number }[] = [];
+    let i = 0, j = 0;
+    while (i < debtors.length && j < creditors.length) {
+      const [debtor, debt] = debtors[i];
+      const [creditor, credit] = creditors[j];
+      const pay = Math.min(-debt, credit);
+      if (pay > 0.009) {
+        settlements.push({ from: debtor, to: creditor, amount: pay });
+        debtors[i][1] += pay;
+        creditors[j][1] -= pay;
+      }
+      if (Math.abs(debtors[i][1]) < 0.01) i++;
+      if (Math.abs(creditors[j][1]) < 0.01) j++;
+    }
+    return settlements;
+  }
+
+  if (!user || !user.email) return null;
   return (
-    <div>
-      <h2>{i18n.settlements.title}</h2>
-      <p>{i18n.settlements.todo}</p>
+    <div style={{ maxWidth: 500, margin: '18px auto 0 auto', background: '#fff', borderRadius: 10, boxShadow: '0 2px 8px #0001', padding: 16 }}>
+      <h3 style={{ color: '#BB3E00', margin: '0 0 10px 0', fontWeight: 700, fontSize: 18 }}>{i18n.settlements.title}</h3>
+      <div style={{ marginBottom: 16 }}>
+        <label style={{ fontWeight: 600, color: '#BB3E00', marginRight: 8 }}>Trip:</label>
+        <select value={selectedTrip} onChange={e => setSelectedTrip(e.target.value)} style={{ fontSize: 15, padding: '4px 10px', borderRadius: 5, border: '1px solid #bbb', background: '#fff', color: '#333', minWidth: 120 }}>
+          {trips.map((t, i) => (
+            <option key={i} value={t.trip_name}>{t.trip_name}</option>
+          ))}
+        </select>
+      </div>
+      {loading && <div>Loading...</div>}
+      {error && <div style={{ color: 'red' }}>{error}</div>}
+      {!loading && settlements.length === 0 && <div style={{ color: '#388e3c' }}>All settled up! 🎉</div>}
+      {settlements.length > 0 && (
+        <ul style={{ paddingLeft: 18, color: '#2d1a0b', fontSize: 15 }}>
+          {settlements.map((s, i) => (
+            <li key={i}>
+              <b>{s.from}</b> needs to pay <b>{s.to}</b> <span style={{ color: '#BB3E00' }}>¤{s.amount.toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-  )
+  );
 }
 
 function AuthSection({ user, setUser, setPage, i18n }: { user: any, setUser: (u: any) => void, setPage: (p: string) => void, i18n: typeof en }) {
@@ -641,15 +714,10 @@ function App() {
   const [lang, setLang] = useState<'en' | 'es' | 'fil'>('en');
   const [trips, setTrips] = useState<{ trip_name: string; participants: string[] }[]>([]);
   const [selectedTrip, setSelectedTrip] = useState<{ trip_name: string; participants: string[] } | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0); // Add refreshKey for expenses refresh
+  const [refreshKey, setRefreshKey] = useState(0);
   let i18n = en;
   if (lang === 'es') i18n = es;
   else if (lang === 'fil') i18n = fil;
-
-  // Remove handleTripCreated param
-  const handleTripCreated = () => {};
-
-  // Keep trips in sync with TripCreation
   useEffect(() => {
     if (!user || !user.email) {
       setTrips([]);
@@ -659,13 +727,6 @@ function App() {
       .then(res => res.ok ? res.json() : [])
       .then(data => setTrips(data));
   }, [user]);
-
-  useEffect(() => {
-    const handler = () => setPage('trip');
-    window.addEventListener('navigateToExpenses', handler);
-    return () => window.removeEventListener('navigateToExpenses', handler);
-  }, []);
-
   return (
     <GoogleOAuthProvider clientId="208283253035-c5421mojqmb0mqhboou7bdtqo2dfh3k2.apps.googleusercontent.com">
       <div className="App">
@@ -698,12 +759,14 @@ function App() {
             }}
           >
             <button onClick={() => setPage('trip')}>{i18n.nav.trip}</button>
+            <button onClick={() => setPage('trips')}>{i18n.nav.trips}</button>
             <button onClick={() => setPage('addExpense')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.expense.replace('Add Expense', 'Expenses')}</button>
             <button onClick={() => setPage('summary')} disabled={!selectedTrip || trips.length === 0}>{i18n.nav.summary}</button>
             <button onClick={() => setPage('settlements')}>{i18n.nav.settlements}</button>
           </nav>
         )}
-        {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={handleTripCreated} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />}
+        {page === 'trip' && <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => {}} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />}
+        {page === 'trips' && <TripsList user={user} i18n={i18n} />}
         {page === 'addExpense' && selectedTrip && (
           <div style={{ maxWidth: 600, margin: '0 auto' }}>
             <h2 style={{ textAlign: 'center', color: '#BB3E00', marginBottom: 18 }}>{i18n.expenseForm.title.replace('Add Expense', 'Expenses')} - <span style={{ fontWeight: 400 }}>{selectedTrip.trip_name}</span></h2>
@@ -723,7 +786,7 @@ function App() {
             <BalanceSummary i18n={i18n} user={user} trips={[selectedTrip]} />
           </div>
         )}
-        {page === 'settlements' && <Settlements i18n={i18n} />}
+        {page === 'settlements' && <Settlements i18n={i18n} user={user} trips={trips} />}
         <AuthSection user={user} setUser={setUser} setPage={setPage} i18n={i18n} />
       </div>
     </GoogleOAuthProvider>
