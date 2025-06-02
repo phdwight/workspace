@@ -56,8 +56,14 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ### 5. Features Implemented
 - Trip creation with participant entry (frontend + backend)
 - CORS enabled for local dev and Docker
-- Modern UI for trip creation
+- Modern, compact, internationalized UI (English, Spanish, Filipino)
+- Google Sign-In authentication
+- User-specific trip and expense data
+- Add, view, and delete expenses per trip
+- Per-trip summary page (shows balances and settlements)
+- All navigation is now via: Trip, Expenses, and Summary (Settlements and All Trips pages have been removed)
+- Responsive, accessible, and visually appealing design
 
 ---
 
-For more details, see the SRS or ask for specific setup instructions.
+For more details, see the SRS (not present in this repo) or ask for specific setup instructions.
