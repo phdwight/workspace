@@ -59,6 +59,48 @@ def delete_trip(trip_name: str, user_email: str):  # user_email already required
             return {"message": f"Trip '{trip_name}' deleted successfully."}
     raise HTTPException(status_code=404, detail="Trip not found or you do not have permission to delete it.")
 
+class ExpenseCreateRequest(BaseModel):
+    payer: str
+    amount: float
+    participants: List[str]
+    date: Optional[str] = None
+    user_email: str
+    trip_name: Optional[str] = None
+
+expenses_db = []  # In-memory storage for expenses
+
+@app.post("/expenses")
+def create_expense(expense: ExpenseCreateRequest):
+    if not expense.payer or not expense.payer.strip():
+        raise HTTPException(status_code=400, detail="Payer is required.")
+    if not expense.amount or expense.amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be greater than 0.")
+    participants_clean = [p for p in expense.participants if p.strip()]
+    if len(participants_clean) == 0:
+        raise HTTPException(status_code=400, detail="At least one participant is required.")
+    if not expense.user_email:
+        raise HTTPException(status_code=400, detail="User email is required.")
+    expense_data = {
+        "payer": expense.payer,
+        "amount": expense.amount,
+        "participants": participants_clean,
+        "date": expense.date,
+        "user_email": expense.user_email,
+        "trip_name": expense.trip_name
+    }
+    expenses_db.append(expense_data)
+    return {"message": "Expense added!", **expense_data}
+
+@app.get("/expenses")
+def get_expenses(trip_name: Optional[str] = None, user_email: Optional[str] = None):
+    # Only return expenses for the given trip and user
+    results = expenses_db
+    if trip_name:
+        results = [e for e in results if e.get("trip_name") == trip_name]
+    if user_email:
+        results = [e for e in results if e.get("user_email") == user_email]
+    return results
+
 @app.get("/")
 def read_root():
     return {"message": "Hello from FastAPI backend!"}
