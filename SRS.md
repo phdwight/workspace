@@ -33,7 +33,7 @@ The Bill Splitter App is a web application that allows users to create trips, ad
 - User authentication via Google Sign-In
 - Create, view, and delete trips (with participant entry)
 - Add, view, and delete expenses per trip
-- View per-trip summary: participant balances and settlements
+- View per-trip summary: participant balances and settlements (with clear "who owes whom" summary)
 - Language switcher (English, Spanish, Filipino)
 - Responsive, accessible, and visually appealing UI
 
@@ -63,6 +63,10 @@ The Bill Splitter App is a web application that allows users to create trips, ad
 - Create trip with name and participants (min 2)
 - View all trips for the signed-in user
 - Delete trip (removes all related expenses)
+- Trips list/table is compact, with improved alignment and no horizontal scroll (max width 520px)
+- Participants in trips list shown as plain text with tooltips for full visibility on hover
+- Trash icon and trip name in trips list aligned with other controls
+- Trip name input field in trip creation form fixed for width and alignment
 
 ### 3.3 Expense Management
 - Add expense: payer, amount, participants, date
@@ -71,7 +75,7 @@ The Bill Splitter App is a web application that allows users to create trips, ad
 
 ### 3.4 Summary
 - View per-participant balances for a trip
-- View settlements (who owes whom)
+- View settlements (who owes whom) with natural language phrasing
 - All settlements logic is shown on the Summary page
 
 ### 3.5 Internationalization
@@ -82,6 +86,8 @@ The Bill Splitter App is a web application that allows users to create trips, ad
 - Modern, compact, and accessible design
 - Responsive layout for desktop and mobile
 - Feedback messages for actions (success/error)
+- Navigation is now via page buttons: Trip, Expenses, and Summary (top navigation menu removed; redundant pages removed)
+- Navigation links order unified: Trip, Expenses, Summary
 
 ## 4. External Interface Requirements
 
@@ -89,7 +95,7 @@ The Bill Splitter App is a web application that allows users to create trips, ad
 - Web UI (React, Vite)
 - Google Sign-In button
 - Forms for trip and expense entry
-- Tables for trips and expenses
+- Tables for trips and expenses (with tooltips for participant lists)
 - Summary view for balances and settlements
 
 ### 4.2 Hardware Interfaces

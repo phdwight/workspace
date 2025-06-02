@@ -52,7 +52,8 @@ const en = {
   },
   balanceSummary: {
     title: "Balance Summary",
-    todo: "Summary of balances and required payments will go here."
+    todo: "Summary of balances and required payments will go here.",
+    note: "This summary is based on all expenses for the selected trip."
   },
   settlements: {
     title: "Settlements",
