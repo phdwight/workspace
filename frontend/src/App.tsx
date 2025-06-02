@@ -15,8 +15,10 @@ function TripCreation({ user, setUser, i18n }: { user: any, setUser: (u: any) =>
   const tripNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    tripNameRef.current?.focus();
-  }, []);
+    if (user && user.email && tripNameRef.current) {
+      tripNameRef.current.focus();
+    }
+  }, [user]);
 
   const handleParticipantChange = (index: number, value: string) => {
     const updated = [...participants];
@@ -86,6 +88,7 @@ function TripCreation({ user, setUser, i18n }: { user: any, setUser: (u: any) =>
                   ? JSON.parse(atob(credentialResponse.credential.split('.')[1]))
                   : null;
                 setUser(decoded);
+                // focus will be handled by useEffect
               }}
               onError={() => alert('Google Sign-In failed')}
             />
