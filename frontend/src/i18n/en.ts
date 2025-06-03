@@ -11,14 +11,12 @@ const en = {
   },
   tripCreation: {
     title: "Create a Trip",
-    signInPrompt: "Please sign in with Google to create a trip.",
     tripNameLabel: "Trip Name",
     tripNamePlaceholder: "e.g. Bali Vacation",
     participantsLabel: "Participants",
     participantPlaceholder: (i: number) => `Participant ${i + 1}`,
     addParticipant: "+ Add Participant",
     removeParticipantAria: "Remove participant",
-    errorNotSignedIn: "You must be signed in to create a trip.",
     errorMinParticipants: "Please enter at least 2 participants.",
     submit: "Create Trip",
     creating: "Creating...",
@@ -29,7 +27,6 @@ const en = {
   },
   tripsList: {
     title: "All Trips",
-    signInPrompt: "Please sign in with Google to view your trips.",
     loading: "Loading trips...",
     noTrips: "No trips found.",
     participants: (n: number) => `(${n} participants)`,
@@ -37,13 +34,21 @@ const en = {
     deleting: "Deleting...",
     deleteAria: (name: string) => `Delete trip ${name}`,
     confirmDelete: (name: string) => `Are you sure you want to delete the trip: ${name}?`,
-    errorNotSignedIn: "You must be signed in to view your trips.",
     errorDelete: "Failed to delete trip",
     showActions: "Show Actions",
     hideActions: "Hide Actions",
   },
   expenseForm: {
     title: "Add Expense",
+    descriptionLabel: "Description",
+    descriptionPlaceholder: "What was this expense for?",
+    amountLabel: "Amount",
+    amountPlaceholder: "0.00",
+    payerLabel: "Who paid?",
+    participantsLabel: "Who participated?",
+    dateLabel: "Date",
+    submit: "Add Expense",
+    adding: "Adding...",
     todo: "Expense entry form (payer, amount, participants, date) will go here."
   },
   expenseHistory: {
@@ -52,8 +57,11 @@ const en = {
   },
   balanceSummary: {
     title: "Balance Summary",
-    todo: "Summary of balances and required payments will go here.",
-    note: "This summary is based on all expenses for the selected trip."
+    participant: "Participant",
+    balance: "Balance",
+    owes: "Owes",
+    owed: "Owed",
+    noExpenses: "No expenses recorded yet.",
   },
   settlements: {
     title: "Settlements",
@@ -62,6 +70,15 @@ const en = {
   auth: {
     signedInAs: "Signed in as",
     signOut: "Sign Out"
+  },
+  common: {
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+    cancel: "Cancel",
+    save: "Save",
+    delete: "Delete",
+    edit: "Edit",
   }
 };
 

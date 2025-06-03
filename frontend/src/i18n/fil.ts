@@ -11,14 +11,12 @@ const fil = {
   },
   tripCreation: {
     title: "Gumawa ng Biyaahe",
-    signInPrompt: "Mag-sign in gamit ang Google para gumawa ng biyaahe.",
     tripNameLabel: "Pangalan ng Biyaahe",
     tripNamePlaceholder: "hal. Bakasyon sa Bali",
     participantsLabel: "Mga Kalahok",
     participantPlaceholder: (i: number) => `Kalahok ${i + 1}`,
     addParticipant: "+ Magdagdag ng Kalahok",
     removeParticipantAria: "Tanggalin ang kalahok",
-    errorNotSignedIn: "Kailangan mong mag-sign in para gumawa ng biyaahe.",
     errorMinParticipants: "Maglagay ng hindi bababa sa 2 kalahok.",
     submit: "Gumawa ng Biyaahe",
     creating: "Ginagawa...",
@@ -29,7 +27,6 @@ const fil = {
   },
   tripsList: {
     title: "Lahat ng Biyaahe",
-    signInPrompt: "Mag-sign in gamit ang Google para makita ang iyong mga biyaahe.",
     loading: "Ikinakarga ang mga biyaahe...",
     noTrips: "Walang nahanap na biyaahe.",
     participants: (n: number) => `(${n} kalahok${n > 1 ? '' : ''})`,
@@ -37,13 +34,21 @@ const fil = {
     deleting: "Tinatanggal...",
     deleteAria: (name: string) => `Tanggalin ang biyaahe ${name}`,
     confirmDelete: (name: string) => `Sigurado ka bang gusto mong tanggalin ang biyaahe: ${name}?`,
-    errorNotSignedIn: "Kailangan mong mag-sign in para makita ang iyong mga biyaahe.",
     errorDelete: "Hindi natanggal ang biyaahe",
     showActions: "Ipakita ang mga Aksyon",
     hideActions: "Itago ang mga Aksyon",
   },
   expenseForm: {
     title: "Magdagdag ng Gastos",
+    descriptionLabel: "Paglalarawan",
+    descriptionPlaceholder: "Para saan ang gastong ito?",
+    amountLabel: "Halaga",
+    amountPlaceholder: "0.00",
+    payerLabel: "Sino ang nagbayad?",
+    participantsLabel: "Sino ang nakipaghati?",
+    dateLabel: "Petsa",
+    submit: "Idagdag ang Gastos",
+    adding: "Dinadadagdag...",
     todo: "Dito ilalagay ang form para sa gastos (nagbayad, halaga, mga kalahok, petsa)."
   },
   expenseHistory: {
@@ -52,8 +57,11 @@ const fil = {
   },
   balanceSummary: {
     title: "Buod ng Balanse",
-    todo: "Dito ilalagay ang buod ng balanse at kailangang bayaran.",
-    note: "Ang buod na ito ay batay sa lahat ng gastos para sa napiling biyahe."
+    participant: "Kalahok",
+    balance: "Balanse",
+    owes: "Utang",
+    owed: "Dapat Bayaran",
+    noExpenses: "Wala pang naitaling gastos.",
   },
   settlements: {
     title: "Bayaran",
@@ -62,6 +70,15 @@ const fil = {
   auth: {
     signedInAs: "Naka-sign in bilang",
     signOut: "Mag-sign Out"
+  },
+  common: {
+    loading: "Naglo-load",
+    error: "May Mali",
+    success: "Tagumpay",
+    cancel: "Kanselahin",
+    save: "I-save",
+    delete: "Tanggalin",
+    edit: "I-edit"
   }
 };
 

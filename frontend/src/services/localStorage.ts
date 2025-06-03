@@ -19,6 +19,7 @@ export interface Expense {
   date: string;
   user_email: string;
   created_at: string;
+  description?: string; // <-- add description field
 }
 
 class LocalStorageService {
@@ -141,7 +142,8 @@ class LocalStorageService {
     amount: number,
     participants: string[],
     date: string,
-    userEmail: string
+    userEmail: string,
+    description?: string // <-- add description param
   ): Promise<Expense> {
     if (!tripName || !payer || !amount || !participants.length || !userEmail) {
       throw new Error('Missing required fields');
@@ -168,7 +170,8 @@ class LocalStorageService {
       participants: participants.filter(p => p.trim()),
       date: date || new Date().toISOString().split('T')[0],
       user_email: userEmail,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      description: description || '' // <-- save description
     };
 
     const expenses = this.getExpenses();

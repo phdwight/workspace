@@ -11,14 +11,12 @@ const es = {
   },
   tripCreation: {
     title: "Crear un Viaje",
-    signInPrompt: "Por favor, inicia sesión con Google para crear un viaje.",
     tripNameLabel: "Nombre del Viaje",
     tripNamePlaceholder: "p.ej. Vacaciones en Bali",
     participantsLabel: "Participantes",
     participantPlaceholder: (i: number) => `Participante ${i + 1}`,
     addParticipant: "+ Agregar Participante",
     removeParticipantAria: "Eliminar participante",
-    errorNotSignedIn: "Debes iniciar sesión para crear un viaje.",
     errorMinParticipants: "Por favor, ingresa al menos 2 participantes.",
     submit: "Crear Viaje",
     creating: "Creando...",
@@ -29,7 +27,6 @@ const es = {
   },
   tripsList: {
     title: "Todos los Viajes",
-    signInPrompt: "Por favor, inicia sesión con Google para ver tus viajes.",
     loading: "Cargando viajes...",
     noTrips: "No se encontraron viajes.",
     participants: (n: number) => `(${n} participantes)`,
@@ -37,13 +34,21 @@ const es = {
     deleting: "Eliminando...",
     deleteAria: (name: string) => `Eliminar viaje ${name}`,
     confirmDelete: (name: string) => `¿Seguro que deseas eliminar el viaje: ${name}?`,
-    errorNotSignedIn: "Debes iniciar sesión para ver tus viajes.",
     errorDelete: "No se pudo eliminar el viaje",
     showActions: "Mostrar acciones",
     hideActions: "Ocultar acciones",
   },
   expenseForm: {
     title: "Agregar Gasto",
+    descriptionLabel: "Descripción",
+    descriptionPlaceholder: "¿Para qué fue este gasto?",
+    amountLabel: "Cantidad",
+    amountPlaceholder: "0.00",
+    payerLabel: "¿Quién pagó?",
+    participantsLabel: "¿Quién participó?",
+    dateLabel: "Fecha",
+    submit: "Agregar Gasto",
+    adding: "Agregando...",
     todo: "El formulario para agregar gastos (pagador, monto, participantes, fecha) irá aquí."
   },
   expenseHistory: {
@@ -52,8 +57,11 @@ const es = {
   },
   balanceSummary: {
     title: "Resumen de Saldos",
-    todo: "El resumen de saldos y pagos requeridos irá aquí.",
-    note: "Este resumen se basa en todos los gastos del viaje seleccionado."
+    participant: "Participante",
+    balance: "Saldo",
+    owes: "Debe",
+    owed: "Se le debe",
+    noExpenses: "Aún no se han registrado gastos.",
   },
   settlements: {
     title: "Liquidaciones",
@@ -62,6 +70,15 @@ const es = {
   auth: {
     signedInAs: "Conectado como",
     signOut: "Cerrar Sesión"
+  },
+  common: {
+    loading: "Cargando",
+    error: "Error",
+    success: "Éxito",
+    cancel: "Cancelar",
+    save: "Guardar",
+    delete: "Eliminar",
+    edit: "Editar"
   }
 };
 
