@@ -140,8 +140,6 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     return settlements;
   };
 
-
-
   if (loading) {
     return (
       <div className="trip-creation-container">
