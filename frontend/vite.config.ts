@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  base: '/your-repo-name/', // Update this to your actual GitHub repository name
+  base: '/workspace/', // Set to match GitHub Pages repo name
   plugins: [
     react(),
     VitePWA({
