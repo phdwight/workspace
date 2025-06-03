@@ -60,6 +60,31 @@ To restore data on a new device:
 - **Mobile Friendly**: Can be installed as a mobile app
 - **Auto-Updates**: PWA updates automatically when available
 
+## MIGRATION: Bill Splitter App
+
+### Summary
+- All Google authentication and user account logic has been removed.
+- All user/email props and types have been removed from all components and services.
+- All legacy, unused, and test files have been deleted.
+- The app is now fully local, using browser localStorage for all data.
+- The UI is unified, modern, and minimal across all pages.
+
+### Key Changes
+- No authentication or user accounts required
+- All navigation is local and event-driven
+- Expenses, trips, and balances are managed in localStorage
+- All code is modular, type-safe, and i18n-ready
+- No unused files or test stubs remain
+
+### How to Use
+- Create a trip, add participants, add expenses, and view balances—all locally
+- No login or signup required
+
+### For Developers
+- See `README.md` and `SRS.md` for updated requirements and usage
+- All code is in `frontend/src/`
+- To start: `cd frontend && npm install && npm run dev`
+
 ## Support
 
 If you need help with migration or have questions about the new PWA version, please check the README.md file or create an issue in the repository.

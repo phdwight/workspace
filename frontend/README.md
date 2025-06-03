@@ -1,42 +1,36 @@
-# Bill Splitter App Frontend
+# Bill Splitter App
 
-This is a React + Vite + TypeScript Progressive Web App (PWA) for the Bill Splitter App.
-
-## Development
-
-1. **Install dependencies:**
-   ```sh
-   npm install
-   ```
-2. **Start the development server:**
-   ```sh
-   npm run dev
-   ```
-   - Visit [http://localhost:5173](http://localhost:5173)
-
-3. **Build for production:**
-   ```sh
-   npm run build
-   ```
-
-4. **Preview production build:**
-   ```sh
-   npm run preview
-   ```
-
-## Architecture
-- **No Backend Required**: Uses browser localStorage for data persistence
-- **Offline-First PWA**: Works without internet connection once loaded
-- **Local Storage Service**: All data operations handled via `src/services/localStorage.ts`
+A modern, minimal, and fully local Bill Splitter PWA. No authentication required. Built with React + Vite + TypeScript frontend, FastAPI backend, and PostgreSQL (future). All data is stored in browser localStorage for now.
 
 ## Features
-- Responsive, mobile-friendly UI (min width 393px, max width 800px)
-- Unified card/container styles for all main pages
-- Internationalization (English, Spanish, Filipino)
-- PWA support (manifest, service worker, offline capability)
-- Google Sign-In authentication with data isolation
-- Local storage for trips, expenses, and user data
+- Create trips and add participants
+- Add expenses with description, amount, payer, participants, and date
+- View all expenses for a trip in a compact, modern table
+- View balance summary and suggested settlements
+- Seamless navigation between trip creation, expenses, and summary
+- Modern, unified UI across all pages
+- No Google authentication or user accounts
+- Fully offline/local-first (PWA-ready)
 
----
+## Usage
+1. Create a trip and add participants
+2. Add expenses for the trip
+3. View all expenses and the balance summary
+4. Navigate freely between trip creation, expenses, and summary
 
-For more details, see the main project README.
+## Tech Stack
+- React + Vite + TypeScript (frontend)
+- FastAPI (backend, not required for local usage)
+- PostgreSQL (future, not required for local usage)
+- Docker (for deployment)
+
+## Development
+- Run `npm install` in `frontend/`
+- Start dev server: `npm run dev` in `frontend/`
+
+## Clean Codebase
+- All legacy/auth code removed
+- No unused files or test stubs
+- All UI is modular, type-safe, and i18n-ready
+
+See `SRS.md` for requirements and `MIGRATION.md` for migration notes.
