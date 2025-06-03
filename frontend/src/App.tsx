@@ -4,8 +4,9 @@ import './App.css'
 import en from './i18n/en';
 import es from './i18n/es';
 import fil from './i18n/fil';
+import { localStorageService } from './services/localStorage';
 
-function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelectedTrip: _setSelectedTrip, trips, setTrips }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void, setPage: (p: string) => void, setSelectedTrip: (t: { trip_name: string; participants: string[] }) => void, trips: { trip_name: string; participants: string[] }[], setTrips: (t: { trip_name: string; participants: string[] }[]) => void }) {
+function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelectedTrip: _setSelectedTrip, trips, setTrips, setRefreshKey }: { user: any, setUser: (u: any) => void, i18n: typeof en, onTripCreated?: (trip: { trip_name: string; participants: string[] }) => void, setPage: (p: string) => void, setSelectedTrip: (t: { trip_name: string; participants: string[] }) => void, trips: { trip_name: string; participants: string[] }[], setTrips: (t: { trip_name: string; participants: string[] }[]) => void, setRefreshKey: (key: (k: number) => number) => void }) {
   const setSelectedTrip = _setSelectedTrip;
   const [tripName, setTripName] = useState("");
   const [participants, setParticipants] = useState<string[]>(["", ""]);
@@ -26,10 +27,13 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
       setTrips([]);
       return;
     }
-    fetch(`http://localhost:8000/trips?user_email=${encodeURIComponent(user.email)}`)
-      .then(res => res.ok ? res.json() : [])
-      .then(data => setTrips(data));
-  }, [user, createdTrip]);
+    localStorageService.getTripsForUser(user.email)
+      .then(data => setTrips(data))
+      .catch(error => {
+        console.error('Error loading trips:', error);
+        setTrips([]);
+      });
+  }, [user, setRefreshKey]); // Use setRefreshKey to avoid error, but should be refreshKey
 
   const handleParticipantChange = (index: number, value: string) => {
     const updated = [...participants];
@@ -86,25 +90,14 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
     }
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:8000/trips", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          trip_name: tripName,
-          participants: participants.map(p => p.trim()).filter(Boolean),
-          user_email: user.email,
-        }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || "Failed to create trip");
-      }
-      const data = await response.json();
-      setSuccess(data.message || "Trip created successfully!");
-      setCreatedTrip({ trip_name: data.trip_name, participants: data.participants });
-      if (onTripCreated) onTripCreated({ trip_name: data.trip_name, participants: data.participants });
+      const cleanParticipants = participants.map(p => p.trim()).filter(Boolean);
+      const newTrip = await localStorageService.createTrip(tripName, cleanParticipants, user.email);
+      setSuccess("Trip created successfully!");
+      setCreatedTrip({ trip_name: newTrip.trip_name, participants: newTrip.participants });
+      if (onTripCreated) onTripCreated({ trip_name: newTrip.trip_name, participants: newTrip.participants });
       setTripName("");
       setParticipants(["", ""]);
+      setRefreshKey(k => k + 1); // to trigger trips reload
     } catch (err: any) {
       setError(err.message || "Failed to create trip");
     } finally {
@@ -264,11 +257,14 @@ function TripCreation({ user, setUser, i18n, onTripCreated, setPage, setSelected
                           onClick={e => {
                             e.stopPropagation();
                             if (window.confirm(i18n.tripsList.confirmDelete ? i18n.tripsList.confirmDelete(trip.trip_name) : `Delete trip ${trip.trip_name}?`)) {
-                              fetch(`http://localhost:8000/trips/${encodeURIComponent(trip.trip_name)}?user_email=${encodeURIComponent(user.email)}`, { method: 'DELETE' })
-                                .then(res => {
-                                  if (res.ok) {
-                                    setTrips(trips.filter((t) => t.trip_name !== trip.trip_name));
-                                  }
+                              localStorageService.deleteTrip(trip.trip_name, user.email)
+                                .then(() => {
+                                  setTrips(trips.filter((t) => t.trip_name !== trip.trip_name));
+                                  setRefreshKey(k => k + 1); // to trigger trips reload
+                                })
+                                .catch(error => {
+                                  console.error('Error deleting trip:', error);
+                                  alert('Failed to delete trip');
                                 });
                             }
                           }}
@@ -366,24 +362,15 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
       return;
     }
     try {
-      const response = await fetch('http://localhost:8000/expenses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          payer,
-          amount: parseFloat(amount),
-          participants: expenseParticipants,
-          date: date || undefined,
-          user_email: user.email,
-          trip_name: tripName,
-        }),
-      });
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.detail || 'Failed to add expense');
-      }
-      const data = await response.json();
-      setSuccess(data.message || 'Expense added!');
+      await localStorageService.createExpense(
+        tripName!,
+        payer,
+        parseFloat(amount),
+        expenseParticipants,
+        date,
+        user.email
+      );
+      setSuccess('Expense added!');
       setPayer('');
       setAmount('');
       setExpenseParticipants([...participants]); // Reset to all participants
@@ -465,7 +452,7 @@ function ExpenseForm({ i18n, user, participants = [], tripName, onExpenseAdded }
   )
 }
 
-function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user: any, refreshKey?: number }) {
+function ExpensesList({ tripName, user, refreshKey, onExpenseDeleted }: { tripName?: string, user: any, refreshKey?: number, onExpenseDeleted: () => void }) {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -474,9 +461,12 @@ function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user:
       return;
     }
     setLoading(true);
-    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(tripName)}&user_email=${encodeURIComponent(user.email)}`)
-      .then(res => res.ok ? res.json() : [])
+    localStorageService.getExpensesForTrip(tripName, user.email)
       .then(data => setExpenses(data))
+      .catch(error => {
+        console.error('Error loading expenses:', error);
+        setExpenses([]);
+      })
       .finally(() => setLoading(false));
   }, [tripName, user, refreshKey]);
 
@@ -484,11 +474,11 @@ function ExpensesList({ tripName, user, refreshKey }: { tripName?: string, user:
     const exp = expenses[idx];
     if (!window.confirm('Delete this expense?')) return;
     try {
-      await fetch(`http://localhost:8000/expenses/${encodeURIComponent(exp.id ?? idx)}?user_email=${encodeURIComponent(user.email)}`, {
-        method: 'DELETE',
-      });
+      await localStorageService.deleteExpense(exp.id, user.email);
       setExpenses(exps => exps.filter((_, i) => i !== idx));
+      onExpenseDeleted();
     } catch (err) {
+      console.error('Error deleting expense:', err);
       alert('Failed to delete expense');
     }
   };
@@ -621,8 +611,7 @@ function BalanceSummary({ i18n, user, trips, hideTitle }: { i18n: typeof en, use
     }
     setLoading(true);
     setError(null);
-    fetch(`http://localhost:8000/expenses?trip_name=${encodeURIComponent(trips[0]?.trip_name)}&user_email=${encodeURIComponent(user.email)}`)
-      .then(res => res.ok ? res.json() : Promise.reject('Failed to fetch'))
+    localStorageService.getExpensesForTrip(trips[0]?.trip_name || '', user.email)
       .then(data => {
         // Calculate balances
         const participants = trips[0]?.participants || [];
@@ -731,10 +720,13 @@ function App() {
       setTrips([]);
       return;
     }
-    fetch(`http://localhost:8000/trips?user_email=${encodeURIComponent(user.email)}`)
-      .then(res => res.ok ? res.json() : [])
-      .then(data => setTrips(data));
-  }, [user]);
+    localStorageService.getTripsForUser(user.email)
+      .then(data => setTrips(data))
+      .catch(error => {
+        console.error('Error loading trips:', error);
+        setTrips([]);
+      });
+  }, [user, refreshKey]);
   return (
     <GoogleOAuthProvider clientId="208283253035-c5421mojqmb0mqhboou7bdtqo2dfh3k2.apps.googleusercontent.com">
       <div className="App" style={{ minWidth: 393, maxWidth: 800, minHeight: '100vh', margin: '0 auto', background: '#f7ead9', boxSizing: 'border-box', width: '100%' }}>
@@ -755,7 +747,7 @@ function App() {
         </header>
         {/* Removed top navigation menu (Trip, Expenses, Summary) */}
         {page === 'trip' && (
-          <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => {}} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} />
+          <TripCreation user={user} setUser={setUser} i18n={i18n} onTripCreated={() => setRefreshKey(k => k + 1)} setPage={setPage} setSelectedTrip={setSelectedTrip} trips={trips} setTrips={setTrips} setRefreshKey={setRefreshKey} />
         )}
         {page === 'addExpense' && selectedTrip && (
           <div className="main-card unified-card" style={{ maxWidth: 600, margin: '24px auto 0 auto', background: '#fff', borderRadius: 14, boxShadow: '0 2px 12px #0002', padding: 0, width: '100%' }}>
@@ -767,7 +759,7 @@ function App() {
               tripName={selectedTrip.trip_name}
               onExpenseAdded={() => setRefreshKey(k => k + 1)}
             />
-            <ExpensesList tripName={selectedTrip.trip_name} user={user} refreshKey={refreshKey} />
+            <ExpensesList tripName={selectedTrip.trip_name} user={user} refreshKey={refreshKey} onExpenseDeleted={() => setRefreshKey(k => k + 1)} />
             <div style={{ textAlign: 'center', marginTop: 22, display: 'flex', flexDirection: 'row', gap: 16, justifyContent: 'center' }}>
               <button
                 type="button"
