@@ -14,19 +14,22 @@
       "problemMatcher": []
     },
     {
-      "label": "Start Backend (FastAPI)",
+      "label": "Build Frontend",
       "type": "shell",
-      "command": "uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+      "command": "npm run build",
       "options": {
-        "cwd": "${workspaceFolder}/backend"
+        "cwd": "${workspaceFolder}/frontend"
       },
       "group": "build",
       "problemMatcher": []
     },
     {
-      "label": "Docker Compose Up",
+      "label": "Preview Frontend",
       "type": "shell",
-      "command": "docker-compose up --build",
+      "command": "npm run preview",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
       "group": "build",
       "problemMatcher": []
     }
