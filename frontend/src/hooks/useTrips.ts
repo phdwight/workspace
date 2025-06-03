@@ -44,10 +44,12 @@ export const useTrips = (userEmail: string) => {
     try {
       const newTrip = await localStorageService.createTrip(tripName, participants, userEmail);
       const tripWithParticipants: Trip = {
+        id: newTrip.id,
         trip_name: newTrip.trip_name,
-        participants: newTrip.participants
+        user_email: newTrip.user_email,
+        participants: newTrip.participants,
+        created_at: newTrip.created_at
       };
-      
       setTrips(prev => [tripWithParticipants, ...prev]);
       addToast('Trip created successfully!', 'success');
       return tripWithParticipants;
