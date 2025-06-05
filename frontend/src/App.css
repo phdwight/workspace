@@ -558,10 +558,10 @@ body.primary {
 }
 
 body.secondary {
-  --theme-bg: #EADFB4;
-  --theme-primary: #9BB0C1;
-  --theme-secondary: #51829B;
-  --theme-accent: #F6995C;
+  --theme-bg: #E8BCB9;
+  --theme-primary: #432E54;
+  --theme-secondary: #4B4376;
+  --theme-accent: #AE445A;
   --theme-card: #fff;
   --theme-font: #213555;
 }
