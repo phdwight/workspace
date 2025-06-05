@@ -631,233 +631,244 @@ select:focus-visible {
   font-style: italic;
 }
 
-/* Responsive design improvements */
+/* Enhanced Balance Summary Styles */
+.balance-summary-container {
+  position: relative;
+}
+
+.balance-summary-container .loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #BB3E00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.balance-card {
+  transition: all 0.2s ease;
+}
+
+.balance-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+.category-card {
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.participant-overview-card {
+  transition: all 0.2s ease;
+}
+
+.participant-overview-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  border-color: #BB3E00;
+}
+
+.settlement-card {
+  transition: all 0.2s ease;
+}
+
+.settlement-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.view-mode-tab {
+  transition: all 0.2s ease !important;
+}
+
+.view-mode-tab:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.export-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #1976d2;
+  color: white;
+}
+
+.export-option:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.expense-detail-card {
+  transition: all 0.2s ease;
+}
+
+.expense-detail-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.summary-stats {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.empty-state {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design for Balance Summary */
 @media (max-width: 768px) {
-  .unified-card {
+  .balance-summary-container {
     margin: 16px;
     padding: 16px;
+    max-width: none;
   }
-  
-  .btn-primary, .btn-secondary {
-    padding: 10px 20px;
-    font-size: 14px;
+
+  .summary-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
   }
-  
-  .participant-row {
+
+  .view-mode-tab .tab-label {
+    display: none;
+  }
+
+  .view-mode-tab {
+    padding: 12px 4px;
+    font-size: 20px;
+  }
+
+  .balance-card {
     flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
   }
-  
-  .participant-row input {
-    width: 100%;
-  }
-  
-  .expense-filter-controls {
+
+  .settlement-card {
     flex-direction: column;
     align-items: stretch;
+    gap: 12px;
   }
-  
-  .expense-filter-controls input,
-  .expense-filter-controls select {
-    width: 100%;
-  }
-  
-  .expense-card {
-    padding: 12px;
-  }
-  
-  .participant-helpers {
+
+  .settlement-card > div:first-child {
     justify-content: center;
   }
-}
 
-/* Enhanced form responsiveness for expense form */
-@media (max-width: 480px) {
-  .form-group {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-  
-  .form-group label {
-    min-width: auto !important;
-    margin-right: 0 !important;
-    margin-bottom: 4px;
-    font-weight: 600;
-  }
-  
-  .payer-row {
-    flex-direction: column !important;
-    gap: 8px !important;
-  }
-  
-  .payer-row .input {
-    flex: none !important;
-    width: 100%;
-  }
-  
-  .submit-button-row {
-    flex-direction: column !important;
-  }
-  
-  .submit-button-row button {
-    min-width: auto !important;
-  }
-}
-
-/* Improved expense card mobile layout */
-@media (max-width: 600px) {
-  .expense-card {
-    padding: 12px;
-  }
-  
-  .expense-card > div {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-  
-  .expense-card .expense-amount-display {
+  .settlement-card > div:last-child {
     text-align: center;
-    margin: 8px 0;
   }
-  
-  .expense-card .delete-btn {
-    align-self: center;
-    margin-top: 8px;
+
+  .participant-details-view select {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
-/* Error and success message styles */
-.error-message {
-  background: #ffebee;
-  border: 1px solid #ffcdd2;
-  border-radius: 6px;
-  color: var(--danger);
-  padding: 12px 16px;
-  margin: 12px 0;
-  font-size: 14px;
-}
+@media (max-width: 480px) {
+  .balance-summary-container h2 {
+    font-size: 20px;
+  }
 
-.success-message {
-  background: #e8f5e8;
-  border: 1px solid #c8e6c9;
-  border-radius: 6px;
-  color: #2e7d32;
-  padding: 12px 16px;
-  margin: 12px 0;
-  font-size: 14px;
-}
+  .summary-stats {
+    grid-template-columns: 1fr;
+  }
 
-/* --- UI mobile fix for iPhone 14 Pro and similar screens --- */
-@media (max-width: 430px) {
-  #root {
-    padding: 0 0 1.5rem 0;
+  .view-mode-tabs {
+    flex-direction: column;
+    border-bottom: none;
   }
-  .trip-creation-container, .trips-list-container {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+
+  .view-mode-tab {
+    border-bottom: 1px solid #e0e0e0;
+    border-right: none;
+    padding: 16px;
   }
-  .card {
-    padding: 0.5em 0.25em;
+
+  .view-mode-tab.active {
+    border-bottom-color: #BB3E00;
+    border-right: none;
   }
-  
-  /* Better mobile form layout */
-  .form-group {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 8px;
+
+  .participant-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-  
-  .form-group label {
-    min-width: auto !important;
-    margin-right: 0 !important;
-    margin-bottom: 4px;
-    text-align: left;
-  }
-  
-  .participant-row {
-    margin-bottom: 8px !important;
-  }
-  
-  /* Mobile table improvements */
-  table {
-    font-size: 11px !important;
-  }
-  
-  th, td {
-    padding: 6px 4px !important;
-  }
-  
-  .trip-creation-container h3 {
-    font-size: 16px !important;
+
+  .category-breakdown {
+    grid-template-columns: 1fr;
   }
 }
 
-/* Use theme variables for header and other UI elements */
-.header-theme {
-  background: linear-gradient(135deg, var(--theme-primary, #213555) 0%, var(--theme-secondary, #3E5879) 100%);
-  color: #fff;
+/* Dark mode support for Balance Summary */
+@media (prefers-color-scheme: dark) {
+  .balance-summary-container {
+    background: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+
+  .balance-card,
+  .category-card,
+  .participant-overview-card,
+  .settlement-card,
+  .expense-detail-card {
+    background: #2d2d2d !important;
+    border-color: #404040 !important;
+    color: #ffffff !important;
+  }
+
+  .summary-stats {
+    background: #2d2d2d !important;
+  }
+
+  .participant-summary {
+    background: #2d2d2d !important;
+  }
+
+  .settlement-instructions {
+    background: #1a237e !important;
+    color: #bbdefb !important;
+  }
+
+  .export-options-dropdown {
+    background: #2d2d2d !important;
+    border: 1px solid #404040 !important;
+    color: #ffffff !important;
+  }
 }
 
-/* Example for buttons and accents */
-.theme-accent {
-  color: var(--theme-accent, #F7AD45);
-}
+/* Print styles for Balance Summary */
+@media print {
+  .balance-summary-container {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
 
-/* Theme overrides for primary (formerly sunset) and secondary */
-body.primary {
-  --theme-bg: #F1F0E9;
-  --theme-primary: #41644A;
-  --theme-secondary: #0D4715;
-  --theme-accent: #E9762B;
-  --theme-card: #fffbe6;
-  --theme-font: #2d1a0b;
-}
+  .view-mode-tabs,
+  .export-btn,
+  .balance-summary-container button {
+    display: none !important;
+  }
 
-body.secondary {
-  --theme-bg: #E8BCB9;
-  --theme-primary: #432E54;
-  --theme-secondary: #4B4376;
-  --theme-accent: #AE445A;
-  --theme-card: #fff;
-  --theme-font: #213555;
-}
-
-.balance-summary-container,
-.balance-summary,
-.unified-card {
-  color: var(--theme-font, #213555) !important;
-}
-
-.balance-summary-container h2,
-.balance-summary-container h3,
-.balance-summary-container th,
-.balance-summary-container td {
-  color: var(--theme-font, #213555) !important;
-}
-
-.balance-summary-container .error-message {
-  color: var(--danger) !important;
-}
-
-.balance-summary-container .success-message {
-  color: #2e7d32 !important;
-}
-
-.trip-creation-container,
-.trip-creation-container h2,
-.trip-creation-container h3,
-.trip-creation-container label,
-.trip-creation-container th,
-.trip-creation-container td,
-.trip-creation-container .created-trip-label,
-.trip-creation-container .created-trip-value {
-  color: var(--theme-font, #213555) !important;
-}
-
-.trip-creation-container .error-message {
-  color: var(--danger) !important;
-}
-
-.trip-creation-container .success-message {
-  color: #2e7d32 !important;
+  .balance-card,
+  .settlement-card {
+    break-inside: avoid;
+  }
 }
