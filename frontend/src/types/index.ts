@@ -89,6 +89,8 @@ export interface I18nTexts {
     owed: string;
     noExpenses: string;
     backToExpenses?: string;
+    suggestedSettlements?: string;
+    settlementInstruction?: string;
   };
   settlements: {
     title: string;

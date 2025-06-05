@@ -65,6 +65,8 @@ const es = {
     owed: "Se le debe",
     noExpenses: "Aún no se han registrado gastos.",
     backToExpenses: "Volver a Gastos",
+    suggestedSettlements: 'Sugerencias de liquidación',
+    settlementInstruction: '{from} debe pagar a {to} la cantidad de {amount}',
   },
   settlements: {
     title: "Liquidaciones",

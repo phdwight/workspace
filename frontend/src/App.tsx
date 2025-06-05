@@ -23,7 +23,7 @@ function App() {
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [page, setPage] = useState<Page>('trips');
   const [language, setLanguage] = useState<keyof typeof languages>('en');
-  const [theme, setTheme] = useState<'default' | 'sunset'>('default');
+  const [theme, setTheme] = useState<'primary' | 'secondary'>('primary');
 
   const i18n: I18nTexts = languages[language];
 
@@ -72,14 +72,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    document.body.classList.remove('sunset');
-    if (theme === 'sunset') {
-      document.body.classList.add('sunset');
-    }
+    // Remove all theme classes
+    document.body.classList.remove('primary', 'secondary');
+    // Add the correct theme class
+    document.body.classList.add(theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(t => t === 'default' ? 'sunset' : 'default');
+    setTheme(t => t === 'primary' ? 'secondary' : 'primary');
   };
 
   const forceReload = () => {
@@ -135,7 +135,7 @@ function App() {
           style={{
             background: 'none',
             border: 'none',
-            color: theme === 'sunset' ? '#EA2F14' : 'white',
+            color: theme === 'primary' ? '#41644A' : '#9BB0C1',
             fontSize: 20,
             cursor: 'pointer',
             marginLeft: 4,
@@ -154,15 +154,15 @@ function App() {
           aria-label="Switch theme"
         >
           {/* Theme icon changes for each theme */}
-          {theme === 'sunset' ? (
+          {theme === 'primary' ? (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="6" fill="#EA2F14" stroke="#FB9E3A" strokeWidth="2" />
+              <circle cx="10" cy="10" r="6" fill="#41644A" stroke="#E9762B" strokeWidth="2" />
               <circle cx="14" cy="7" r="2" fill="#FCEF91" />
             </svg>
           ) : (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="6" fill="#F7AD45" stroke="#BB3E00" strokeWidth="2" />
-              <path d="M16 10a6 6 0 0 1-6 6" stroke="#FCEF91" strokeWidth="2" />
+              <circle cx="10" cy="10" r="6" fill="#9BB0C1" stroke="#F6995C" strokeWidth="2" />
+              <path d="M16 10a6 6 0 0 1-6 6" stroke="#EADFB4" strokeWidth="2" />
             </svg>
           )}
         </button>
