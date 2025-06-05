@@ -203,11 +203,14 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
       {/* Settlements section */}
       {settlements.length > 0 && (
         <div style={{ marginBottom: 20 }}>
-          <h3 style={{ fontSize: 16, margin: '16px 0 8px 0', color: '#BB3E00' }}>Suggested Settlements</h3>
+          <h3 style={{ fontSize: 16, margin: '16px 0 8px 0', color: '#BB3E00' }}>{i18n.balanceSummary.suggestedSettlements}</h3>
           <ul style={{ paddingLeft: 20, margin: 0 }}>
             {settlements.map((s, idx) => (
               <li key={idx} style={{ marginBottom: 4, fontSize: 15 }}>
-                <span style={{ fontWeight: 500 }}>{s.from}</span> needs to pay <span style={{ fontWeight: 500 }}>{s.to}</span> the amount of <span style={{ color: '#BB3E00', fontWeight: 700 }}>{s.amount.toFixed(2)}</span>
+                {(i18n.balanceSummary.settlementInstruction || `${s.from} needs to pay ${s.to} the amount of ${s.amount.toFixed(2)}`)
+                  .replace('{from}', s.from)
+                  .replace('{to}', s.to)
+                  .replace('{amount}', s.amount.toFixed(2))}
               </li>
             ))}
           </ul>

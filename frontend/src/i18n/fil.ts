@@ -65,6 +65,8 @@ const fil = {
     owed: "Dapat Bayaran",
     noExpenses: "Wala pang naitaling gastos.",
     backToExpenses: "Bumalik sa Mga Gastos",
+    suggestedSettlements: 'Mga Iminungkahing Bayaran',
+    settlementInstruction: 'Kailangang bayaran ni {from} si {to} ng halagang {amount}',
   },
   settlements: {
     title: "Bayaran",

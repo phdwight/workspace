@@ -65,6 +65,8 @@ const en = {
     owed: "Owed",
     noExpenses: "No expenses recorded yet.",
     backToExpenses: "Back to Expenses",
+    suggestedSettlements: 'Suggested Settlements',
+    settlementInstruction: '{from} needs to pay {to} the amount of {amount}',
   },
   settlements: {
     title: "Settlements",
