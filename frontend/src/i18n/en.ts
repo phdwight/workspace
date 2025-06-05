@@ -49,7 +49,9 @@ const en = {
     dateLabel: "Date",
     submit: "Add Expense",
     adding: "Adding...",
-    todo: "Expense entry form (payer, amount, participants, date) will go here."
+    todo: "Expense entry form (payer, amount, participants, date) will go here.",
+    viewBalanceSummary: "View Balance Summary",
+    backToCreateEvent: "Back to Create Event",
   },
   expenseHistory: {
     title: "Expense History",
@@ -62,6 +64,7 @@ const en = {
     owes: "Owes",
     owed: "Owed",
     noExpenses: "No expenses recorded yet.",
+    backToExpenses: "Back to Expenses",
   },
   settlements: {
     title: "Settlements",

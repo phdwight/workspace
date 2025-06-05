@@ -49,7 +49,9 @@ const fil = {
     dateLabel: "Petsa",
     submit: "Idagdag ang Gastos",
     adding: "Dinadadagdag...",
-    todo: "Dito ilalagay ang form para sa gastos (nagbayad, halaga, mga kalahok, petsa)."
+    todo: "Dito ilalagay ang form para sa gastos (nagbayad, halaga, mga kalahok, petsa).",
+    viewBalanceSummary: "Tingnan ang Buod ng Balanse",
+    backToCreateEvent: "Bumalik sa Paglikha ng Event",
   },
   expenseHistory: {
     title: "Kasaysayan ng Gastos",
@@ -62,6 +64,7 @@ const fil = {
     owes: "Utang",
     owed: "Dapat Bayaran",
     noExpenses: "Wala pang naitaling gastos.",
+    backToExpenses: "Bumalik sa Mga Gastos",
   },
   settlements: {
     title: "Bayaran",

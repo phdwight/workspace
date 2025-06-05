@@ -6,6 +6,13 @@
   --text-main: #2d1a0b;
   --text-light: #ffffff;
   --danger: #d32f2f;
+
+  --theme-bg: #F5EFE7;
+  --theme-primary: #213555;
+  --theme-secondary: #3E5879;
+  --theme-accent: #D8C4B6;
+  --theme-card: #fff;
+  --theme-font: #213555;
 }
 
 body, .App {
@@ -15,6 +22,16 @@ body, .App {
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
+}
+body {
+  background: var(--theme-bg, #F5EFE7) !important;
+  color: var(--theme-font, #213555) !important;
+}
+
+.App {
+  min-height: 100vh;
+  background: var(--theme-bg, #F5EFE7) !important;
+  color: var(--theme-font, #213555) !important;
 }
 
 header h1 {
@@ -86,32 +103,23 @@ nav button:disabled {
   }
 }
 
-.card {
-  padding: 1em 0.5em;
+.card, .table, .balance-summary, .expense-list, .trip-list {
+  background: var(--theme-card, #fff) !important;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #0001;
+  color: var(--theme-font, #213555) !important;
 }
 
-.read-the-docs {
-  color: #888;
+button, .submit-btn, .add-btn {
+  background: linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%) !important;
+  color: #fff !important;
+  border: none;
+  transition: background 0.2s, color 0.2s;
 }
 
-.trip-creation-container, .trips-list-container {
-  background: var(--accent);
-  border-radius: 8px;
-  box-shadow: 0 1px 8px rgba(187, 62, 0, 0.07);
-  max-width: 100vw;
-  margin: 0 0 18px 0;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.trip-form .form-group {
-  margin-bottom: 20px;
-}
-
-.trip-form label, .form-group label {
-  color: var(--primary);
-  font-weight: 600;
-  font-size: 0.98rem;
+button:disabled, .submit-btn:disabled, .add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .input, input[type="text"], input[type="email"], input[type="number"], select, textarea {
@@ -121,9 +129,8 @@ nav button:disabled {
   border-radius: 8px;
   font-size: 1rem;
   background: #fff;
-  color: var(--text-main);
-  box-shadow: 0 1px 4px rgba(187, 62, 0, 0.04);
-  transition: border-color 0.2s, box-shadow 0.2s;
+  color: var(--theme-primary, #213555);
+  transition: border 0.2s, color 0.2s;
   margin-bottom: 10px;
   outline: none;
 }
@@ -514,4 +521,25 @@ select:focus-visible {
   .card {
     padding: 0.5em 0.25em;
   }
+}
+
+/* Use theme variables for header and other UI elements */
+.header-theme {
+  background: linear-gradient(135deg, var(--theme-primary, #213555) 0%, var(--theme-secondary, #3E5879) 100%);
+  color: #fff;
+}
+
+/* Example for buttons and accents */
+.theme-accent {
+  color: var(--theme-accent, #F7AD45);
+}
+
+/* Theme overrides for sunset and secondary */
+body.sunset {
+  --theme-bg: #FCEF91;
+  --theme-primary: #FB9E3A;
+  --theme-secondary: #E6521F;
+  --theme-accent: #EA2F14;
+  --theme-card: #fffbe6;
+  --theme-font: #2d1a0b;
 }

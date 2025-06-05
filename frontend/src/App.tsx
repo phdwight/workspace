@@ -23,6 +23,7 @@ function App() {
   const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
   const [page, setPage] = useState<Page>('trips');
   const [language, setLanguage] = useState<keyof typeof languages>('en');
+  const [theme, setTheme] = useState<'default' | 'sunset'>('default');
 
   const i18n: I18nTexts = languages[language];
 
@@ -70,6 +71,17 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    document.body.classList.remove('sunset');
+    if (theme === 'sunset') {
+      document.body.classList.add('sunset');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(t => t === 'default' ? 'sunset' : 'default');
+  };
+
   const forceReload = () => {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(registrations => {
@@ -82,8 +94,8 @@ function App() {
   };
 
   const renderHeader = () => (
-    <div style={{
-      background: 'linear-gradient(135deg, #BB3E00 0%, #F7AD45 100%)',
+    <div className="header-theme" style={{
+      // background: 'linear-gradient(135deg, #BB3E00 0%, #F7AD45 100%)',
       color: 'white',
       padding: '16px 24px',
       display: 'flex',
@@ -112,10 +124,48 @@ function App() {
             marginRight: 8
           }}
         >
-          {Object.keys(languages).map(lang => (
-            <option key={lang} value={lang}>{lang.toUpperCase()}</option>
-          ))}
+          <option value="en">🇺🇸 EN</option>
+          <option value="es">🇪🇸 ES</option>
+          <option value="fil">🇵🇭 FIL</option>
         </select>
+        {/* Theme Switcher Icon Button */}
+        <button
+          onClick={toggleTheme}
+          title="Switch theme"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: theme === 'sunset' ? '#EA2F14' : 'white',
+            fontSize: 20,
+            cursor: 'pointer',
+            marginLeft: 4,
+            padding: 0,
+            opacity: 0.7,
+            transition: 'opacity 0.2s, color 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 32,
+            width: 32,
+            borderRadius: 16
+          }}
+          onMouseOver={e => (e.currentTarget.style.opacity = '1')}
+          onMouseOut={e => (e.currentTarget.style.opacity = '0.7')}
+          aria-label="Switch theme"
+        >
+          {/* Theme icon changes for each theme */}
+          {theme === 'sunset' ? (
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="6" fill="#EA2F14" stroke="#FB9E3A" strokeWidth="2" />
+              <circle cx="14" cy="7" r="2" fill="#FCEF91" />
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="10" cy="10" r="6" fill="#F7AD45" stroke="#BB3E00" strokeWidth="2" />
+              <path d="M16 10a6 6 0 0 1-6 6" stroke="#FCEF91" strokeWidth="2" />
+            </svg>
+          )}
+        </button>
         {/* Force reload icon button */}
         <button
           onClick={forceReload}

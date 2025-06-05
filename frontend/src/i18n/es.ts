@@ -49,7 +49,9 @@ const es = {
     dateLabel: "Fecha",
     submit: "Agregar Gasto",
     adding: "Agregando...",
-    todo: "El formulario para agregar gastos (pagador, monto, participantes, fecha) irá aquí."
+    todo: "El formulario para agregar gastos (pagador, monto, participantes, fecha) irá aquí.",
+    viewBalanceSummary: "Ver Resumen de Saldos",
+    backToCreateEvent: "Volver a Crear Evento",
   },
   expenseHistory: {
     title: "Historial de Gastos",
@@ -62,6 +64,7 @@ const es = {
     owes: "Debe",
     owed: "Se le debe",
     noExpenses: "Aún no se han registrado gastos.",
+    backToExpenses: "Volver a Gastos",
   },
   settlements: {
     title: "Liquidaciones",
