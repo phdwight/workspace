@@ -23,6 +23,7 @@ export interface Expense {
   trip_id: string;
   trip_name: string;
   description?: string; // Optional for backward compatibility
+  category?: string; // Optional expense category
   payers: { name: string; amount: number }[]; // Multiple payers with amounts
   participants: string[];
   date: string;
@@ -47,6 +48,12 @@ export interface I18nTexts {
     addParticipant: string;
     removeParticipantAria: string;
     errorMinParticipants: string;
+    errorMaxParticipants?: string;
+    errorDuplicateParticipants?: string;
+    errorMissingName?: string;
+    errorCreate?: string;
+    minParticipantsTooltip?: string;
+    maxParticipantsTooltip?: string;
     submit: string;
     creating: string;
     success: string;
@@ -66,6 +73,10 @@ export interface I18nTexts {
     errorDelete: string;
     showActions: string;
     hideActions: string;
+    eventColumn?: string;
+    participantsColumn?: string;
+    actionsColumn?: string;
+    openButton?: string;
   };
   expenseForm: {
     title: string;

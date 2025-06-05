@@ -393,9 +393,15 @@ select:focus-visible {
   width: 16px;
   height: 16px;
   border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--primary);
+  border-top: 2px solid var(--theme-primary, #213555);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+/* Loading spinner for buttons */
+.submit-btn .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
 }
 
 /* Improved button styles */
@@ -479,129 +485,390 @@ select:focus-visible {
   margin-bottom: 24px;
 }
 
-/* Responsive design improvements */
+/* Enhanced Expense Form Styles */
+.expense-card {
+  background: var(--theme-card, #fff);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.expense-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.expense-filter-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.expense-filter-controls input,
+.expense-filter-controls select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: var(--theme-card, #fff);
+  color: var(--theme-font, #213555);
+}
+
+.expense-filter-controls input:focus,
+.expense-filter-controls select:focus {
+  outline: none;
+  border-color: var(--theme-primary, #213555);
+  box-shadow: 0 0 0 2px rgba(33, 53, 85, 0.1);
+}
+
+.expense-total-display {
+  background: #e3f2fd;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--theme-font, #213555);
+}
+
+.expense-category-tag {
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.expense-amount-display {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.participant-helpers {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.participant-helper-btn {
+  font-size: 12px;
+  color: var(--theme-primary, #007bff);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.participant-helper-btn:hover {
+  color: var(--theme-secondary, #0056b3);
+}
+
+.participant-helper-btn:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.expense-empty-state {
+  text-align: center;
+  padding: 40px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  color: #666;
+  font-style: italic;
+}
+
+.expense-search-input {
+  min-width: 200px;
+  flex: 1;
+}
+
+.export-btn {
+  padding: 8px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #45a049;
+}
+
+.delete-btn {
+  padding: 4px 8px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+.keyboard-tip {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+/* Enhanced Balance Summary Styles */
+.balance-summary-container {
+  position: relative;
+}
+
+.balance-summary-container .loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #BB3E00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.balance-card {
+  transition: all 0.2s ease;
+}
+
+.balance-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  transform: translateY(-2px) !important;
+}
+
+.category-card {
+  transition: all 0.2s ease;
+}
+
+.category-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.participant-overview-card {
+  transition: all 0.2s ease;
+}
+
+.participant-overview-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  border-color: #BB3E00;
+}
+
+.settlement-card {
+  transition: all 0.2s ease;
+}
+
+.settlement-card:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.view-mode-tab {
+  transition: all 0.2s ease !important;
+}
+
+.view-mode-tab:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.export-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #1976d2;
+  color: white;
+}
+
+.export-option:hover {
+  background-color: #f5f5f5 !important;
+}
+
+.expense-detail-card {
+  transition: all 0.2s ease;
+}
+
+.expense-detail-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.summary-stats {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.empty-state {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design for Balance Summary */
 @media (max-width: 768px) {
-  .unified-card {
+  .balance-summary-container {
     margin: 16px;
     padding: 16px;
+    max-width: none;
   }
-  
-  .btn-primary, .btn-secondary {
-    padding: 10px 20px;
-    font-size: 14px;
+
+  .summary-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
   }
-  
-  .participant-row {
+
+  .view-mode-tab .tab-label {
+    display: none;
+  }
+
+  .view-mode-tab {
+    padding: 12px 4px;
+    font-size: 20px;
+  }
+
+  .balance-card {
     flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
   }
-  
-  .participant-row input {
-    width: 100%;
+
+  .settlement-card {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .settlement-card > div:first-child {
+    justify-content: center;
+  }
+
+  .settlement-card > div:last-child {
+    text-align: center;
+  }
+
+  .participant-details-view select {
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }
 
-/* Error and success message styles */
-.error-message {
-  background: #ffebee;
-  border: 1px solid #ffcdd2;
-  border-radius: 6px;
-  color: var(--danger);
-  padding: 12px 16px;
-  margin: 12px 0;
-  font-size: 14px;
-}
-
-.success-message {
-  background: #e8f5e8;
-  border: 1px solid #c8e6c9;
-  border-radius: 6px;
-  color: #2e7d32;
-  padding: 12px 16px;
-  margin: 12px 0;
-  font-size: 14px;
-}
-
-/* --- UI mobile fix for iPhone 14 Pro and similar screens --- */
-@media (max-width: 430px) {
-  #root {
-    padding: 0 0 1.5rem 0;
+@media (max-width: 480px) {
+  .balance-summary-container h2 {
+    font-size: 20px;
   }
-  .trip-creation-container, .trips-list-container {
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+
+  .summary-stats {
+    grid-template-columns: 1fr;
   }
-  .card {
-    padding: 0.5em 0.25em;
+
+  .view-mode-tabs {
+    flex-direction: column;
+    border-bottom: none;
+  }
+
+  .view-mode-tab {
+    border-bottom: 1px solid #e0e0e0;
+    border-right: none;
+    padding: 16px;
+  }
+
+  .view-mode-tab.active {
+    border-bottom-color: #BB3E00;
+    border-right: none;
+  }
+
+  .participant-summary {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .category-breakdown {
+    grid-template-columns: 1fr;
   }
 }
 
-/* Use theme variables for header and other UI elements */
-.header-theme {
-  background: linear-gradient(135deg, var(--theme-primary, #213555) 0%, var(--theme-secondary, #3E5879) 100%);
-  color: #fff;
+/* Dark mode support for Balance Summary */
+@media (prefers-color-scheme: dark) {
+  .balance-summary-container {
+    background: #1e1e1e !important;
+    color: #ffffff !important;
+  }
+
+  .balance-card,
+  .category-card,
+  .participant-overview-card,
+  .settlement-card,
+  .expense-detail-card {
+    background: #2d2d2d !important;
+    border-color: #404040 !important;
+    color: #ffffff !important;
+  }
+
+  .summary-stats {
+    background: #2d2d2d !important;
+  }
+
+  .participant-summary {
+    background: #2d2d2d !important;
+  }
+
+  .settlement-instructions {
+    background: #1a237e !important;
+    color: #bbdefb !important;
+  }
+
+  .export-options-dropdown {
+    background: #2d2d2d !important;
+    border: 1px solid #404040 !important;
+    color: #ffffff !important;
+  }
 }
 
-/* Example for buttons and accents */
-.theme-accent {
-  color: var(--theme-accent, #F7AD45);
-}
+/* Print styles for Balance Summary */
+@media print {
+  .balance-summary-container {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
 
-/* Theme overrides for primary (formerly sunset) and secondary */
-body.primary {
-  --theme-bg: #F1F0E9;
-  --theme-primary: #41644A;
-  --theme-secondary: #0D4715;
-  --theme-accent: #E9762B;
-  --theme-card: #fffbe6;
-  --theme-font: #2d1a0b;
-}
+  .view-mode-tabs,
+  .export-btn,
+  .balance-summary-container button {
+    display: none !important;
+  }
 
-body.secondary {
-  --theme-bg: #E8BCB9;
-  --theme-primary: #432E54;
-  --theme-secondary: #4B4376;
-  --theme-accent: #AE445A;
-  --theme-card: #fff;
-  --theme-font: #213555;
-}
-
-.balance-summary-container,
-.balance-summary,
-.unified-card {
-  color: var(--theme-font, #213555) !important;
-}
-
-.balance-summary-container h2,
-.balance-summary-container h3,
-.balance-summary-container th,
-.balance-summary-container td {
-  color: var(--theme-font, #213555) !important;
-}
-
-.balance-summary-container .error-message {
-  color: var(--danger) !important;
-}
-
-.balance-summary-container .success-message {
-  color: #2e7d32 !important;
-}
-
-.trip-creation-container,
-.trip-creation-container h2,
-.trip-creation-container h3,
-.trip-creation-container label,
-.trip-creation-container th,
-.trip-creation-container td,
-.trip-creation-container .created-trip-label,
-.trip-creation-container .created-trip-value {
-  color: var(--theme-font, #213555) !important;
-}
-
-.trip-creation-container .error-message {
-  color: var(--danger) !important;
-}
-
-.trip-creation-container .success-message {
-  color: #2e7d32 !important;
+  .balance-card,
+  .settlement-card {
+    break-inside: avoid;
+  }
 }
