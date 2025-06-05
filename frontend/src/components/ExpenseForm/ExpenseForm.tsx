@@ -152,6 +152,26 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     }
   };
 
+  // Add participant to trip
+  const handleAddParticipantToTrip = async () => {
+    const newParticipant = prompt('Enter the name of the new participant:');
+    if (!newParticipant || !newParticipant.trim()) return;
+    if (trip.participants.includes(newParticipant.trim())) {
+      addToast('Participant already exists in this event.', 'error');
+      return;
+    }
+    // Update trip in localStorage
+    const trips = JSON.parse(localStorage.getItem('bill_splitter_trips') || '[]');
+    const tripIdx = trips.findIndex((t: any) => t.id === trip.id);
+    if (tripIdx === -1) return;
+    trips[tripIdx].participants.push(newParticipant.trim());
+    localStorage.setItem('bill_splitter_trips', JSON.stringify(trips));
+    // Update UI
+    trip.participants.push(newParticipant.trim());
+    setSelectedParticipants([...trip.participants]);
+    addToast('Participant added!', 'success');
+  };
+
   return (
     <div className="trip-creation-container">
       <h2>{i18n.expenseForm.title}</h2>
@@ -247,6 +267,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                 <span>{participant}</span>
               </label>
             ))}
+            <button type="button" onClick={handleAddParticipantToTrip} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ Add participant to event</button>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
