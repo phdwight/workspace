@@ -76,12 +76,17 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
     // Process each expense
     expenseList.forEach(expense => {
-      const { payer, amount, participants } = expense;
-      const amountPerPerson = amount / participants.length;
+      const { payers, participants } = expense;
+      const totalAmount = Array.isArray(payers) ? payers.reduce((sum, p) => sum + Number(p.amount), 0) : 0;
+      const amountPerPerson = totalAmount / participants.length;
 
-      // Add to payer's total paid
-      if (participantBalances[payer]) {
-        participantBalances[payer].totalPaid += amount;
+      // Add to each payer's total paid
+      if (Array.isArray(payers)) {
+        payers.forEach(payerObj => {
+          if (participantBalances[payerObj.name]) {
+            participantBalances[payerObj.name].totalPaid += Number(payerObj.amount);
+          }
+        });
       }
 
       // Add to each participant's total owes
@@ -142,61 +147,53 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (loading) {
     return (
-      <div className="trip-creation-container">
-        <h2>{i18n.balanceSummary.title}</h2>
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          {i18n.common.loading}
-        </div>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 480, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
+        <div style={{ textAlign: 'center', padding: '20px' }}>{i18n.common.loading}</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="trip-creation-container">
-        <h2>{i18n.balanceSummary.title}</h2>
-        <div className="error-message" role="alert">
-          {error}
-        </div>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 480, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
+        <div className="error-message" role="alert" style={{ marginBottom: 16 }}>{error}</div>
       </div>
     );
   }
 
   if (expenses.length === 0) {
     return (
-      <div className="trip-creation-container">
-        <h2>{i18n.balanceSummary.title}</h2>
-        <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
-          {i18n.balanceSummary.noExpenses}
-        </div>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 480, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
+        <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>{i18n.balanceSummary.noExpenses}</div>
       </div>
     );
   }
 
   return (
-    <div className="balance-summary-container" style={{ background: 'white', borderRadius: 12, maxWidth: 480, margin: '32px auto', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+    <div className="balance-summary-container unified-card" style={{ background: 'white', borderRadius: 12, maxWidth: 480, margin: '32px auto', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
       <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
       {/* Error message if any */}
       {error && (
-        <div className="error-message" role="alert" style={{ marginBottom: 16 }}>
-          {error}
-        </div>
+        <div className="error-message" role="alert" style={{ marginBottom: 16 }}>{error}</div>
       )}
       {/* Main summary table */}
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, marginBottom: 20 }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15, marginBottom: 20, background: '#fff', borderRadius: 8, overflow: 'hidden', boxShadow: '0 1px 4px #0001' }}>
         <thead>
-          <tr style={{ background: '#f7ead9' }}>
-            <th style={{ padding: 8, textAlign: 'left' }}>{i18n.balanceSummary.participant}</th>
+          <tr style={{ background: '#f7ead9', color: '#BB3E00', fontWeight: 700, fontSize: 14 }}>
+            <th style={{ padding: 8, textAlign: 'left', borderTopLeftRadius: 8 }}>{i18n.balanceSummary.participant}</th>
             <th style={{ padding: 8, textAlign: 'left' }}>{i18n.balanceSummary.balance}</th>
-            <th style={{ padding: 8, textAlign: 'left' }}>Paid</th>
-            <th style={{ padding: 8, textAlign: 'left' }}>Owes</th>
+            <th style={{ padding: 8, textAlign: 'left' }}>Contribution</th>
+            <th style={{ padding: 8, textAlign: 'left', borderTopRightRadius: 8 }}>Share</th>
           </tr>
         </thead>
         <tbody>
           {balances.map((bal, idx) => (
             <tr key={bal.participant} style={{ background: idx % 2 ? '#fff' : '#f9f5f0' }}>
-              <td style={{ padding: 8 }}>{bal.participant}</td>
-              <td style={{ padding: 8 }}>{bal.balance.toFixed(2)}</td>
+              <td style={{ padding: 8, fontWeight: 600, color: '#2d1a0b' }}>{bal.participant}</td>
+              <td style={{ padding: 8, color: bal.balance < 0 ? '#d32f2f' : '#388e3c', fontWeight: 600 }}>{bal.balance.toFixed(2)}</td>
               <td style={{ padding: 8 }}>{bal.totalPaid.toFixed(2)}</td>
               <td style={{ padding: 8 }}>{bal.totalOwes.toFixed(2)}</td>
             </tr>
@@ -206,11 +203,11 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
       {/* Settlements section */}
       {settlements.length > 0 && (
         <div style={{ marginBottom: 20 }}>
-          <h3 style={{ fontSize: 16, margin: '16px 0 8px 0' }}>Suggested Settlements</h3>
+          <h3 style={{ fontSize: 16, margin: '16px 0 8px 0', color: '#BB3E00' }}>Suggested Settlements</h3>
           <ul style={{ paddingLeft: 20, margin: 0 }}>
             {settlements.map((s, idx) => (
-              <li key={idx} style={{ marginBottom: 4 }}>
-                <span style={{ fontWeight: 500 }}>{s.from}</span> pays <span style={{ fontWeight: 500 }}>{s.to}</span> <span style={{ color: '#BB3E00', fontWeight: 700 }}>{s.amount.toFixed(2)}</span>
+              <li key={idx} style={{ marginBottom: 4, fontSize: 15 }}>
+                <span style={{ fontWeight: 500 }}>{s.from}</span> needs to pay <span style={{ fontWeight: 500 }}>{s.to}</span> the amount of <span style={{ color: '#BB3E00', fontWeight: 700 }}>{s.amount.toFixed(2)}</span>
               </li>
             ))}
           </ul>

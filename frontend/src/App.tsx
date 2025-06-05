@@ -70,10 +70,15 @@ function App() {
     };
   }, []);
 
-  const handleLogout = () => {
-    setUser(null);
-    setSelectedTrip(null);
-    setPage('trips');
+  const forceReload = () => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(reg => reg.unregister());
+        window.location.reload();
+      });
+    } else {
+      window.location.reload();
+    }
   };
 
   const renderHeader = () => (
@@ -92,108 +97,55 @@ function App() {
           Bill Splitter
         </h1>
       </div>
-
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         {/* Language Selector */}
         <select
           value={language}
-          onChange={(e) => setLanguage(e.target.value as keyof typeof languages)}
+          onChange={e => setLanguage(e.target.value as keyof typeof languages)}
           style={{
             background: 'rgba(255,255,255,0.2)',
             border: '1px solid rgba(255,255,255,0.3)',
             borderRadius: '6px',
             color: 'white',
-            padding: '6px 10px',
-            fontSize: '14px'
+            padding: '6px 12px',
+            fontSize: '14px',
+            marginRight: 8
           }}
         >
-          <option value="en" style={{ color: 'black' }}>🇺🇸 EN</option>
-          <option value="es" style={{ color: 'black' }}>🇪🇸 ES</option>
-          <option value="fil" style={{ color: 'black' }}>🇵🇭 FIL</option>
+          {Object.keys(languages).map(lang => (
+            <option key={lang} value={lang}>{lang.toUpperCase()}</option>
+          ))}
         </select>
-
-        {/* Navigation */}
-        {user && selectedTrip && (
-          <nav style={{ display: 'flex', gap: '8px' }}>
-            <button
-              onClick={() => setPage('trips')}
-              style={{
-                background: page === 'trips' ? 'rgba(255,255,255,0.3)' : 'transparent',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Trips
-            </button>
-            <button
-              onClick={() => setPage('expenses')}
-              style={{
-                background: page === 'expenses' ? 'rgba(255,255,255,0.3)' : 'transparent',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Expenses
-            </button>
-            <button
-              onClick={() => setPage('balances')}
-              style={{
-                background: page === 'balances' ? 'rgba(255,255,255,0.3)' : 'transparent',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Balances
-            </button>
-          </nav>
-        )}
-
-        {/* User Info & Logout */}
-        {user && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {user.picture && (
-              <img
-                src={user.picture}
-                alt="Profile"
-                style={{
-                  width: '32px',
-                  height: '32px',
-                  borderRadius: '50%',
-                  border: '2px solid rgba(255,255,255,0.3)'
-                }}
-              />
-            )}
-            <span style={{ fontSize: '14px', opacity: 0.9 }}>
-              {user.name || user.email}
-            </span>
-            <button
-              onClick={handleLogout}
-              style={{
-                background: 'rgba(255,255,255,0.2)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '6px 12px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
-            >
-              Logout
-            </button>
-          </div>
-        )}
+        {/* Force reload icon button */}
+        <button
+          onClick={forceReload}
+          title="Force reload app"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'white',
+            fontSize: 20,
+            cursor: 'pointer',
+            marginLeft: 4,
+            padding: 0,
+            opacity: 0.7,
+            transition: 'opacity 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: 32,
+            width: 32,
+            borderRadius: 16
+          }}
+          onMouseOver={e => (e.currentTarget.style.opacity = '1')}
+          onMouseOut={e => (e.currentTarget.style.opacity = '0.7')}
+          aria-label="Force reload app"
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 2v2a6 6 0 1 1-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <polyline points="2 8 4 10 6 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+          </svg>
+        </button>
       </div>
     </div>
   );
@@ -219,8 +171,8 @@ function App() {
           />
         ) : (
           <div style={{ padding: '24px', textAlign: 'center' }}>
-            <p>No trip selected</p>
-            <button onClick={() => setPage('trips')}>Go to Trips</button>
+            <p>{i18n.tripsList.noTrips}</p>
+            <button onClick={() => setPage('trips')}>{i18n.tripsList.title}</button>
           </div>
         );
       case 'balances':
@@ -231,8 +183,8 @@ function App() {
           />
         ) : (
           <div style={{ padding: '24px', textAlign: 'center' }}>
-            <p>No trip selected</p>
-            <button onClick={() => setPage('trips')}>Go to Trips</button>
+            <p>{i18n.tripsList.noTrips}</p>
+            <button onClick={() => setPage('trips')}>{i18n.tripsList.title}</button>
           </div>
         );
       default:

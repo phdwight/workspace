@@ -167,7 +167,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
             {error}
           </div>
         )}
-        {/* Trip Name - inline label and input */}
+        {/* Event Name - inline label and input */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
           <label htmlFor="tripName" style={{ minWidth: 110, marginRight: 8 }}>{i18n.tripCreation.tripNameLabel}</label>
           <input
@@ -211,10 +211,28 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
               type="button"
               onClick={handleAddParticipant}
               disabled={loading}
-              className="add-btn"
-              style={{ marginTop: 6 }}
+              aria-label={i18n.tripCreation.addParticipant}
+              style={{
+                background: 'linear-gradient(90deg, #BB3E00 60%, #F7AD45 100%)',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 8,
+                fontSize: 18,
+                fontWeight: 700,
+                width: 36,
+                height: 36,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px #BB3E0088',
+                marginTop: 6,
+                cursor: 'pointer',
+                transition: 'background 0.2s, box-shadow 0.2s',
+                outline: 'none',
+                padding: 0
+              }}
             >
-              {i18n.tripCreation.addParticipant}
+              <span style={{ fontSize: 22, fontWeight: 700, lineHeight: 1 }}>+</span>
             </button>
           </div>
         </div>
@@ -240,18 +258,10 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
           marginLeft: 'auto', 
           marginRight: 'auto' 
         }}>
-          <h3 style={{ 
-            textAlign: 'center', 
-            marginBottom: 12, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            gap: 6, 
-            fontSize: 18, 
-            color: '#BB3E00' 
-          }}>
-            <span role="img" aria-label="Trips">🧳</span>
-            {i18n.tripsList?.title || 'Your Trips'}
+          <h3 style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 18, color: '#BB3E00' }}>
+            <span role="img" aria-label="Events">🧳</span>
+            {i18n.tripsList?.title || 'Your Events'}
           </h3>
           
           <div style={{ maxWidth: 520, margin: '0 auto' }}>
@@ -274,7 +284,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                   fontSize: 13 
                 }}>
                   <th style={{ padding: '8px 6px', textAlign: 'left', borderTopLeftRadius: 10 }}>
-                    Trip
+                    Event
                   </th>
                   <th style={{ padding: '8px 6px', textAlign: 'left' }}>
                     Participants
