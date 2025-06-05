@@ -23,8 +23,7 @@ export interface Expense {
   trip_id: string;
   trip_name: string;
   description?: string; // Optional for backward compatibility
-  payer: string;
-  amount: number;
+  payers: { name: string; amount: number }[]; // Multiple payers with amounts
   participants: string[];
   date: string;
   user_email: string;

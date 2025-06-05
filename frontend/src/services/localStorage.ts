@@ -13,8 +13,7 @@ export interface Expense {
   id: string;
   trip_id: string;
   trip_name: string;
-  payer: string;
-  amount: number;
+  payers: { name: string; amount: number }[];
   participants: string[];
   date: string;
   user_email: string;
@@ -138,46 +137,47 @@ class LocalStorageService {
 
   async createExpense(
     tripName: string,
-    payer: string,
-    amount: number,
+    payers: { name: string; amount: number }[],
     participants: string[],
     date: string,
     userEmail: string,
     description?: string // <-- add description param
   ): Promise<Expense> {
-    if (!tripName || !payer || !amount || !participants.length || !userEmail) {
+    if (!tripName || !payers.length || !participants.length || !userEmail) {
       throw new Error('Missing required fields');
     }
-
-    if (amount <= 0) {
-      throw new Error('Amount must be greater than 0');
+    // Combine payers with the same name
+    const payerMap = new Map<string, number>();
+    for (const p of payers) {
+      const key = p.name.trim();
+      if (!key) continue;
+      payerMap.set(key, (payerMap.get(key) || 0) + Number(p.amount));
     }
-
+    const uniquePayers = Array.from(payerMap.entries()).map(([name, amount]) => ({ name, amount }));
+    const totalAmount = uniquePayers.reduce((sum, p) => sum + p.amount, 0);
+    if (totalAmount <= 0) {
+      throw new Error('Total amount must be greater than 0');
+    }
     // Find the trip
     const trips = await this.getTripsForUser(userEmail);
     const trip = trips.find(t => t.trip_name === tripName);
-    
     if (!trip) {
       throw new Error('Trip not found');
     }
-
     const newExpense: Expense = {
       id: this.generateId(),
       trip_id: trip.id,
       trip_name: tripName,
-      payer: payer.trim(),
-      amount: Number(amount),
+      payers: uniquePayers,
       participants: participants.filter(p => p.trim()),
       date: date || new Date().toISOString().split('T')[0],
       user_email: userEmail,
       created_at: new Date().toISOString(),
-      description: description || '' // <-- save description
+      description: description || ''
     };
-
     const expenses = this.getExpenses();
     expenses.push(newExpense);
     this.saveExpenses(expenses);
-
     return newExpense;
   }
 
