@@ -50,7 +50,7 @@ const es = {
     submit: "Agregar Gasto",
     adding: "Agregando...",
     todo: "El formulario para agregar gastos (pagador, monto, participantes, fecha) irá aquí.",
-    viewBalanceSummary: "Ver Resumen de Saldos",
+    viewBalanceSummary: "Ver resumen de balances",
     backToCreateEvent: "Volver a Crear Evento",
   },
   expenseHistory: {
