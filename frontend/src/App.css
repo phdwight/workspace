@@ -393,9 +393,15 @@ select:focus-visible {
   width: 16px;
   height: 16px;
   border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--primary);
+  border-top: 2px solid var(--theme-primary, #213555);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+/* Loading spinner for buttons */
+.submit-btn .loading-spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
 }
 
 /* Improved button styles */
@@ -533,6 +539,37 @@ select:focus-visible {
   }
   .card {
     padding: 0.5em 0.25em;
+  }
+  
+  /* Better mobile form layout */
+  .form-group {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    min-width: auto !important;
+    margin-right: 0 !important;
+    margin-bottom: 4px;
+    text-align: left;
+  }
+  
+  .participant-row {
+    margin-bottom: 8px !important;
+  }
+  
+  /* Mobile table improvements */
+  table {
+    font-size: 11px !important;
+  }
+  
+  th, td {
+    padding: 6px 4px !important;
+  }
+  
+  .trip-creation-container h3 {
+    font-size: 16px !important;
   }
 }
 

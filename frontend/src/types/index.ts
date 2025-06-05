@@ -47,6 +47,12 @@ export interface I18nTexts {
     addParticipant: string;
     removeParticipantAria: string;
     errorMinParticipants: string;
+    errorMaxParticipants?: string;
+    errorDuplicateParticipants?: string;
+    errorMissingName?: string;
+    errorCreate?: string;
+    minParticipantsTooltip?: string;
+    maxParticipantsTooltip?: string;
     submit: string;
     creating: string;
     success: string;
@@ -66,6 +72,10 @@ export interface I18nTexts {
     errorDelete: string;
     showActions: string;
     hideActions: string;
+    eventColumn?: string;
+    participantsColumn?: string;
+    actionsColumn?: string;
+    openButton?: string;
   };
   expenseForm: {
     title: string;
