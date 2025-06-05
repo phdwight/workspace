@@ -28,6 +28,42 @@ body {
   color: var(--theme-font, #213555) !important;
 }
 
+/* Primary Theme (Default) */
+body.primary {
+  --theme-bg: #F5EFE7;
+  --theme-primary: #213555;
+  --theme-secondary: #3E5879;
+  --theme-accent: #D8C4B6;
+  --theme-card: #fff;
+  --theme-font: #213555;
+}
+
+/* Secondary Theme (Dark/Alternative) */
+body.secondary {
+  --theme-bg: #1a1a2e;
+  --theme-primary: #16213e;
+  --theme-secondary: #0f3460;
+  --theme-accent: #e94560;
+  --theme-card: #16213e;
+  --theme-font: #f5f5f5;
+}
+
+/* Header Theme Styling */
+.header-theme {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
+  color: var(--theme-font) !important;
+}
+
+body.primary .header-theme {
+  background: linear-gradient(135deg, #BB3E00 0%, #F7AD45 100%) !important;
+  color: white !important;
+}
+
+body.secondary .header-theme {
+  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%) !important;
+  color: #f5f5f5 !important;
+}
+
 .App {
   min-height: 100vh;
   background: var(--theme-bg, #F5EFE7) !important;

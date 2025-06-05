@@ -95,8 +95,6 @@ function App() {
 
   const renderHeader = () => (
     <div className="header-theme" style={{
-      // background: 'linear-gradient(135deg, #BB3E00 0%, #F7AD45 100%)',
-      color: 'white',
       padding: '16px 24px',
       display: 'flex',
       justifyContent: 'space-between',
@@ -135,7 +133,7 @@ function App() {
           style={{
             background: 'none',
             border: 'none',
-            color: theme === 'primary' ? '#41644A' : '#9BB0C1',
+            color: 'rgba(255,255,255,0.9)',
             fontSize: 20,
             cursor: 'pointer',
             marginLeft: 4,
@@ -156,13 +154,13 @@ function App() {
           {/* Theme icon changes for each theme */}
           {theme === 'primary' ? (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="6" fill="#41644A" stroke="#E9762B" strokeWidth="2" />
-              <circle cx="14" cy="7" r="2" fill="#FCEF91" />
+              <circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
+              <circle cx="10" cy="10" r="2" fill="currentColor" />
+              <path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           ) : (
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="10" cy="10" r="6" fill="#9BB0C1" stroke="#F6995C" strokeWidth="2" />
-              <path d="M16 10a6 6 0 0 1-6 6" stroke="#EADFB4" strokeWidth="2" />
+              <path d="M17.5 12.5A7.5 7.5 0 1 1 12.5 2.5a6 6 0 0 0 5 10z" fill="currentColor" stroke="currentColor" strokeWidth="1"/>
             </svg>
           )}
         </button>
