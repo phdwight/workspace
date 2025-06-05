@@ -273,7 +273,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             }
           }}
         >
-          {i18n.expenseForm.viewBalanceSummary}
+          {i18n.expenseForm.viewBalanceSummary || 'View Balance Summary'}
         </button>
         <button
           type="button"
@@ -285,7 +285,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             }
           }}
         >
-          {i18n.expenseForm.backToCreateEvent}
+          {i18n.expenseForm.backToCreateEvent || 'Back to Create Event'}
         </button>
       </div>
     </div>

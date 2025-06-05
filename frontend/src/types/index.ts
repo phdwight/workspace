@@ -78,6 +78,8 @@ export interface I18nTexts {
     dateLabel: string;
     submit: string;
     adding: string;
+    viewBalanceSummary?: string;
+    backToCreateEvent?: string;
   };
   balanceSummary: {
     title: string;
@@ -86,6 +88,7 @@ export interface I18nTexts {
     owes: string;
     owed: string;
     noExpenses: string;
+    backToExpenses?: string;
   };
   settlements: {
     title: string;

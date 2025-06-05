@@ -225,7 +225,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             }
           }}
         >
-          {i18n.balanceSummary.backToExpenses}
+          {i18n.balanceSummary.backToExpenses || 'Back to Expenses'}
         </button>
       </div>
     </div>
