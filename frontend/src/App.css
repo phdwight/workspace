@@ -485,6 +485,152 @@ select:focus-visible {
   margin-bottom: 24px;
 }
 
+/* Enhanced Expense Form Styles */
+.expense-card {
+  background: var(--theme-card, #fff);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.expense-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.expense-filter-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.expense-filter-controls input,
+.expense-filter-controls select {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background: var(--theme-card, #fff);
+  color: var(--theme-font, #213555);
+}
+
+.expense-filter-controls input:focus,
+.expense-filter-controls select:focus {
+  outline: none;
+  border-color: var(--theme-primary, #213555);
+  box-shadow: 0 0 0 2px rgba(33, 53, 85, 0.1);
+}
+
+.expense-total-display {
+  background: #e3f2fd;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--theme-font, #213555);
+}
+
+.expense-category-tag {
+  background: #f0f0f0;
+  color: #666;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.expense-amount-display {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.participant-helpers {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.participant-helper-btn {
+  font-size: 12px;
+  color: var(--theme-primary, #007bff);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.participant-helper-btn:hover {
+  color: var(--theme-secondary, #0056b3);
+}
+
+.participant-helper-btn:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.expense-empty-state {
+  text-align: center;
+  padding: 40px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  color: #666;
+  font-style: italic;
+}
+
+.expense-search-input {
+  min-width: 200px;
+  flex: 1;
+}
+
+.export-btn {
+  padding: 8px 16px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.export-btn:hover {
+  background: #45a049;
+}
+
+.delete-btn {
+  padding: 4px 8px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+.keyboard-tip {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
 /* Responsive design improvements */
 @media (max-width: 768px) {
   .unified-card {
@@ -504,6 +650,79 @@ select:focus-visible {
   
   .participant-row input {
     width: 100%;
+  }
+  
+  .expense-filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .expense-filter-controls input,
+  .expense-filter-controls select {
+    width: 100%;
+  }
+  
+  .expense-card {
+    padding: 12px;
+  }
+  
+  .participant-helpers {
+    justify-content: center;
+  }
+}
+
+/* Enhanced form responsiveness for expense form */
+@media (max-width: 480px) {
+  .form-group {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .form-group label {
+    min-width: auto !important;
+    margin-right: 0 !important;
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  
+  .payer-row {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  .payer-row .input {
+    flex: none !important;
+    width: 100%;
+  }
+  
+  .submit-button-row {
+    flex-direction: column !important;
+  }
+  
+  .submit-button-row button {
+    min-width: auto !important;
+  }
+}
+
+/* Improved expense card mobile layout */
+@media (max-width: 600px) {
+  .expense-card {
+    padding: 12px;
+  }
+  
+  .expense-card > div {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  .expense-card .expense-amount-display {
+    text-align: center;
+    margin: 8px 0;
+  }
+  
+  .expense-card .delete-btn {
+    align-self: center;
+    margin-top: 8px;
   }
 }
 
