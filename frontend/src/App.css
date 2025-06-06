@@ -62,16 +62,16 @@ body.primary {
 
 /* Secondary Theme (Dark/Alternative) */
 body.secondary {
-  --theme-bg: #309898;
-  --theme-primary: #FF9F00;
-  --theme-secondary: #F4631E;
-  --theme-accent: #CB0404;
-  --theme-accent-light: rgba(203, 4, 4, 0.3);
-  --theme-accent-lighter: rgba(203, 4, 4, 0.5);
-  --theme-card: #309898;
-  --theme-font: #ffffff;
-  --theme-muted: #f0f0f0;
-  --error-bg: #CB0404;
+  --theme-bg: #384B70;
+  --theme-primary: #507687;
+  --theme-secondary: #FCFAEE;
+  --theme-accent: #B8001F;
+  --theme-accent-light: rgba(184, 0, 31, 0.3);
+  --theme-accent-lighter: rgba(184, 0, 31, 0.5);
+  --theme-card: #FCFAEE;
+  --theme-font: #FCFAEE;
+  --theme-muted: #507687;
+  --error-bg: #B8001F;
 }
 
 /* Header Theme Styling */
