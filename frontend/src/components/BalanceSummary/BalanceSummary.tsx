@@ -40,6 +40,20 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
   const [categoryBreakdown, setCategoryBreakdown] = useState<Record<string, number>>({});
   const [participantExpenses, setParticipantExpenses] = useState<Record<string, ParticipantExpense[]>>({});
 
+  // Helper function to format currency amounts with proper negative sign placement
+  const formatCurrency = (amount: number, showPositiveSign: boolean = false): string => {
+    const absAmount = Math.abs(amount);
+    const formattedAmount = `¤${absAmount.toFixed(2)}`;
+    
+    if (amount < 0) {
+      return `-${formattedAmount}`;
+    } else if (amount > 0 && showPositiveSign) {
+      return `+${formattedAmount}`;
+    } else {
+      return formattedAmount;
+    }
+  };
+
   useEffect(() => {
     loadExpensesAndCalculateBalances();
   }, [trip]);
@@ -255,25 +269,25 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     let report = `BALANCE SUMMARY REPORT\n`;
     report += `Trip: ${trip.trip_name}\n`;
     report += `Generated: ${new Date().toLocaleDateString()}\n`;
-    report += `Total Expenses: $${totalExpenses.toFixed(2)}\n`;
+    report += `Total Expenses: ${formatCurrency(totalExpenses)}\n`;
     report += `Number of Expenses: ${expenses.length}\n\n`;
     
     report += `PARTICIPANT BALANCES:\n`;
     balances.forEach(b => {
-      report += `${b.participant}: $${b.balance.toFixed(2)} (Paid: $${b.totalPaid.toFixed(2)}, Owes: $${b.totalOwes.toFixed(2)})\n`;
+      report += `${b.participant}: ${formatCurrency(b.balance)} (Paid: ${formatCurrency(b.totalPaid)}, Owes: ${formatCurrency(b.totalOwes)})\n`;
     });
     
     if (settlements.length > 0) {
       report += `\nSUGGESTED SETTLEMENTS:\n`;
       settlements.forEach(s => {
-        report += `${s.from} → ${s.to}: $${s.amount.toFixed(2)}\n`;
+        report += `${s.from} → ${s.to}: ${formatCurrency(s.amount)}\n`;
       });
     }
     
     report += `\nCATEGORY BREAKDOWN:\n`;
     Object.entries(categoryBreakdown).forEach(([category, amount]) => {
       const categoryLabel = getCategoryLabel(category);
-      report += `${categoryLabel}: $${amount.toFixed(2)}\n`;
+      report += `${categoryLabel}: ${formatCurrency(amount)}\n`;
     });
     
     const blob = new Blob([report], { type: 'text/plain' });
@@ -412,7 +426,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         border: '1px solid var(--theme-accent)'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>${totalExpenses.toFixed(2)}</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{formatCurrency(totalExpenses)}</div>
           <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Total Spent</div>
         </div>
         <div style={{ textAlign: 'center' }}>
@@ -497,7 +511,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                     {bal.participant}
                   </div>
                   <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>
-                    Paid: ${bal.totalPaid.toFixed(2)} • Owes: ${bal.totalOwes.toFixed(2)}
+                    Paid: {formatCurrency(bal.totalPaid)} • Owes: {formatCurrency(bal.totalOwes)}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -507,7 +521,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                     color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)',
                     marginBottom: '4px'
                   }}>
-                    {bal.balance >= 0 ? '+' : ''}${bal.balance.toFixed(2)}
+                    {formatCurrency(bal.balance, true)}
                   </div>
                   <div style={{ fontSize: '10px', color: 'var(--theme-font)', opacity: 0.6 }}>
                     {bal.balance < 0 ? 'Owes' : bal.balance > 0 ? 'Gets back' : 'Even'}
@@ -540,7 +554,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                           {getCategoryLabel(category)}
                         </div>
                         <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-primary)', marginBottom: '4px' }}>
-                          ${amount.toFixed(2)}
+                          {formatCurrency(amount)}
                         </div>
                         <div style={{ fontSize: '11px', color: 'var(--theme-font)', opacity: 0.7 }}>
                           {percentage.toFixed(1)}%
@@ -575,7 +589,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <option value="">View all participants</option>
               {balances.map(bal => (
                 <option key={bal.participant} value={bal.participant}>
-                  {bal.participant} (Balance: ${bal.balance.toFixed(2)})
+                  {bal.participant} (Balance: {formatCurrency(bal.balance)})
                 </option>
               ))}
             </select>
@@ -602,16 +616,16 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', fontSize: '14px' }}>
                         <div>
                           <div style={{ fontWeight: 600, color: 'var(--theme-primary)' }}>Total Paid</div>
-                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>${participant.totalPaid.toFixed(2)}</div>
+                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>{formatCurrency(participant.totalPaid)}</div>
                         </div>
                         <div>
                           <div style={{ fontWeight: 600, color: 'var(--danger, #d32f2f)' }}>Total Owes</div>
-                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>${participant.totalOwes.toFixed(2)}</div>
+                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>{formatCurrency(participant.totalOwes)}</div>
                         </div>
                         <div>
                           <div style={{ fontWeight: 600, color: participant.balance >= 0 ? 'var(--theme-primary)' : 'var(--danger, #d32f2f)' }}>Balance</div>
                           <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>
-                            {participant.balance >= 0 ? '+' : ''}${participant.balance.toFixed(2)}
+                            {formatCurrency(participant.balance, true)}
                           </div>
                         </div>
                       </div>
@@ -644,7 +658,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                                   </div>
                                 </div>
                                 <div style={{ fontWeight: 700, color: 'var(--theme-primary)' }}>
-                                  ${exp.amount.toFixed(2)}
+                                  {formatCurrency(exp.amount)}
                                 </div>
                               </div>
                             ))}
@@ -684,7 +698,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                       fontWeight: 700, 
                       color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)'
                     }}>
-                      Balance: {bal.balance >= 0 ? '+' : ''}${bal.balance.toFixed(2)}
+                      Balance: {formatCurrency(bal.balance, true)}
                     </div>
                   </div>
                 ))}
@@ -744,7 +758,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                         background: 'var(--theme-accent)',
                         borderRadius: '6px'
                       }}>
-                        ${s.amount.toFixed(2)}
+                        ¤{s.amount.toFixed(2)}
                       </div>
                     </div>
                   ))}
