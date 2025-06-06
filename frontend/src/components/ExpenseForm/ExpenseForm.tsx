@@ -271,20 +271,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     { value: 'other', label: 'Other' }
   ];
 
-  // Helper function to format currency amounts with proper negative sign placement
-  const formatCurrency = (amount: number, showPositiveSign: boolean = false): string => {
-    const absAmount = Math.abs(amount);
-    const formattedAmount = `¤${absAmount.toFixed(2)}`;
-    
-    if (amount < 0) {
-      return `-${formattedAmount}`;
-    } else if (amount > 0 && showPositiveSign) {
-      return `+${formattedAmount}`;
-    } else {
-      return formattedAmount;
-    }
-  };
-
   useEffect(() => {
     if (descriptionRef.current) {
       descriptionRef.current.focus();
