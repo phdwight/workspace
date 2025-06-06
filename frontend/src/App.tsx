@@ -83,13 +83,20 @@ function App() {
   };
 
   const forceReload = () => {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(registrations => {
-        registrations.forEach(reg => reg.unregister());
+    // Show confirmation dialog with warning about data loss
+    const confirmed = window.confirm(
+      `${i18n.common.forceReloadTitle}\n\n${i18n.common.forceReloadWarning}`
+    );
+    
+    if (confirmed) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          registrations.forEach(reg => reg.unregister());
+          window.location.reload();
+        });
+      } else {
         window.location.reload();
-      });
-    } else {
-      window.location.reload();
+      }
     }
   };
 

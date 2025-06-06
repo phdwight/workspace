@@ -371,10 +371,10 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
   }, 0);
 
   return (
-    <div className="balance-summary-container unified-card" style={{ background: 'white', borderRadius: 12, maxWidth: 600, margin: '32px auto', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+    <div className="balance-summary-container unified-card" style={{ background: 'var(--theme-card)', borderRadius: 12, maxWidth: 600, margin: '32px auto', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
       {/* Header with title and controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 700 }}>{i18n.balanceSummary.title}</h2>
+        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
         <div style={{ position: 'relative' }}>
           <button
             className="export-btn"
@@ -388,7 +388,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               position: 'absolute',
               top: '100%',
               right: 0,
-              background: 'white',
+              background: 'var(--theme-card)',
               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
               borderRadius: '8px',
               padding: '8px',
@@ -398,14 +398,14 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <button
                 className="export-option"
                 onClick={() => handleExportSummary('csv')}
-                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px' }}
+                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px', color: 'var(--theme-font)' }}
               >
                 📄 CSV Summary
               </button>
               <button
                 className="export-option"
                 onClick={() => handleExportSummary('detailed')}
-                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px' }}
+                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px', color: 'var(--theme-font)' }}
               >
                 📋 Detailed Report
               </button>
@@ -572,7 +572,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         <div className="participant-details-view">
           {/* Participant Selector */}
           <div style={{ marginBottom: 20 }}>
-            <label style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block' }}>
+            <label style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block', color: 'var(--theme-font)' }}>
               👤 Select Participant:
             </label>
             <select
@@ -581,9 +581,11 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               style={{
                 width: '100%',
                 padding: '10px',
-                border: '1px solid #ddd',
+                border: '1px solid var(--theme-accent)',
                 borderRadius: '6px',
-                fontSize: '14px'
+                fontSize: '14px',
+                background: 'var(--theme-card)',
+                color: 'var(--theme-font)'
               }}
             >
               <option value="">View all participants</option>
@@ -610,9 +612,10 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                       padding: '16px',
                       background: 'var(--theme-card)',
                       borderRadius: '8px',
-                      marginBottom: '20px'
+                      marginBottom: '20px',
+                      border: '1px solid var(--theme-accent)'
                     }}>
-                      <h3 style={{ margin: '0 0 12px 0', fontSize: '18px' }}>{selectedParticipant}</h3>
+                      <h3 style={{ margin: '0 0 12px 0', fontSize: '18px', color: 'var(--theme-font)' }}>{selectedParticipant}</h3>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', fontSize: '14px' }}>
                         <div>
                           <div style={{ fontWeight: 600, color: 'var(--theme-primary)' }}>Total Paid</div>
@@ -800,7 +803,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
       <div style={{ 
         marginTop: 32, 
         paddingTop: 24,
-        borderTop: '1px solid #e0e0e0',
+        borderTop: '1px solid var(--theme-accent)',
         display: 'flex', 
         gap: 12,
         flexWrap: 'wrap'

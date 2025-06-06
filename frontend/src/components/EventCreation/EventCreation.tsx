@@ -405,16 +405,15 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                   fontWeight: 700, 
                   fontSize: 13 
                 }}>
-                  <th style={{ padding: '12px 8px', textAlign: 'left', borderTopLeftRadius: 10 }}>
+                  <th style={{ padding: '12px 8px', textAlign: 'left', borderTopLeftRadius: 10, width: '50%' }}>
                     {i18n.eventsList?.eventColumn || 'Event'}
                   </th>
-                  <th style={{ padding: '12px 8px', textAlign: 'left' }}>
+                  <th style={{ padding: '12px 8px', textAlign: 'left', width: '35%' }}>
                     {i18n.eventsList?.participantsColumn || 'Participants'}
                   </th>
-                  <th style={{ width: 40, padding: '12px 4px', textAlign: 'center' }}>
+                  <th style={{ width: '15%', borderTopRightRadius: 10, padding: '12px 4px', textAlign: 'center' }}>
                     {i18n.eventsList?.actionsColumn || 'Actions'}
                   </th>
-                  <th style={{ width: 100, borderTopRightRadius: 10, padding: '12px 8px', textAlign: 'center' }}></th>
                 </tr>
               </thead>
               <tbody>
@@ -436,16 +435,17 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                     <td style={{ 
                       padding: '12px 8px', 
                       fontWeight: 600, 
-                      fontSize: 14, 
+                      fontSize: 15, 
                       color: 'var(--theme-font, #213555)', 
-                      verticalAlign: 'middle' 
+                      verticalAlign: 'middle',
+                      width: '50%'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', minHeight: 32 }}>
                         <span style={{ marginRight: 8, fontSize: 16, display: 'flex', alignItems: 'center' }}>
                           🧳
                         </span>
-                        <span style={{ display: 'block', lineHeight: 1.3, wordBreak: 'break-word' }}>
-                          {event.event_name}
+                        <span style={{ display: 'block', lineHeight: 1.3, wordBreak: 'break-word', fontWeight: 700 }}>
+             {event.event_name}
                         </span>
                       </div>
                     </td>
@@ -454,7 +454,7 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                       color: 'var(--theme-font, #213555)', 
                       fontSize: 13, 
                       verticalAlign: 'middle', 
-                      maxWidth: 140, 
+                      width: '35%',
                       overflow: 'hidden', 
                       textOverflow: 'ellipsis', 
                       whiteSpace: 'nowrap' 
@@ -466,70 +466,71 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                         : event.participants.join(', ')
                       }
                     </td>
-                    <td style={{ padding: '8px 4px', textAlign: 'center', verticalAlign: 'middle' }}>
-                      <button
-                        type="button"
-                        aria-label={i18n.eventsList?.deleteAria?.(event.event_name) || `Delete event ${event.event_name}`}
-                        style={{
-                          background: 'none',
-                          border: '1px solid var(--danger, #d32f2f)',
-                          cursor: 'pointer',
-                          color: 'var(--danger, #d32f2f)',
-                          fontSize: 16,
-                          padding: 0,
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          height: 32,
-                          width: 32,
-                          borderRadius: 6,
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'var(--danger, #d32f2f)';
-                          e.currentTarget.style.color = 'var(--theme-card)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'none';
-                          e.currentTarget.style.color = 'var(--danger, #d32f2f)';
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteEvent(event.event_name);
-                        }}
-                      >
-                        ×
-                      </button>
-                    </td>
-                    <td style={{ padding: '8px', textAlign: 'center', verticalAlign: 'middle' }}>
-                      <button
-                        type="button"
-                        style={{
-                          background: 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
-                          color: 'var(--theme-card)',
-                          border: 'none',
-                          borderRadius: 8,
-                          fontSize: '0.9rem',
-                          fontWeight: 600,
-                          padding: '8px 16px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(33, 53, 85, 0.3)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'none';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
-                        onClick={() => {
-                          setSelectedEvent?.(event);
-                          setPage?.('expenses');
-                        }}
-                      >
-                        {i18n.eventsList?.openButton || 'Open'}
-                      </button>
+                    <td style={{ padding: '8px 4px', textAlign: 'center', verticalAlign: 'middle', width: '15%' }}>
+                      <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'center' }}>
+                        <button
+                          type="button"
+                          style={{
+                            background: 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
+                            color: 'var(--theme-card)',
+                            border: 'none',
+                            borderRadius: 6,
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            padding: '6px 10px',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s ease',
+                            minWidth: '50px'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-1px)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(33, 53, 85, 0.3)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'none';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
+                          onClick={() => {
+                            setSelectedEvent?.(event);
+                            setPage?.('expenses');
+                          }}
+                        >
+                          {i18n.eventsList?.openButton || 'Open'}
+                        </button>
+                        <button
+                          type="button"
+                          aria-label={i18n.eventsList?.deleteAria?.(event.event_name) || `Delete event ${event.event_name}`}
+                          style={{
+                            background: 'none',
+                            border: '1px solid var(--danger, #d32f2f)',
+                            cursor: 'pointer',
+                            color: 'var(--danger, #d32f2f)',
+                            fontSize: 14,
+                            padding: 0,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: 28,
+                            width: 28,
+                            borderRadius: 4,
+                            transition: 'all 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'var(--danger, #d32f2f)';
+                            e.currentTarget.style.color = 'var(--theme-card)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'none';
+                            e.currentTarget.style.color = 'var(--danger, #d32f2f)';
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteEvent(event.event_name);
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
