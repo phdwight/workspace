@@ -191,12 +191,10 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>{desc}</h4>
-                        {exp.category && (
-                          <span className="expense-category-tag">
-                            {categoryLabel}
-                          </span>
-                        )}
+                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>{categoryLabel}</h4>
+                        <span style={{ fontSize: '14px', color: 'var(--theme-muted)', fontWeight: 'normal' }}>
+                          {desc}
+                        </span>
                       </div>
                       <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
                         <strong>Date:</strong> {exp.date}
@@ -327,8 +325,8 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   };
 
   const validateForm = (): string | null => {
-    if (!description.trim()) {
-      return "Description is required";
+    if (!category.trim()) {
+      return "Category is required";
     }
     if (payers.length === 0) {
       return "At least one payer is required";
@@ -367,7 +365,8 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
         description,
         category
       );
-      addToast(`Expense "${description}" added successfully!`, 'success');
+      const displayName = description.trim() || categories.find(cat => cat.value === category)?.label || category;
+      addToast(`Expense "${displayName}" added successfully!`, 'success');
       setDescription("");
       setCategory("");
       setPayers([{ name: "", amount: "" }]);
@@ -409,25 +408,20 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     <div className="trip-creation-container">
       <h2>{i18n.expenseForm.title}</h2>
       
-      {/* Feature Overview */}
-      <div style={{ 
-        background: 'var(--theme-card)', 
-        border: '1px solid var(--theme-accent)', 
-        borderRadius: '6px', 
-        padding: '12px', 
-        marginBottom: '16px',
-        fontSize: '14px',
-        color: 'var(--theme-font)'
-      }}>
-        <strong>💡 Enhanced Features:</strong> 
-        <span style={{ marginLeft: '8px' }}>
-          Category selection • Participant helpers • Real-time calculations • Export/Import • Search & filter
-        </span>
-      </div>
+
       
       <form onSubmit={handleSubmit} className="trip-form">
         {error && (
-          <div className="error-message" role="alert">{error}</div>
+          <div className="error-message" role="alert" style={{ 
+            marginBottom: 16, 
+            padding: '12px', 
+            backgroundColor: 'var(--error-bg, #ffebee)', 
+            borderRadius: '8px', 
+            border: '1px solid var(--danger)', 
+            color: 'var(--danger, #d32f2f)',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}>{error}</div>
         )}
         {/* Date */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
@@ -443,6 +437,28 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             style={{ flex: 1 }}
           />
         </div>
+        
+        {/* Category */}
+        <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+          <label htmlFor="category" style={{ minWidth: 110, marginRight: 8 }}>{(i18n.expenseForm as any).categoryLabel || "Category"} *</label>
+          <select
+            id="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            disabled={loading}
+            className="input"
+            style={{ flex: 1 }}
+            required
+          >
+            <option value="">{(i18n.expenseForm as any).categoryPlaceholder || "Select category"}</option>
+            {categories.map((cat) => (
+              <option key={cat.value} value={cat.value}>
+                {(i18n.expenseForm as any).categories?.[cat.value] || cat.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        
         {/* Description */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
           <label htmlFor="description" style={{ minWidth: 110, marginRight: 8 }}>{i18n.expenseForm.descriptionLabel}</label>
@@ -457,26 +473,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             className="input"
             style={{ flex: 1 }}
           />
-        </div>
-        
-        {/* Category */}
-        <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-          <label htmlFor="category" style={{ minWidth: 110, marginRight: 8 }}>{(i18n.expenseForm as any).categoryLabel || "Category"}</label>
-          <select
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            disabled={loading}
-            className="input"
-            style={{ flex: 1 }}
-          >
-            <option value="">{(i18n.expenseForm as any).categoryPlaceholder || "Select category"}</option>
-            {categories.map((cat) => (
-              <option key={cat.value} value={cat.value}>
-                {(i18n.expenseForm as any).categories?.[cat.value] || cat.label}
-              </option>
-            ))}
-          </select>
         </div>
         {/* Payers */}
         <div className="form-group" style={{ marginBottom: 12 }}>
@@ -526,7 +522,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
               >
                 {(i18n.expenseForm as any).selectAllParticipants || "Select All"}
               </button>
-              <span style={{ fontSize: 12, color: 'var(--theme-muted)' }}>|</span>
               <button 
                 type="button" 
                 onClick={handleDeselectAllParticipants} 
@@ -535,7 +530,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
               >
                 {(i18n.expenseForm as any).deselectAllParticipants || "Deselect All"}
               </button>
-              <span style={{ fontSize: 12, color: 'var(--theme-muted)' }}>|</span>
               <button 
                 type="button" 
                 onClick={calculateSplitEqually} 

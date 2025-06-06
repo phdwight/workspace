@@ -805,7 +805,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         </button>
         <button
           type="button"
-          className="add-btn"
+          className="submit-btn"
           style={{ flex: 1, minWidth: 140, fontWeight: 600 }}
           onClick={() => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
