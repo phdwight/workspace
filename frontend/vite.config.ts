@@ -2,11 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command }) => {
   // Use '/' for local dev/preview, '/workspace/' for production (build for GitHub Pages)
-  const isDevOrPreview = command === 'serve' || mode === 'preview';
+  const base = process.env.VITE_BASE_PATH || (command === 'serve' ? '/' : '/workspace/');
+  const iconSrc = base === '/' ? '/vite.svg' : `${base}vite.svg`;
+  
   return {
-    base: isDevOrPreview ? '/' : '/workspace/',
+    base,
     server: {
       host: true, // Enable external access for GitHub Codespaces
       port: 5173,
@@ -20,12 +22,12 @@ export default defineConfig(({ command, mode }) => {
           name: 'Bill Splitter App',
           icons: [
             {
-              src: '/vite.svg',
+              src: iconSrc,
               sizes: '192x192',
               type: 'image/svg+xml',
             },
             {
-              src: '/vite.svg',
+              src: iconSrc,
               sizes: '512x512',
               type: 'image/svg+xml',
             },
