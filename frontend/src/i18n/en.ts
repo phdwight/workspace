@@ -163,6 +163,10 @@ const en = {
     save: "Save",
     delete: "Delete",
     edit: "Edit",
+    forceReloadWarning: "Force reloading the app may erase your locally stored data. Are you sure you want to continue?",
+    forceReloadTitle: "Warning: Data Loss Risk",
+    yes: "Yes, Continue",
+    no: "No, Cancel"
   }
 };
 

@@ -114,6 +114,10 @@ export interface I18nTexts {
     save: string;
     delete: string;
     edit: string;
+    forceReloadWarning: string;
+    forceReloadTitle: string;
+    yes: string;
+    no: string;
   };
 }
 

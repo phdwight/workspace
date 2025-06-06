@@ -162,7 +162,11 @@ const fil = {
     cancel: "Kanselahin",
     save: "I-save",
     delete: "Tanggalin",
-    edit: "I-edit"
+    edit: "I-edit",
+    forceReloadWarning: "Ang pilitang pag-reload ng app ay maaaring magbura ng inyong lokal na nakaimbak na datos. Sigurado ba kayong magpapatuloy?",
+    forceReloadTitle: "Babala: Panganib ng Pagkawala ng Datos",
+    yes: "Oo, Magpatuloy",
+    no: "Hindi, Kanselahin"
   }
 };
 

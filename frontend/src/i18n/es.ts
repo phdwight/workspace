@@ -162,7 +162,11 @@ const es = {
     cancel: "Cancelar",
     save: "Guardar",
     delete: "Eliminar",
-    edit: "Editar"
+    edit: "Editar",
+    forceReloadWarning: "Forzar la recarga de la aplicación puede borrar tus datos almacenados localmente. ¿Estás seguro de que quieres continuar?",
+    forceReloadTitle: "Advertencia: Riesgo de Pérdida de Datos",
+    yes: "Sí, Continuar",
+    no: "No, Cancelar"
   }
 };
 
