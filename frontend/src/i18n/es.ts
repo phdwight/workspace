@@ -90,7 +90,6 @@ const es = {
     expenseAdded: "¡Gasto agregado exitosamente!",
     expenseDeleted: "¡Gasto eliminado exitosamente!",
     expenseUpdated: "¡Gasto actualizado exitosamente!",
-    keyboardTip: "Consejo: Usa Ctrl+Enter para enviar, Tab para navegar",
     searchPlaceholder: "Buscar gastos...",
     filterByCategory: "Filtrar por categoría",
     sortBy: "Ordenar por",

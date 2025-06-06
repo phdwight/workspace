@@ -263,24 +263,8 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     if (descriptionRef.current) {
       descriptionRef.current.focus();
     }
-    
-    // Add keyboard shortcuts
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+Enter or Cmd+Enter to submit form
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !loading) {
-        e.preventDefault();
-        if (description.trim() && validateForm() === null) {
-          handleSubmit(e as any);
-        }
-      }
-    };
-    
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [description, loading]);
+    // Mobile-first design - no keyboard shortcuts needed
+  }, []);
 
   useEffect(() => {
     setSelectedParticipants(trip.participants);
@@ -437,7 +421,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
       }}>
         <strong>💡 Enhanced Features:</strong> 
         <span style={{ marginLeft: '8px' }}>
-          Category selection • Keyboard shortcuts (Ctrl+Enter) • Participant helpers • Real-time calculations • Export/Import • Search & filter
+          Category selection • Participant helpers • Real-time calculations • Export/Import • Search & filter
         </span>
       </div>
       
@@ -585,9 +569,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px', flexDirection: 'column' }}>
-          <div className="keyboard-tip">
-            {(i18n.expenseForm as any).keyboardTip || "Tip: Use Ctrl+Enter to submit, Tab to navigate"}
-          </div>
           <div className="submit-button-row" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
               type="submit"

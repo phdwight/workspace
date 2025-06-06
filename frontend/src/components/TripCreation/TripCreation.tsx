@@ -20,32 +20,8 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
     if (tripNameRef.current) {
       tripNameRef.current.focus();
     }
-    
-    // Add keyboard shortcuts
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Ctrl+Enter or Cmd+Enter to submit form
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && !loading) {
-        e.preventDefault();
-        if (tripName.trim()) {
-          handleSubmit(e as any);
-        }
-      }
-      
-      // Ctrl+Plus or Cmd+Plus to add participant
-      if ((e.ctrlKey || e.metaKey) && e.key === '+' && !loading) {
-        e.preventDefault();
-        if (participants.length < 10) {
-          addParticipant();
-        }
-      }
-    };
-    
-    document.addEventListener('keydown', handleKeyDown);
-    
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [tripName, loading, participants.length]);
+    // Mobile-first design - no keyboard shortcuts needed
+  }, []);
 
   const validateParticipants = (participantList: string[]): string | null => {
     const normalized = participantList.map((p: string) => p.trim().toLowerCase());
@@ -244,15 +220,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
         resolve(true);
       });
       
-      // Close on escape key
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') {
-          cleanup();
-          resolve(false);
-          document.removeEventListener('keydown', handleKeyDown);
-        }
-      };
-      document.addEventListener('keydown', handleKeyDown);
+      // Mobile-first design - no keyboard handlers needed
     });
   };
 
@@ -381,16 +349,6 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
             )}
           </button>
           
-          {/* Keyboard shortcuts tip */}
-          <div style={{ 
-            fontSize: '0.8rem', 
-            color: 'var(--theme-font, #213555)', 
-            opacity: 0.7, 
-            textAlign: 'center',
-            marginTop: '8px'
-          }}>
-            💡 {i18n.tripCreation?.keyboardTip || 'Tip: Use Ctrl+Enter to submit, Ctrl+Plus to add participant'}
-          </div>
         </div>
       </form>
 
