@@ -10,9 +10,9 @@ export interface User {
   iat?: number;
 }
 
-export interface Trip {
+export interface Event {
   id: string;
-  trip_name: string;
+  event_name: string;
   user_email: string;
   participants: string[];
   created_at: string;
@@ -20,8 +20,8 @@ export interface Trip {
 
 export interface Expense {
   id: string;
-  trip_id: string;
-  trip_name: string;
+  event_id: string;
+  event_name: string;
   description?: string; // Optional for backward compatibility
   category?: string; // Optional expense category
   payers: { name: string; amount: number }[]; // Multiple payers with amounts
@@ -39,10 +39,10 @@ export interface Balance {
 }
 
 export interface I18nTexts {
-  tripCreation: {
+  eventCreation: {
     title: string;
-    tripNameLabel: string;
-    tripNamePlaceholder: string;
+    eventNameLabel: string;
+    eventNamePlaceholder: string;
     participantsLabel: string;
     participantPlaceholder: (index: number) => string;
     addParticipant: string;
@@ -61,10 +61,10 @@ export interface I18nTexts {
     createdName: string;
     createdParticipants: string;
   };
-  tripsList: {
+  eventsList: {
     title: string;
     loading: string;
-    noTrips: string;
+    noEvents: string;
     participants: (n: number) => string;
     delete: string;
     deleting: string;
@@ -119,7 +119,7 @@ export interface I18nTexts {
 
 export type Language = 'en' | 'es' | 'fil';
 
-export type Page = 'trips' | 'expenses' | 'balances';
+export type Page = 'events' | 'expenses' | 'balances';
 
 // Component props types
 export interface BaseComponentProps {
@@ -127,19 +127,19 @@ export interface BaseComponentProps {
   i18n: I18nTexts;
 }
 
-export interface TripCreationProps extends BaseComponentProps {
+export interface EventCreationProps extends BaseComponentProps {
   setUser: (user: User | null) => void;
-  onTripCreated?: (trip: Trip) => void;
+  onEventCreated?: (event: Event) => void;
   setPage: (page: Page) => void;
-  setSelectedTrip: (trip: Trip) => void;
-  trips: Trip[];
-  setTrips: (trips: Trip[]) => void;
+  setSelectedEvent: (event: Event) => void;
+  events: Event[];
+  setEvents: (events: Event[]) => void;
   setRefreshKey?: (fn: (key: number) => number) => void;
 }
 
 export interface ExpenseFormProps {
   i18n: I18nTexts;
-  trip: Trip;
+  event: Event;
   onExpenseAdded?: () => void;
   setRefreshKey?: (fn: (key: number) => number) => void;
 }
@@ -147,6 +147,6 @@ export interface ExpenseFormProps {
 // Remove user prop from BalanceSummaryProps in types
 export interface BalanceSummaryProps {
   i18n: I18nTexts;
-  trip: Trip;
+  event: Event;
   refreshKey?: number;
 }

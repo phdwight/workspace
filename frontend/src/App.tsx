@@ -5,12 +5,12 @@ import es from './i18n/es';
 import fil from './i18n/fil';
 
 // Types
-import type { User, Trip, I18nTexts, Page } from './types';
+import type { User, Event, I18nTexts, Page } from './types';
 
 // Components
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
 import { ToastProvider } from './components/shared/Toast';
-import { TripCreation } from './components/TripCreation';
+import { EventCreation } from './components/EventCreation';
 import { ExpenseForm } from './components/ExpenseForm';
 import { BalanceSummary } from './components/BalanceSummary';
 
@@ -20,8 +20,8 @@ const languages = { en, es, fil } as const;
 function App() {
   // State
   const [user, setUser] = useState<User | null>(null);
-  const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
-  const [page, setPage] = useState<Page>('trips');
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [page, setPage] = useState<Page>('events');
   const [language, setLanguage] = useState<keyof typeof languages>('en');
   const [theme, setTheme] = useState<'primary' | 'secondary'>('primary');
 
@@ -60,14 +60,14 @@ function App() {
   useEffect(() => {
     const toSummary = () => setPage('balances');
     const toExpenses = () => setPage('expenses');
-    const toTrips = () => setPage('trips');
+    const toEvents = () => setPage('events');
     window.addEventListener('navigateToSummary', toSummary);
     window.addEventListener('navigateToExpenses', toExpenses);
-    window.addEventListener('navigateToTrips', toTrips);
+    window.addEventListener('navigateToEvents', toEvents);
     return () => {
       window.removeEventListener('navigateToSummary', toSummary);
       window.removeEventListener('navigateToExpenses', toExpenses);
-      window.removeEventListener('navigateToTrips', toTrips);
+      window.removeEventListener('navigateToEvents', toEvents);
     };
   }, []);
 
@@ -198,41 +198,41 @@ function App() {
     </div>
   );
 
-  // Remove trips and setTrips props from TripCreation and ExpenseForm
+  // Remove events and setEvents props from EventCreation and ExpenseForm
   // Pass setPage as (page: Page) => void
   const renderContent = () => {
     switch (page) {
-      case 'trips':
+      case 'events':
         return (
-          <TripCreation
+          <EventCreation
             i18n={i18n}
             setPage={setPage as (page: string) => void}
-            setSelectedTrip={setSelectedTrip}
+            setSelectedEvent={setSelectedEvent}
           />
         );
       case 'expenses':
-        return selectedTrip ? (
+        return selectedEvent ? (
           <ExpenseForm
             i18n={i18n}
-            trip={selectedTrip}
+            event={selectedEvent}
             onExpenseAdded={() => {}}
           />
         ) : (
           <div style={{ padding: '24px', textAlign: 'center' }}>
-            <p>{i18n.tripsList.noTrips}</p>
-            <button onClick={() => setPage('trips')}>{i18n.tripsList.title}</button>
+            <p>{i18n.eventsList.noEvents}</p>
+            <button onClick={() => setPage('events')}>{i18n.eventsList.title}</button>
           </div>
         );
       case 'balances':
-        return selectedTrip ? (
+        return selectedEvent ? (
           <BalanceSummary
             i18n={i18n}
-            trip={selectedTrip}
+            event={selectedEvent}
           />
         ) : (
           <div style={{ padding: '24px', textAlign: 'center' }}>
-            <p>{i18n.tripsList.noTrips}</p>
-            <button onClick={() => setPage('trips')}>{i18n.tripsList.title}</button>
+            <p>{i18n.eventsList.noEvents}</p>
+            <button onClick={() => setPage('events')}>{i18n.eventsList.title}</button>
           </div>
         );
       default:

@@ -1,9 +1,9 @@
 // Local Storage Service for Bill Splitter PWA
 // Replaces the backend API with browser local storage
 
-export interface Trip {
+export interface Event {
   id: string;
-  trip_name: string;
+  event_name: string;
   user_email: string;
   participants: string[];
   created_at: string;
@@ -11,8 +11,8 @@ export interface Trip {
 
 export interface Expense {
   id: string;
-  trip_id: string;
-  trip_name: string;
+  event_id: string;
+  event_name: string;
   payers: { name: string; amount: number }[];
   participants: string[];
   date: string;
@@ -23,25 +23,25 @@ export interface Expense {
 }
 
 class LocalStorageService {
-  private TRIPS_KEY = 'bill_splitter_trips';
+  private EVENTS_KEY = 'bill_splitter_events';
   private EXPENSES_KEY = 'bill_splitter_expenses';
 
   // Helper methods for storage
-  private getTrips(): Trip[] {
+  private getEvents(): Event[] {
     try {
-      const data = localStorage.getItem(this.TRIPS_KEY);
+      const data = localStorage.getItem(this.EVENTS_KEY);
       return data ? JSON.parse(data) : [];
     } catch (error) {
-      console.error('Error reading trips from localStorage:', error);
+      console.error('Error reading events from localStorage:', error);
       return [];
     }
   }
 
-  private saveTrips(trips: Trip[]): void {
+  private saveEvents(events: Event[]): void {
     try {
-      localStorage.setItem(this.TRIPS_KEY, JSON.stringify(trips));
+      localStorage.setItem(this.EVENTS_KEY, JSON.stringify(events));
     } catch (error) {
-      console.error('Error saving trips to localStorage:', error);
+      console.error('Error saving events to localStorage:', error);
     }
   }
 
@@ -67,77 +67,77 @@ class LocalStorageService {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
-  // Trip Management
-  async getTripsForUser(userEmail: string): Promise<Trip[]> {
-    const trips = this.getTrips();
-    return trips.filter(trip => trip.user_email === userEmail);
+  // Event Management
+  async getEventsForUser(userEmail: string): Promise<Event[]> {
+    const events = this.getEvents();
+    return events.filter(event => event.user_email === userEmail);
   }
 
-  async createTrip(tripName: string, participants: string[], userEmail: string): Promise<Trip> {
-    if (!tripName || !participants.length || !userEmail) {
+  async createEvent(eventName: string, participants: string[], userEmail: string): Promise<Event> {
+    if (!eventName || !participants.length || !userEmail) {
       throw new Error('Missing required fields');
     }
 
-    // Check for duplicate trip names for this user
-    const existingTrips = await this.getTripsForUser(userEmail);
-    if (existingTrips.some(trip => trip.trip_name === tripName)) {
-      throw new Error('Trip name already exists');
+    // Check for duplicate event names for this user
+    const existingEvents = await this.getEventsForUser(userEmail);
+    if (existingEvents.some(event => event.event_name === eventName)) {
+      throw new Error('Event name already exists');
     }
 
-    const newTrip: Trip = {
+    const newEvent: Event = {
       id: this.generateId(),
-      trip_name: tripName,
+      event_name: eventName,
       user_email: userEmail,
       participants: participants.filter(p => p.trim()),
       created_at: new Date().toISOString()
     };
 
-    const trips = this.getTrips();
-    trips.push(newTrip);
-    this.saveTrips(trips);
+    const events = this.getEvents();
+    events.push(newEvent);
+    this.saveEvents(events);
 
-    return newTrip;
+    return newEvent;
   }
 
-  async deleteTrip(tripName: string, userEmail: string): Promise<void> {
-    const trips = this.getTrips();
-    const tripIndex = trips.findIndex(
-      trip => trip.trip_name === tripName && trip.user_email === userEmail
+  async deleteEvent(eventName: string, userEmail: string): Promise<void> {
+    const events = this.getEvents();
+    const eventIndex = events.findIndex(
+      event => event.event_name === eventName && event.user_email === userEmail
     );
 
-    if (tripIndex === -1) {
-      throw new Error('Trip not found');
+    if (eventIndex === -1) {
+      throw new Error('Event not found');
     }
 
-    const tripId = trips[tripIndex].id;
+    const eventId = events[eventIndex].id;
 
-    // Remove the trip
-    trips.splice(tripIndex, 1);
-    this.saveTrips(trips);
+    // Remove the event
+    events.splice(eventIndex, 1);
+    this.saveEvents(events);
 
-    // Remove all expenses for this trip
+    // Remove all expenses for this event
     const expenses = this.getExpenses();
-    const filteredExpenses = expenses.filter(expense => expense.trip_id !== tripId);
+    const filteredExpenses = expenses.filter(expense => expense.event_id !== eventId);
     this.saveExpenses(filteredExpenses);
   }
 
   // Expense Management
-  async getExpensesForTrip(tripName: string, userEmail: string): Promise<Expense[]> {
-    const trips = await this.getTripsForUser(userEmail);
-    const trip = trips.find(t => t.trip_name === tripName);
+  async getExpensesForEvent(eventName: string, userEmail: string): Promise<Expense[]> {
+    const events = await this.getEventsForUser(userEmail);
+    const event = events.find(e => e.event_name === eventName);
     
-    if (!trip) {
+    if (!event) {
       return [];
     }
 
     const expenses = this.getExpenses();
     return expenses
-      .filter(expense => expense.trip_id === trip.id && expense.user_email === userEmail)
+      .filter(expense => expense.event_id === event.id && expense.user_email === userEmail)
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   }
 
   async createExpense(
-    tripName: string,
+    eventName: string,
     payers: { name: string; amount: number }[],
     participants: string[],
     date: string,
@@ -145,7 +145,7 @@ class LocalStorageService {
     description?: string, // <-- add description param
     category?: string // <-- add category param
   ): Promise<Expense> {
-    if (!tripName || !payers.length || !participants.length || !userEmail) {
+    if (!eventName || !payers.length || !participants.length || !userEmail) {
       throw new Error('Missing required fields');
     }
     // Combine payers with the same name
@@ -160,16 +160,16 @@ class LocalStorageService {
     if (totalAmount <= 0) {
       throw new Error('Total amount must be greater than 0');
     }
-    // Find the trip
-    const trips = await this.getTripsForUser(userEmail);
-    const trip = trips.find(t => t.trip_name === tripName);
-    if (!trip) {
-      throw new Error('Trip not found');
+    // Find the event
+    const events = await this.getEventsForUser(userEmail);
+    const event = events.find(e => e.event_name === eventName);
+    if (!event) {
+      throw new Error('Event not found');
     }
     const newExpense: Expense = {
       id: this.generateId(),
-      trip_id: trip.id,
-      trip_name: tripName,
+      event_id: event.id,
+      event_name: eventName,
       payers: uniquePayers,
       participants: participants.filter(p => p.trim()),
       date: date || new Date().toISOString().split('T')[0],
@@ -199,47 +199,47 @@ class LocalStorageService {
   }
 
   // Utility methods
-  async exportData(userEmail: string): Promise<{ trips: Trip[]; expenses: Expense[] }> {
-    const trips = await this.getTripsForUser(userEmail);
+  async exportData(userEmail: string): Promise<{ events: Event[]; expenses: Expense[] }> {
+    const events = await this.getEventsForUser(userEmail);
     const allExpenses = this.getExpenses();
-    const tripIds = trips.map(t => t.id);
+    const eventIds = events.map(e => e.id);
     const expenses = allExpenses.filter(e => 
-      tripIds.includes(e.trip_id) && e.user_email === userEmail
+      eventIds.includes(e.event_id) && e.user_email === userEmail
     );
 
-    return { trips, expenses };
+    return { events, expenses };
   }
 
-  async importData(data: { trips: Trip[]; expenses: Expense[] }, userEmail: string): Promise<void> {
-    if (!data.trips || !data.expenses) {
+  async importData(data: { events: Event[]; expenses: Expense[] }, userEmail: string): Promise<void> {
+    if (!data.events || !data.expenses) {
       throw new Error('Invalid data format');
     }
 
     // Filter data to only include user's data
-    const userTrips = data.trips.filter(t => t.user_email === userEmail);
+    const userEvents = data.events.filter(e => e.user_email === userEmail);
     const userExpenses = data.expenses.filter(e => e.user_email === userEmail);
 
     // Get existing data
-    const existingTrips = this.getTrips();
+    const existingEvents = this.getEvents();
     const existingExpenses = this.getExpenses();
 
     // Remove old data for this user
-    const otherTrips = existingTrips.filter(t => t.user_email !== userEmail);
+    const otherEvents = existingEvents.filter(e => e.user_email !== userEmail);
     const otherExpenses = existingExpenses.filter(e => e.user_email !== userEmail);
 
     // Add imported data
-    this.saveTrips([...otherTrips, ...userTrips]);
+    this.saveEvents([...otherEvents, ...userEvents]);
     this.saveExpenses([...otherExpenses, ...userExpenses]);
   }
 
   async clearUserData(userEmail: string): Promise<void> {
-    const trips = this.getTrips();
+    const events = this.getEvents();
     const expenses = this.getExpenses();
 
-    const filteredTrips = trips.filter(t => t.user_email !== userEmail);
+    const filteredEvents = events.filter(e => e.user_email !== userEmail);
     const filteredExpenses = expenses.filter(e => e.user_email !== userEmail);
 
-    this.saveTrips(filteredTrips);
+    this.saveEvents(filteredEvents);
     this.saveExpenses(filteredExpenses);
   }
 }

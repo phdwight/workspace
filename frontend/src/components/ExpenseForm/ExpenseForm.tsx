@@ -3,12 +3,11 @@ import type { ExpenseFormProps } from '../../types';
 import { useToast } from '../shared/Toast';
 import { localStorageService } from '../../services/localStorage';
 
-const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }> = ({ tripName, refreshKey, i18n }) => {
+const ExpensesList: React.FC<{ eventName: string; refreshKey: number; i18n: any }> = ({ eventName, refreshKey, i18n }) => {
   const [expenses, setExpenses] = useState<any[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [sortBy, setSortBy] = useState('date');
   const { addToast } = useToast();
@@ -39,22 +38,16 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
 
   useEffect(() => {
     setLoading(true);
-    localStorageService.getExpensesForTrip(tripName, 'local')
+    localStorageService.getExpensesForEvent(eventName, 'local')
       .then(setExpenses)
       .catch(err => setError(err.message || 'Failed to load expenses'))
       .finally(() => setLoading(false));
-  }, [tripName, refreshKey]);
+  }, [eventName, refreshKey]);
 
   useEffect(() => {
     let filtered = expenses.filter(exp => {
-      const matchesSearch = !searchTerm || 
-        exp.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        exp.payers?.some((p: any) => p.name?.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        exp.participants?.some((p: string) => p.toLowerCase().includes(searchTerm.toLowerCase()));
-      
       const matchesCategory = !categoryFilter || exp.category === categoryFilter;
-      
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     });
 
     // Sort expenses
@@ -74,7 +67,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
     });
 
     setFilteredExpenses(filtered);
-  }, [expenses, searchTerm, categoryFilter, sortBy]);
+  }, [expenses, categoryFilter, sortBy]);
 
   const handleDeleteExpense = async (expenseId: string) => {
     if (!confirm((i18n.expenseForm as any).confirmDeleteExpense || 'Are you sure you want to delete this expense?')) {
@@ -112,7 +105,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${tripName}-expenses.csv`;
+    a.download = `${eventName}-expenses.csv`;
     a.click();
     URL.revokeObjectURL(url);
     addToast((i18n.expenseForm as any).expensesExported || 'Expenses exported successfully!', 'success');
@@ -150,15 +143,8 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
         </div>
       ) : (
         <>
-          {/* Search and Filter Controls */}
+          {/* Filter Controls */}
           <div className="expense-filter-controls">
-            <input
-              type="text"
-              placeholder={(i18n.expenseForm as any).searchPlaceholder || 'Search expenses...'}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="expense-search-input"
-            />
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
@@ -246,7 +232,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
 
 export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   i18n,
-  trip,
+  event,
   onExpenseAdded
 }) => {
   const [description, setDescription] = useState("");
@@ -279,8 +265,8 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   }, []);
 
   useEffect(() => {
-    setSelectedParticipants(trip.participants);
-  }, [trip.participants]);
+    setSelectedParticipants(event.participants);
+  }, [event.participants]);
 
   const handleParticipantToggle = (participant: string) => {
     setSelectedParticipants(prev =>
@@ -291,7 +277,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   };
 
   const handleSelectAllParticipants = () => {
-    setSelectedParticipants(trip.participants);
+    setSelectedParticipants(event.participants);
   };
 
   const handleDeselectAllParticipants = () => {
@@ -348,7 +334,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     let total = 0;
     for (const p of payers) {
       if (!p.name.trim()) return "Payer name is required for each payer";
-      if (!trip.participants.includes(p.name.trim())) return "Each payer must be a trip participant";
+      if (!event.participants.includes(p.name.trim())) return "Each payer must be an event participant";
       const amt = parseFloat(p.amount);
       if (!p.amount || isNaN(amt) || amt <= 0) return "Each payer must have a valid amount > 0";
       total += amt;
@@ -371,7 +357,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     setError(null);
     try {
       await localStorageService.createExpense(
-        trip.trip_name,
+        event.event_name,
         payers.map(p => ({ name: p.name.trim(), amount: parseFloat(p.amount) })),
         selectedParticipants,
         date,
@@ -384,7 +370,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
       setDescription("");
       setCategory("");
       setPayers([{ name: "", amount: "" }]);
-      setSelectedParticipants(trip.participants);
+      setSelectedParticipants(event.participants);
       setDate(new Date().toISOString().split('T')[0]);
       if (onExpenseAdded) onExpenseAdded();
       setRefreshKey(k => k + 1);
@@ -398,33 +384,33 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     }
   };
 
-  // Add participant to trip
-  const handleAddParticipantToTrip = async () => {
+  // Add participant to event
+  const handleAddParticipantToEvent = async () => {
     const newParticipant = prompt('Enter the name of the new participant:');
     if (!newParticipant || !newParticipant.trim()) return;
-    if (trip.participants.includes(newParticipant.trim())) {
+    if (event.participants.includes(newParticipant.trim())) {
       addToast('Participant already exists in this event.', 'error');
       return;
     }
-    // Update trip in localStorage
-    const trips = JSON.parse(localStorage.getItem('bill_splitter_trips') || '[]');
-    const tripIdx = trips.findIndex((t: any) => t.id === trip.id);
-    if (tripIdx === -1) return;
-    trips[tripIdx].participants.push(newParticipant.trim());
-    localStorage.setItem('bill_splitter_trips', JSON.stringify(trips));
+    // Update event in localStorage
+    const events = JSON.parse(localStorage.getItem('bill_splitter_events') || '[]');
+    const eventIdx = events.findIndex((e: any) => e.id === event.id);
+    if (eventIdx === -1) return;
+    events[eventIdx].participants.push(newParticipant.trim());
+    localStorage.setItem('bill_splitter_events', JSON.stringify(events));
     // Update UI
-    trip.participants.push(newParticipant.trim());
-    setSelectedParticipants([...trip.participants]);
+    event.participants.push(newParticipant.trim());
+    setSelectedParticipants([...event.participants]);
     addToast('Participant added!', 'success');
   };
 
   return (
-    <div className="trip-creation-container">
+    <div className="event-creation-container">
       <h2>{i18n.expenseForm.title}</h2>
       
 
       
-      <form onSubmit={handleSubmit} className="trip-form">
+      <form onSubmit={handleSubmit} className="event-form">
         {error && (
           <div className="error-message" role="alert" style={{ 
             marginBottom: 16, 
@@ -502,7 +488,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                   style={{ flex: 2 }}
                 >
                   <option value="">Select payer</option>
-                  {trip.participants.map((participant) => (
+                  {event.participants.map((participant) => (
                     <option key={participant} value={participant}>{participant}</option>
                   ))}
                 </select>
@@ -553,7 +539,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                 {(i18n.expenseForm as any).splitEqually || "Split Equally"}
               </button>
             </div>
-            {trip.participants.map((participant) => (
+            {event.participants.map((participant) => (
               <label 
                 key={participant}
                 style={{ 
@@ -573,7 +559,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                 <span>{participant}</span>
               </label>
             ))}
-            <button type="button" onClick={handleAddParticipantToTrip} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}</button>
+            <button type="button" onClick={handleAddParticipantToEvent} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}</button>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px', flexDirection: 'column' }}>
@@ -586,21 +572,10 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             >
               {loading ? i18n.expenseForm.adding : i18n.expenseForm.submit}
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                addToast((i18n.expenseForm as any).receiptAdded || 'Receipt attachment feature coming soon!', 'info');
-              }}
-              disabled={loading}
-              className="add-btn"
-              style={{ padding: '12px 16px', fontSize: '14px' }}
-            >
-              📷 Receipt
-            </button>
           </div>
         </div>
       </form>
-      <ExpensesList tripName={trip.trip_name} refreshKey={refreshKey} i18n={i18n} />
+      <ExpensesList eventName={event.event_name} refreshKey={refreshKey} i18n={i18n} />
       {/* Add link to summary/balances page */}
       <div style={{ marginTop: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12 }}>
         <button
@@ -617,11 +592,11 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
         </button>
         <button
           type="button"
-          className="add-btn"
+          className="submit-btn"
           style={{ minWidth: 120, fontWeight: 600 }}
           onClick={() => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
-              window.dispatchEvent(new CustomEvent('navigateToTrips'));
+              window.dispatchEvent(new CustomEvent('navigateToEvents'));
             }
           }}
         >

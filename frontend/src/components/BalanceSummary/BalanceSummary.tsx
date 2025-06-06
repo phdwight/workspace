@@ -25,7 +25,7 @@ interface ParticipantExpense {
 
 export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
   i18n,
-  trip
+  event
 }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [balances, setBalances] = useState<Balance[]>([]);
@@ -56,21 +56,21 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   useEffect(() => {
     loadExpensesAndCalculateBalances();
-  }, [trip]);
+  }, [event]);
 
   const loadExpensesAndCalculateBalances = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const tripExpenses = await localStorageService.getExpensesForTrip(
-        trip.trip_name,
+      const eventExpenses = await localStorageService.getExpensesForEvent(
+        event.event_name,
         'local'
       );
       
-      setExpenses(tripExpenses);
+      setExpenses(eventExpenses);
       
-      if (tripExpenses.length === 0) {
+      if (eventExpenses.length === 0) {
         setBalances([]);
         setSettlements([]);
         setCategoryBreakdown({});
@@ -79,18 +79,18 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         return;
       }
 
-      const calculatedBalances = calculateBalances(tripExpenses);
+      const calculatedBalances = calculateBalances(eventExpenses);
       setBalances(calculatedBalances);
       
       const calculatedSettlements = calculateSettlements(calculatedBalances);
       setSettlements(calculatedSettlements);
       
       // Calculate category breakdown
-      const breakdown = calculateCategoryBreakdown(tripExpenses);
+      const breakdown = calculateCategoryBreakdown(eventExpenses);
       setCategoryBreakdown(breakdown);
       
       // Calculate participant expense details
-      const participantDetails = calculateParticipantExpenses(tripExpenses);
+      const participantDetails = calculateParticipantExpenses(eventExpenses);
       setParticipantExpenses(participantDetails);
       
     } catch (err) {
@@ -104,7 +104,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     const participantBalances: Record<string, Balance> = {};
 
     // Initialize balances for all participants
-    trip.participants.forEach(participant => {
+    event.participants.forEach(participant => {
       participantBalances[participant] = {
         participant,
         totalPaid: 0,
@@ -203,7 +203,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     const participantExpenseMap: Record<string, ParticipantExpense[]> = {};
     
     // Initialize for all participants
-    trip.participants.forEach(participant => {
+    event.participants.forEach(participant => {
       participantExpenseMap[participant] = [];
     });
     
@@ -253,7 +253,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${trip.trip_name.replace(/\s+/g, '_')}_balance_summary.csv`;
+    a.download = `${event.event_name.replace(/\s+/g, '_')}_balance_summary.csv`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -267,7 +267,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     }, 0);
 
     let report = `BALANCE SUMMARY REPORT\n`;
-    report += `Trip: ${trip.trip_name}\n`;
+    report += `Event: ${event.event_name}\n`;
     report += `Generated: ${new Date().toLocaleDateString()}\n`;
     report += `Total Expenses: ${formatCurrency(totalExpenses)}\n`;
     report += `Number of Expenses: ${expenses.length}\n\n`;
@@ -294,7 +294,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${trip.trip_name.replace(/\s+/g, '_')}_detailed_report.txt`;
+    a.download = `${event.event_name.replace(/\s+/g, '_')}_detailed_report.txt`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -314,7 +314,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (loading) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
         <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <div className="loading-spinner" style={{ margin: '0 auto 16px' }}></div>
@@ -326,7 +326,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (error) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
         <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
         <div className="error-message" role="alert" style={{ marginBottom: 16, padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '8px', border: '1px solid var(--danger)', color: 'var(--danger, #d32f2f)' }}>{error}</div>
         <button 
@@ -342,7 +342,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (expenses.length === 0) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
         <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
         <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--theme-muted)' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>💸</div>
@@ -414,7 +414,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         </div>
       </div>
 
-      {/* Trip Overview Stats */}
+      {/* Event Overview Stats */}
       <div className="summary-stats" style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
@@ -823,7 +823,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           style={{ flex: 1, minWidth: 140, fontWeight: 600 }}
           onClick={() => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
-              window.dispatchEvent(new CustomEvent('navigateToTrips'));
+              window.dispatchEvent(new CustomEvent('navigateToEvents'));
             }
           }}
         >
