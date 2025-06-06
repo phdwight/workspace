@@ -1,24 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTrips } from '../../hooks/useTrips';
+import { useEvents } from '../../hooks/useEvents';
 
-interface TripCreationProps {
+interface EventCreationProps {
   i18n: any;
-  onTripCreated?: (trip: any) => void;
+  onEventCreated?: (event: any) => void;
   setPage?: (page: string) => void;
-  setSelectedTrip?: (trip: any) => void;
+  setSelectedEvent?: (event: any) => void;
 }
 
-export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated, setPage, setSelectedTrip }) => {
-  const [tripName, setTripName] = useState<string>("");
+export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreated, setPage, setSelectedEvent }) => {
+  const [eventName, setEventName] = useState<string>("");
   const [participants, setParticipants] = useState<string[]>(["", ""]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const tripNameRef = useRef<HTMLInputElement>(null);
-  const { trips, createTrip, deleteTrip } = useTrips('local');
+  const eventNameRef = useRef<HTMLInputElement>(null);
+  const { events, createEvent, deleteEvent } = useEvents('local');
 
   useEffect(() => {
-    if (tripNameRef.current) {
-      tripNameRef.current.focus();
+    if (eventNameRef.current) {
+      eventNameRef.current.focus();
     }
     // Mobile-first design - no keyboard shortcuts needed
   }, []);
@@ -27,14 +27,14 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
     const normalized = participantList.map((p: string) => p.trim().toLowerCase());
     const hasDuplicate = normalized.some((p: string, i: number) => p && normalized.indexOf(p) !== i);
     if (hasDuplicate) {
-      return i18n.tripCreation?.errorDuplicateParticipants || 'Duplicate participant names are not allowed.';
+      return i18n.eventCreation?.errorDuplicateParticipants || 'Duplicate participant names are not allowed.';
     }
     const validParticipants = participantList.filter((p: string) => p.trim());
     if (validParticipants.length < 2) {
-      return i18n.tripCreation.errorMinParticipants;
+      return i18n.eventCreation.errorMinParticipants;
     }
     if (validParticipants.length > 10) {
-      return i18n.tripCreation?.errorMaxParticipants || 'You can only have up to 10 participants.';
+      return i18n.eventCreation?.errorMaxParticipants || 'You can only have up to 10 participants.';
     }
     return null;
   };
@@ -90,9 +90,9 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
     e.preventDefault();
     setError(null);
     
-    // Validate trip name
-    if (!tripName.trim()) {
-      setError(i18n.tripCreation?.errorMissingName || 'Please enter an event name.');
+    // Validate event name
+    if (!eventName.trim()) {
+      setError(i18n.eventCreation?.errorMissingName || 'Please enter an event name.');
       return;
     }
     
@@ -104,31 +104,31 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
     setLoading(true);
     try {
       const cleanParticipants = participants.map((p: string) => p.trim()).filter(Boolean);
-      const newTrip = await createTrip(tripName.trim(), cleanParticipants);
-      if (onTripCreated) {
-        onTripCreated(newTrip);
+      const newEvent = await createEvent(eventName.trim(), cleanParticipants);
+      if (onEventCreated) {
+        onEventCreated(newEvent);
       }
-      setTripName("");
+      setEventName("");
       setParticipants(["", ""]);
       setError(null);
       setTimeout(() => {
-        tripNameRef.current?.focus();
+        eventNameRef.current?.focus();
       }, 0);
     } catch (err: any) {
-      setError(err.message || i18n.tripCreation?.errorCreate || 'Failed to create trip');
+      setError(err.message || i18n.eventCreation?.errorCreate || 'Failed to create event');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteTrip = async (tripToDelete: any) => {
+  const handleDeleteEvent = async (eventToDelete: any) => {
     const confirmed = await showConfirmDialog(
-      i18n.tripsList?.confirmDelete?.(tripToDelete) || `Delete trip ${tripToDelete}?`
+      i18n.eventsList?.confirmDelete?.(eventToDelete) || `Delete event ${eventToDelete}?`
     );
     if (confirmed) {
-      await deleteTrip(tripToDelete);
+      await deleteEvent(eventToDelete);
       setTimeout(() => {
-        tripNameRef.current?.focus();
+        eventNameRef.current?.focus();
       }, 0);
     }
   };
@@ -161,7 +161,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
             <span style="line-height: 1.3;">${message}</span>
           </div>
           <div style="display: flex; gap: 16px; justify-content: center; margin-top: 16px;">
-            <button id="confirm-yes" style="background: linear-gradient(90deg, ${dangerColor} 0%, var(--danger) 100%); color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3); transition: all 0.2s ease;">${i18n.tripsList?.delete || 'Delete'}</button>
+            <button id="confirm-yes" style="background: linear-gradient(90deg, ${dangerColor} 0%, var(--danger) 100%); color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3); transition: all 0.2s ease;">${i18n.eventsList?.delete || 'Delete'}</button>
             <button id="confirm-no" style="background: ${primaryColor}; color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(33, 53, 85, 0.3); transition: all 0.2s ease;">${i18n.common?.cancel || 'Cancel'}</button>
           </div>
         </div>
@@ -227,9 +227,9 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
   };
 
   return (
-    <div className="trip-creation-container">
-      <h2>{i18n.tripCreation.title}</h2>
-      <form onSubmit={handleSubmit} className="trip-form">
+    <div className="event-creation-container">
+      <h2>{i18n.eventCreation.title}</h2>
+      <form onSubmit={handleSubmit} className="event-form">
         {error && (
           <div className="error-message" role="alert" id="error-message" style={{ 
             marginBottom: 16, 
@@ -246,16 +246,16 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
         )}
         {/* Event Name - inline label and input */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-          <label htmlFor="tripName" style={{ minWidth: 110, marginRight: 8, fontSize: '0.95rem' }}>
-            {i18n.tripCreation.tripNameLabel}
+          <label htmlFor="eventName" style={{ minWidth: 110, marginRight: 8, fontSize: '0.95rem' }}>
+            {i18n.eventCreation.eventNameLabel}
           </label>
           <input
-            ref={tripNameRef}
-            id="tripName"
+            ref={eventNameRef}
+            id="eventName"
             type="text"
-            value={tripName}
-            onChange={e => setTripName(e.target.value)}
-            placeholder={i18n.tripCreation.tripNamePlaceholder}
+            value={eventName}
+            onChange={e => setEventName(e.target.value)}
+            placeholder={i18n.eventCreation.eventNamePlaceholder}
             disabled={loading}
             className="input"
             style={{ flex: 1 }}
@@ -267,7 +267,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
         {/* Participants - inline label, vertical checkboxes */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 16 }}>
           <label htmlFor="participants" style={{ minWidth: 110, marginRight: 8, marginTop: 2, fontSize: '0.95rem' }}>
-            {i18n.tripCreation.participantsLabel}
+            {i18n.eventCreation.participantsLabel}
           </label>
           <div style={{ flex: 1 }}>
             {participants.map((participant, idx) => (
@@ -276,16 +276,16 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                   type="text"
                   value={participant}
                   onChange={e => handleParticipantChange(idx, e.target.value)}
-                  placeholder={i18n.tripCreation.participantPlaceholder(idx)}
+                  placeholder={i18n.eventCreation.participantPlaceholder(idx)}
                   disabled={loading}
                   className="input"
                   style={{ flex: 1, marginBottom: 0 }}
                   maxLength={30}
-                  aria-label={`${i18n.tripCreation.participantsLabel} ${idx + 1}`}
+                  aria-label={`${i18n.eventCreation.participantsLabel} ${idx + 1}`}
                 />
                 <button
                   type="button"
-                  aria-label={`${i18n.tripCreation.removeParticipantAria} ${idx + 1}`}
+                  aria-label={`${i18n.eventCreation.removeParticipantAria} ${idx + 1}`}
                   onClick={() => handleRemoveParticipant(idx)}
                   disabled={loading || participants.length <= 2}
                   style={{ 
@@ -303,7 +303,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                     alignItems: 'center',
                     justifyContent: 'center'
                   }}
-                  title={participants.length <= 2 ? i18n.tripCreation?.minParticipantsTooltip || 'Minimum 2 participants required' : undefined}
+                  title={participants.length <= 2 ? i18n.eventCreation?.minParticipantsTooltip || 'Minimum 2 participants required' : undefined}
                 >
                   &minus;
                 </button>
@@ -313,7 +313,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
               type="button"
               onClick={handleAddParticipant}
               disabled={loading || participants.length >= 10}
-              aria-label={i18n.tripCreation.addParticipant}
+              aria-label={i18n.eventCreation.addParticipant}
               style={{
                 background: participants.length >= 10 ? 'var(--theme-muted)' : 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
                 color: 'var(--theme-card)',
@@ -333,7 +333,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                 outline: 'none',
                 padding: 0
               }}
-              title={participants.length >= 10 ? i18n.tripCreation?.maxParticipantsTooltip || 'Maximum 10 participants allowed' : undefined}
+              title={participants.length >= 10 ? i18n.eventCreation?.maxParticipantsTooltip || 'Maximum 10 participants allowed' : undefined}
             >
               <span style={{ fontSize: 24, fontWeight: 700, lineHeight: 1 }}>+</span>
             </button>
@@ -342,29 +342,29 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
         <div style={{ display: 'flex', gap: '12px', marginTop: '24px', flexDirection: 'column' }}>
           <button
             type="submit"
-            disabled={loading || !tripName.trim()}
+            disabled={loading || !eventName.trim()}
             className="submit-btn"
             style={{ 
               flex: 1,
-              opacity: loading || !tripName.trim() ? 0.6 : 1,
-              cursor: loading || !tripName.trim() ? 'not-allowed' : 'pointer'
+              opacity: loading || !eventName.trim() ? 0.6 : 1,
+              cursor: loading || !eventName.trim() ? 'not-allowed' : 'pointer'
             }}
           >
             {loading ? (
               <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                 <span className="loading-spinner" style={{ width: 16, height: 16 }}></span>
-                {i18n.tripCreation.creating}
+                {i18n.eventCreation.creating}
               </span>
             ) : (
-              i18n.tripCreation.submit
+              i18n.eventCreation.submit
             )}
           </button>
           
         </div>
       </form>
 
-      {/* Trips List */}
-      {trips.length > 0 && (
+      {/* Events List */}
+      {events.length > 0 && (
         <div style={{ 
           marginTop: 32, 
           maxWidth: 520, 
@@ -383,7 +383,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
             marginBottom: 16
           }}>
             <span role="img" aria-label="Events">🧳</span>
-            {i18n.tripsList?.title || 'Your Events'}
+            {i18n.eventsList?.title || 'Your Events'}
           </h3>
           
           <div style={{ maxWidth: 520, margin: '0 auto' }}>
@@ -406,23 +406,23 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                   fontSize: 13 
                 }}>
                   <th style={{ padding: '12px 8px', textAlign: 'left', borderTopLeftRadius: 10 }}>
-                    {i18n.tripsList?.eventColumn || 'Event'}
+                    {i18n.eventsList?.eventColumn || 'Event'}
                   </th>
                   <th style={{ padding: '12px 8px', textAlign: 'left' }}>
-                    {i18n.tripsList?.participantsColumn || 'Participants'}
+                    {i18n.eventsList?.participantsColumn || 'Participants'}
                   </th>
                   <th style={{ width: 40, padding: '12px 4px', textAlign: 'center' }}>
-                    {i18n.tripsList?.actionsColumn || 'Actions'}
+                    {i18n.eventsList?.actionsColumn || 'Actions'}
                   </th>
                   <th style={{ width: 100, borderTopRightRadius: 10, padding: '12px 8px', textAlign: 'center' }}></th>
                 </tr>
               </thead>
               <tbody>
-                {trips.map((trip, idx) => (
+                {events.map((event, idx) => (
                   <tr
-                    key={trip.trip_name}
+                    key={event.event_name}
                     style={{
-                      borderBottom: idx === trips.length - 1 ? 'none' : '1px solid var(--theme-muted)',
+                      borderBottom: idx === events.length - 1 ? 'none' : '1px solid var(--theme-muted)',
                       background: idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-accent-light)',
                       transition: 'background 0.2s ease',
                     }}
@@ -445,7 +445,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                           🧳
                         </span>
                         <span style={{ display: 'block', lineHeight: 1.3, wordBreak: 'break-word' }}>
-                          {trip.trip_name}
+                          {event.event_name}
                         </span>
                       </div>
                     </td>
@@ -459,17 +459,17 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                       textOverflow: 'ellipsis', 
                       whiteSpace: 'nowrap' 
                     }}
-                      title={trip.participants.join(', ')}
+                      title={event.participants.join(', ')}
                     >
-                      {trip.participants.length > 2 
-                        ? `${trip.participants.slice(0, 2).join(', ')} +${trip.participants.length - 2}`
-                        : trip.participants.join(', ')
+                      {event.participants.length > 2 
+                        ? `${event.participants.slice(0, 2).join(', ')} +${event.participants.length - 2}`
+                        : event.participants.join(', ')
                       }
                     </td>
                     <td style={{ padding: '8px 4px', textAlign: 'center', verticalAlign: 'middle' }}>
                       <button
                         type="button"
-                        aria-label={i18n.tripsList?.deleteAria?.(trip.trip_name) || `Delete trip ${trip.trip_name}`}
+                        aria-label={i18n.eventsList?.deleteAria?.(event.event_name) || `Delete event ${event.event_name}`}
                         style={{
                           background: 'none',
                           border: '1px solid var(--danger, #d32f2f)',
@@ -495,7 +495,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteTrip(trip.trip_name);
+                          handleDeleteEvent(event.event_name);
                         }}
                       >
                         ×
@@ -524,11 +524,11 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                           e.currentTarget.style.boxShadow = 'none';
                         }}
                         onClick={() => {
-                          setSelectedTrip?.(trip);
+                          setSelectedEvent?.(event);
                           setPage?.('expenses');
                         }}
                       >
-                        {i18n.tripsList?.openButton || 'Open'}
+                        {i18n.eventsList?.openButton || 'Open'}
                       </button>
                     </td>
                   </tr>

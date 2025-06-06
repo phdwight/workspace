@@ -9,10 +9,10 @@ const en = {
     summary: "Summary",
     settlements: "Settlements"
   },
-  tripCreation: {
+  eventCreation: {
     title: "New Event",
-    tripNameLabel: "Event Name",
-    tripNamePlaceholder: "Enter event name",
+    eventNameLabel: "Event Name",
+    eventNamePlaceholder: "Enter event name",
     participantsLabel: "Participants",
     participantPlaceholder: (index: number) => `Participant ${index + 1}`,
     addParticipant: "Add Participant",
@@ -31,10 +31,10 @@ const en = {
     createdName: "Event Name",
     createdParticipants: "Participants",
   },
-  tripsList: {
+  eventsList: {
     title: "Your Events",
     loading: "Loading events...",
-    noTrips: "No events found.",
+    noEvents: "No events found.",
     participants: (n: number) => `(${n} participants)`,
     delete: "Delete",
     deleting: "Deleting...",
@@ -82,7 +82,7 @@ const en = {
     errorDescriptionRequired: "Description is required",
     errorPayerRequired: "At least one payer is required",
     errorPayerNameRequired: "Payer name is required",
-    errorPayerNotParticipant: "Payer must be a trip participant",
+    errorPayerNotParticipant: "Payer must be an event participant",
     errorInvalidAmount: "Amount must be greater than 0",
     errorNoParticipants: "Please select at least one participant",
     participantAlreadyExists: "Participant already exists in this event",
@@ -111,7 +111,7 @@ const en = {
   },
   expenseHistory: {
     title: "Expense History",
-    todo: "List of all expenses in the trip will go here."
+    todo: "List of all expenses in the event will go here."
   },
   balanceSummary: {
     title: "Balance Summary",
