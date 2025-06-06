@@ -445,7 +445,7 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                           🧳
                         </span>
                         <span style={{ display: 'block', lineHeight: 1.3, wordBreak: 'break-word', fontWeight: 700 }}>
-                          {event.event_name}
+             {event.event_name}
                         </span>
                       </div>
                     </td>
