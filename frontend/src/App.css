@@ -1,3 +1,12 @@
+/* Ensure theme background takes precedence over all other styles */
+* {
+  box-sizing: border-box;
+}
+
+*:not(input):not(textarea):not(select) {
+  background-color: inherit;
+}
+
 :root {
   --primary: #1F4529;
   --secondary: #47663B;
@@ -17,9 +26,15 @@
   --error-bg: #ffebee;
 }
 
+html {
+  background: var(--theme-bg, #E8ECD7) !important;
+  background-color: var(--theme-bg, #E8ECD7) !important;
+}
+
 body, .App {
-  background: var(--background);
-  color: var(--text-main);
+  background: var(--theme-bg, #E8ECD7) !important;
+  background-color: var(--theme-bg, #E8ECD7) !important;
+  color: var(--theme-font, #1F4529) !important;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
@@ -27,6 +42,7 @@ body, .App {
 }
 body {
   background: var(--theme-bg, #E8ECD7) !important;
+  background-color: var(--theme-bg, #E8ECD7) !important;
   color: var(--theme-font, #1F4529) !important;
 }
 
