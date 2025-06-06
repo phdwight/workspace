@@ -42,8 +42,10 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
   const handleParticipantChange = (index: number, value: string) => {
     const updated = [...participants];
     updated[index] = value;
-    const validationError = validateParticipants(updated);
-    setError(validationError);
+    // Clear any existing error when user starts typing
+    if (error) {
+      setError(null);
+    }
     setParticipants(updated);
   };
 
@@ -229,7 +231,16 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
       <h2>{i18n.tripCreation.title}</h2>
       <form onSubmit={handleSubmit} className="trip-form">
         {error && (
-          <div className="error-message" role="alert" id="error-message" style={{ marginBottom: 16 }}>
+          <div className="error-message" role="alert" id="error-message" style={{ 
+            marginBottom: 16, 
+            padding: '12px', 
+            backgroundColor: 'var(--error-bg, #ffebee)', 
+            borderRadius: '8px', 
+            border: '1px solid var(--danger)', 
+            color: 'var(--danger, #d32f2f)',
+            fontSize: '14px',
+            fontWeight: '500'
+          }}>
             {error}
           </div>
         )}
