@@ -243,7 +243,7 @@ function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
-        <div className="App" style={{ minHeight: '100vh', background: '#f5f5f5' }}>
+        <div className="App" style={{ minHeight: '100vh', background: 'var(--theme-bg)' }}>
           {renderHeader()}
           <main style={{ padding: '0 16px' }}>
             {renderContent()}

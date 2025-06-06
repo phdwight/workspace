@@ -13,6 +13,8 @@
   --theme-accent: #D8C4B6;
   --theme-card: #fff;
   --theme-font: #213555;
+  --theme-muted: #666;
+  --error-bg: #ffebee;
 }
 
 body, .App {
@@ -34,8 +36,12 @@ body.primary {
   --theme-primary: #213555;
   --theme-secondary: #3E5879;
   --theme-accent: #D8C4B6;
+  --theme-accent-light: rgba(216, 196, 182, 0.3);
+  --theme-accent-lighter: rgba(216, 196, 182, 0.5);
   --theme-card: #fff;
   --theme-font: #213555;
+  --theme-muted: #666;
+  --error-bg: #ffebee;
 }
 
 /* Secondary Theme (Dark/Alternative) */
@@ -44,8 +50,12 @@ body.secondary {
   --theme-primary: #16213e;
   --theme-secondary: #0f3460;
   --theme-accent: #e94560;
+  --theme-accent-light: rgba(233, 69, 96, 0.3);
+  --theme-accent-lighter: rgba(233, 69, 96, 0.5);
   --theme-card: #16213e;
   --theme-font: #f5f5f5;
+  --theme-muted: #aaa;
+  --error-bg: #4a1c1c;
 }
 
 /* Header Theme Styling */
@@ -148,7 +158,7 @@ nav button:disabled {
 
 button, .submit-btn, .add-btn {
   background: linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%) !important;
-  color: #fff !important;
+  color: var(--theme-card) !important;
   border: none;
   border-radius: 8px;
   padding: 10px 18px;
@@ -169,7 +179,7 @@ button:disabled, .submit-btn:disabled, .add-btn:disabled {
   border: 1.5px solid var(--secondary);
   border-radius: 8px;
   font-size: 1rem;
-  background: #fff;
+  background: var(--theme-card);
   color: var(--theme-primary, #213555);
   transition: border 0.2s, color 0.2s;
   margin-bottom: 10px;
@@ -237,7 +247,7 @@ input[type=number] {
 .add-btn {
   /* Remove width and margin overrides to match .submit-btn */
   background: linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%) !important;
-  color: #fff !important;
+  color: var(--theme-card) !important;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -263,7 +273,7 @@ input[type=number] {
 }
 
 .remove-btn {
-  background: #fff;
+  background: var(--theme-card);
   color: var(--danger);
   border: 1.2px solid var(--danger);
   border-radius: 50%;
@@ -437,7 +447,7 @@ select:focus-visible {
 /* Loading spinner for buttons */
 .submit-btn .loading-spinner {
   border-color: rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border-top-color: var(--theme-card);
 }
 
 /* Improved button styles */
@@ -574,8 +584,8 @@ select:focus-visible {
 }
 
 .expense-category-tag {
-  background: #f0f0f0;
-  color: #666;
+  background: var(--theme-accent);
+  color: var(--theme-muted);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -618,9 +628,9 @@ select:focus-visible {
 .expense-empty-state {
   text-align: center;
   padding: 40px;
-  background: #f5f5f5;
+  background: var(--theme-accent);
   border-radius: 8px;
-  color: #666;
+  color: var(--theme-muted);
   font-style: italic;
 }
 
@@ -661,7 +671,7 @@ select:focus-visible {
 
 .keyboard-tip {
   font-size: 12px;
-  color: #666;
+  color: var(--theme-muted);
   text-align: center;
   margin-bottom: 8px;
   font-style: italic;

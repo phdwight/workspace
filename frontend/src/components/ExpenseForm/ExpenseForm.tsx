@@ -113,8 +113,8 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
     }, 0);
   };
 
-  if (loading) return <div style={{ margin: '16px 0', textAlign: 'center' }}>{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
-  if (error) return <div style={{ color: '#d32f2f', margin: '16px 0', textAlign: 'center', padding: '12px', backgroundColor: '#ffebee', borderRadius: '4px' }}>{error}</div>;
+  if (loading) return <div style={{ margin: '16px 0', textAlign: 'center', color: 'var(--theme-muted)' }}>{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
+  if (error) return <div style={{ color: 'var(--danger, #d32f2f)', margin: '16px 0', textAlign: 'center', padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '4px' }}>{error}</div>;
 
   return (
     <div style={{ margin: '24px 0' }}>
@@ -168,7 +168,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
           <div className="expense-total-display">
             {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: ${calculateTotal().toFixed(2)}
             {filteredExpenses.length !== expenses.length && (
-              <span style={{ fontSize: '14px', fontWeight: 'normal', color: '#666', marginLeft: '8px' }}>
+              <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--theme-muted)', marginLeft: '8px' }}>
                 (Showing {filteredExpenses.length} of {expenses.length} expenses)
               </span>
             )}
@@ -198,15 +198,15 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
                         <strong>Date:</strong> {exp.date}
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
                         <strong>Payers:</strong> {Array.isArray(exp.payers) 
                           ? exp.payers.map((p: any) => `${p.name} ($${Number(p.amount).toFixed(2)})`).join(', ')
                           : '-'}
                       </div>
-                      <div style={{ fontSize: '14px', color: '#666' }}>
+                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)' }}>
                         <strong>Participants:</strong> {Array.isArray(exp.participants) ? exp.participants.join(', ') : '-'}
                       </div>
                     </div>
@@ -427,12 +427,13 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
       
       {/* Feature Overview */}
       <div style={{ 
-        background: '#e8f5e8', 
-        border: '1px solid #c8e6c9', 
+        background: 'var(--theme-card)', 
+        border: '1px solid var(--theme-accent)', 
         borderRadius: '6px', 
         padding: '12px', 
         marginBottom: '16px',
-        fontSize: '14px'
+        fontSize: '14px',
+        color: 'var(--theme-font)'
       }}>
         <strong>💡 Enhanced Features:</strong> 
         <span style={{ marginLeft: '8px' }}>
@@ -522,10 +523,10 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                   className="input"
                   style={{ flex: 1 }}
                 />
-                <button type="button" onClick={() => removePayer(idx)} disabled={loading || payers.length === 1} style={{ fontSize: 18, color: '#BB3E00', background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Remove payer">×</button>
+                <button type="button" onClick={() => removePayer(idx)} disabled={loading || payers.length === 1} style={{ fontSize: 18, color: 'var(--danger, #d32f2f)', background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Remove payer">×</button>
               </div>
             ))}
-            <button type="button" onClick={addPayer} disabled={loading} style={{ marginTop: 4, fontSize: 14, color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ Add another payer</button>
+            <button type="button" onClick={addPayer} disabled={loading} style={{ marginTop: 4, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ Add another payer</button>
           </div>
         </div>
         {/* Participants */}
@@ -541,7 +542,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
               >
                 {(i18n.expenseForm as any).selectAllParticipants || "Select All"}
               </button>
-              <span style={{ fontSize: 12, color: '#666' }}>|</span>
+              <span style={{ fontSize: 12, color: 'var(--theme-muted)' }}>|</span>
               <button 
                 type="button" 
                 onClick={handleDeselectAllParticipants} 
@@ -550,7 +551,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
               >
                 {(i18n.expenseForm as any).deselectAllParticipants || "Deselect All"}
               </button>
-              <span style={{ fontSize: 12, color: '#666' }}>|</span>
+              <span style={{ fontSize: 12, color: 'var(--theme-muted)' }}>|</span>
               <button 
                 type="button" 
                 onClick={calculateSplitEqually} 
@@ -580,7 +581,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                 <span>{participant}</span>
               </label>
             ))}
-            <button type="button" onClick={handleAddParticipantToTrip} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}</button>
+            <button type="button" onClick={handleAddParticipantToTrip} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}</button>
           </div>
         </div>
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px', flexDirection: 'column' }}>
