@@ -1,19 +1,19 @@
 :root {
-  --primary: #BB3E00;
-  --secondary: #A2B9A7;
-  --accent: #F7AD45;
-  --background: #fff9f2;
-  --text-main: #2d1a0b;
+  --primary: #1F4529;
+  --secondary: #47663B;
+  --accent: #EED3B1;
+  --background: #E8ECD7;
+  --text-main: #1F4529;
   --text-light: #ffffff;
   --danger: #d32f2f;
 
-  --theme-bg: #F5EFE7;
-  --theme-primary: #213555;
-  --theme-secondary: #3E5879;
-  --theme-accent: #D8C4B6;
+  --theme-bg: #E8ECD7;
+  --theme-primary: #1F4529;
+  --theme-secondary: #47663B;
+  --theme-accent: #EED3B1;
   --theme-card: #fff;
-  --theme-font: #213555;
-  --theme-muted: #666;
+  --theme-font: #1F4529;
+  --theme-muted: #47663B;
   --error-bg: #ffebee;
 }
 
@@ -26,21 +26,21 @@ body, .App {
   overflow-x: hidden;
 }
 body {
-  background: var(--theme-bg, #F5EFE7) !important;
-  color: var(--theme-font, #213555) !important;
+  background: var(--theme-bg, #E8ECD7) !important;
+  color: var(--theme-font, #1F4529) !important;
 }
 
 /* Primary Theme (Default) */
 body.primary {
-  --theme-bg: #F5EFE7;
-  --theme-primary: #213555;
-  --theme-secondary: #3E5879;
-  --theme-accent: #D8C4B6;
-  --theme-accent-light: rgba(216, 196, 182, 0.3);
-  --theme-accent-lighter: rgba(216, 196, 182, 0.5);
+  --theme-bg: #E8ECD7;
+  --theme-primary: #1F4529;
+  --theme-secondary: #47663B;
+  --theme-accent: #EED3B1;
+  --theme-accent-light: rgba(238, 211, 177, 0.3);
+  --theme-accent-lighter: rgba(238, 211, 177, 0.5);
   --theme-card: #fff;
-  --theme-font: #213555;
-  --theme-muted: #666;
+  --theme-font: #1F4529;
+  --theme-muted: #47663B;
   --error-bg: #ffebee;
 }
 
@@ -76,8 +76,8 @@ body.secondary .header-theme {
 
 .App {
   min-height: 100vh;
-  background: var(--theme-bg, #F5EFE7) !important;
-  color: var(--theme-font, #213555) !important;
+  background: var(--theme-bg, #E8ECD7) !important;
+  color: var(--theme-font, #1F4529) !important;
 }
 
 header h1 {
