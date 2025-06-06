@@ -90,7 +90,6 @@ const fil = {
     expenseAdded: "Matagumpay na nadagdag ang gastos!",
     expenseDeleted: "Matagumpay na natanggal ang gastos!",
     expenseUpdated: "Matagumpay na na-update ang gastos!",
-    keyboardTip: "Tip: Gamitin ang Ctrl+Enter para mag-submit, Tab para mag-navigate",
     searchPlaceholder: "Maghanap ng gastos...",
     filterByCategory: "I-filter ayon sa kategorya",
     sortBy: "I-sort ayon sa",
