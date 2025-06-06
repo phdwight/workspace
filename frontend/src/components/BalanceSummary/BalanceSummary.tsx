@@ -300,11 +300,11 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (loading) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
-        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <div className="loading-spinner" style={{ margin: '0 auto 16px' }}></div>
-          <div>{i18n.common.loading}</div>
+          <div style={{ color: 'var(--theme-muted)' }}>{i18n.common.loading}</div>
         </div>
       </div>
     );
@@ -312,9 +312,9 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (error) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
-        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
-        <div className="error-message" role="alert" style={{ marginBottom: 16, padding: '12px', backgroundColor: '#ffebee', borderRadius: '8px', color: '#d32f2f' }}>{error}</div>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+        <div className="error-message" role="alert" style={{ marginBottom: 16, padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '8px', border: '1px solid var(--danger)', color: 'var(--danger, #d32f2f)' }}>{error}</div>
         <button 
           onClick={loadExpensesAndCalculateBalances}
           className="add-btn"
@@ -328,12 +328,12 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (expenses.length === 0) {
     return (
-      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'white', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
-        <h2 style={{ marginBottom: 20 }}>{i18n.balanceSummary.title}</h2>
-        <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#666' }}>
+      <div className="trip-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
+        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+        <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--theme-muted)' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>💸</div>
-          <div style={{ fontSize: '18px', marginBottom: '8px' }}>{i18n.balanceSummary.noExpenses}</div>
-          <div style={{ fontSize: '14px', marginBottom: '24px' }}>Add some expenses to see the balance summary</div>
+          <div style={{ fontSize: '18px', marginBottom: '8px', color: 'var(--theme-font)' }}>{i18n.balanceSummary.noExpenses}</div>
+          <div style={{ fontSize: '14px', marginBottom: '24px', color: 'var(--theme-muted)' }}>Add some expenses to see the balance summary</div>
           <button
             className="submit-btn"
             onClick={() => {
@@ -407,29 +407,30 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         gap: '16px', 
         marginBottom: 24,
         padding: '16px',
-        background: '#f8f9fa',
-        borderRadius: '8px'
+        background: 'var(--theme-card)',
+        borderRadius: '8px',
+        border: '1px solid var(--theme-accent)'
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#BB3E00' }}>${totalExpenses.toFixed(2)}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>Total Spent</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>${totalExpenses.toFixed(2)}</div>
+          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Total Spent</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#BB3E00' }}>{expenses.length}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>Expenses</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{expenses.length}</div>
+          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Expenses</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#BB3E00' }}>{Object.keys(categoryBreakdown).length}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>Categories</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{Object.keys(categoryBreakdown).length}</div>
+          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Categories</div>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#BB3E00' }}>{settlements.length}</div>
-          <div style={{ fontSize: '12px', color: '#666' }}>Settlements</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{settlements.length}</div>
+          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Settlements</div>
         </div>
       </div>
 
       {/* View Mode Tabs */}
-      <div className="view-mode-tabs" style={{ display: 'flex', marginBottom: 20, borderBottom: '1px solid #e0e0e0' }}>
+      <div className="view-mode-tabs" style={{ display: 'flex', marginBottom: 20, borderBottom: '1px solid var(--theme-accent)' }}>
         {[
           { key: 'summary', label: 'Balance Summary', icon: '💰' },
           { key: 'details', label: 'Participant Details', icon: '👥' },
@@ -444,8 +445,9 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               padding: '12px 8px',
               border: 'none',
               background: 'transparent',
-              borderBottom: viewMode === tab.key ? '2px solid #BB3E00' : '2px solid transparent',
-              color: viewMode === tab.key ? '#BB3E00' : '#666',
+              borderBottom: viewMode === tab.key ? '2px solid var(--theme-primary)' : '2px solid transparent',
+              color: viewMode === tab.key ? 'var(--theme-primary)' : 'var(--theme-font)',
+              opacity: viewMode === tab.key ? 1 : 0.7,
               fontWeight: viewMode === tab.key ? 600 : 400,
               fontSize: '14px',
               cursor: 'pointer',
@@ -468,9 +470,9 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                 className="balance-card"
                 style={{
                   padding: '16px',
-                  background: idx % 2 ? '#fff' : '#f9f5f0',
+                  background: idx % 2 ? 'var(--theme-card)' : 'var(--theme-bg)',
                   borderRadius: '8px',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid var(--theme-accent)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -491,10 +493,10 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: 600, fontSize: '16px', color: '#2d1a0b', marginBottom: '4px' }}>
+                  <div style={{ fontWeight: 600, fontSize: '16px', color: 'var(--theme-font)', marginBottom: '4px' }}>
                     {bal.participant}
                   </div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>
                     Paid: ${bal.totalPaid.toFixed(2)} • Owes: ${bal.totalOwes.toFixed(2)}
                   </div>
                 </div>
@@ -502,12 +504,12 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                   <div style={{ 
                     fontSize: '18px', 
                     fontWeight: 700, 
-                    color: bal.balance < 0 ? '#d32f2f' : bal.balance > 0 ? '#388e3c' : '#666',
+                    color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)',
                     marginBottom: '4px'
                   }}>
                     {bal.balance >= 0 ? '+' : ''}${bal.balance.toFixed(2)}
                   </div>
-                  <div style={{ fontSize: '10px', color: '#666' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--theme-font)', opacity: 0.6 }}>
                     {bal.balance < 0 ? 'Owes' : bal.balance > 0 ? 'Gets back' : 'Even'}
                   </div>
                 </div>
@@ -518,7 +520,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           {/* Category Breakdown */}
           {Object.keys(categoryBreakdown).length > 0 && (
             <div className="category-breakdown" style={{ marginBottom: 24 }}>
-              <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: '#BB3E00' }}>
+              <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
                 📊 Spending by Category
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
@@ -529,18 +531,18 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                     return (
                       <div key={category} className="category-card" style={{
                         padding: '12px',
-                        background: 'white',
+                        background: 'var(--theme-card)',
                         borderRadius: '8px',
-                        border: '1px solid #e0e0e0',
+                        border: '1px solid var(--theme-accent)',
                         textAlign: 'center'
                       }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px', color: 'var(--theme-font)' }}>
                           {getCategoryLabel(category)}
                         </div>
-                        <div style={{ fontSize: '16px', fontWeight: 700, color: '#BB3E00', marginBottom: '4px' }}>
+                        <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-primary)', marginBottom: '4px' }}>
                           ${amount.toFixed(2)}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#666' }}>
+                        <div style={{ fontSize: '11px', color: 'var(--theme-font)', opacity: 0.7 }}>
                           {percentage.toFixed(1)}%
                         </div>
                       </div>
@@ -592,23 +594,23 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                   <>
                     <div className="participant-summary" style={{
                       padding: '16px',
-                      background: '#f8f9fa',
+                      background: 'var(--theme-card)',
                       borderRadius: '8px',
                       marginBottom: '20px'
                     }}>
                       <h3 style={{ margin: '0 0 12px 0', fontSize: '18px' }}>{selectedParticipant}</h3>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', fontSize: '14px' }}>
                         <div>
-                          <div style={{ fontWeight: 600, color: '#388e3c' }}>Total Paid</div>
-                          <div style={{ fontSize: '16px', fontWeight: 700 }}>${participant.totalPaid.toFixed(2)}</div>
+                          <div style={{ fontWeight: 600, color: 'var(--theme-primary)' }}>Total Paid</div>
+                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>${participant.totalPaid.toFixed(2)}</div>
                         </div>
                         <div>
-                          <div style={{ fontWeight: 600, color: '#d32f2f' }}>Total Owes</div>
-                          <div style={{ fontSize: '16px', fontWeight: 700 }}>${participant.totalOwes.toFixed(2)}</div>
+                          <div style={{ fontWeight: 600, color: 'var(--danger, #d32f2f)' }}>Total Owes</div>
+                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>${participant.totalOwes.toFixed(2)}</div>
                         </div>
                         <div>
-                          <div style={{ fontWeight: 600, color: participant.balance >= 0 ? '#388e3c' : '#d32f2f' }}>Balance</div>
-                          <div style={{ fontSize: '16px', fontWeight: 700 }}>
+                          <div style={{ fontWeight: 600, color: participant.balance >= 0 ? 'var(--theme-primary)' : 'var(--danger, #d32f2f)' }}>Balance</div>
+                          <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-font)' }}>
                             {participant.balance >= 0 ? '+' : ''}${participant.balance.toFixed(2)}
                           </div>
                         </div>
@@ -617,7 +619,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
                     {expenses.length > 0 && (
                       <div className="participant-expenses">
-                        <h4 style={{ fontSize: '16px', margin: '0 0 12px 0', color: '#BB3E00' }}>
+                        <h4 style={{ fontSize: '16px', margin: '0 0 12px 0', color: 'var(--theme-primary)' }}>
                           💳 Expenses Paid ({expenses.length})
                         </h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -626,22 +628,22 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                             .map(exp => (
                               <div key={exp.id} className="expense-detail-card" style={{
                                 padding: '12px',
-                                background: 'white',
+                                background: 'var(--theme-card)',
                                 borderRadius: '6px',
-                                border: '1px solid #e0e0e0',
+                                border: '1px solid var(--theme-accent)',
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 alignItems: 'center'
                               }}>
                                 <div>
-                                  <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px' }}>
+                                  <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '2px', color: 'var(--theme-font)' }}>
                                     {exp.description}
                                   </div>
-                                  <div style={{ fontSize: '12px', color: '#666' }}>
+                                  <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>
                                     {getCategoryLabel(exp.category)} • {new Date(exp.date).toLocaleDateString()}
                                   </div>
                                 </div>
-                                <div style={{ fontWeight: 700, color: '#BB3E00' }}>
+                                <div style={{ fontWeight: 700, color: 'var(--theme-primary)' }}>
                                   ${exp.amount.toFixed(2)}
                                 </div>
                               </div>
@@ -655,7 +657,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             </div>
           ) : (
             <div className="all-participants-overview">
-              <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: '#BB3E00' }}>
+              <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
                 👥 All Participants Overview
               </h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
@@ -664,23 +666,23 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                     className="participant-overview-card"
                     style={{
                       padding: '16px',
-                      background: 'white',
+                      background: 'var(--theme-card)',
                       borderRadius: '8px',
-                      border: '1px solid #e0e0e0',
+                      border: '1px solid var(--theme-accent)',
                       cursor: 'pointer'
                     }}
                     onClick={() => setSelectedParticipant(bal.participant)}
                   >
-                    <div style={{ fontWeight: 600, fontSize: '16px', marginBottom: '8px' }}>
+                    <div style={{ fontWeight: 600, fontSize: '16px', marginBottom: '8px', color: 'var(--theme-font)' }}>
                       {bal.participant}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7, marginBottom: '8px' }}>
                       {(participantExpenses[bal.participant] || []).length} expenses paid
                     </div>
                     <div style={{ 
                       fontSize: '14px', 
                       fontWeight: 700, 
-                      color: bal.balance < 0 ? '#d32f2f' : bal.balance > 0 ? '#388e3c' : '#666'
+                      color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)'
                     }}>
                       Balance: {bal.balance >= 0 ? '+' : ''}${bal.balance.toFixed(2)}
                     </div>
@@ -697,24 +699,24 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           {settlements.length > 0 ? (
             <>
               <div style={{ marginBottom: 20 }}>
-                <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: '#BB3E00' }}>
+                <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
                   💳 Suggested Settlements ({settlements.length})
                 </h3>
                 <div className="settlements-list" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {settlements.map((s, idx) => (
                     <div key={idx} className="settlement-card" style={{
                       padding: '16px',
-                      background: 'white',
+                      background: 'var(--theme-card)',
                       borderRadius: '8px',
-                      border: '1px solid #e0e0e0',
+                      border: '1px solid var(--theme-accent)',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                         <div style={{
-                          background: '#ffebee',
-                          color: '#d32f2f',
+                          background: 'var(--theme-accent)',
+                          color: 'var(--danger, #d32f2f)',
                           padding: '8px 12px',
                           borderRadius: '6px',
                           fontWeight: 600,
@@ -722,10 +724,10 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                         }}>
                           {s.from}
                         </div>
-                        <div style={{ fontSize: '16px' }}>→</div>
+                        <div style={{ fontSize: '16px', color: 'var(--theme-font)' }}>→</div>
                         <div style={{
-                          background: '#e8f5e8',
-                          color: '#388e3c',
+                          background: 'var(--theme-accent)',
+                          color: 'var(--theme-primary)',
                           padding: '8px 12px',
                           borderRadius: '6px',
                           fontWeight: 600,
@@ -737,9 +739,9 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                       <div style={{
                         fontSize: '18px',
                         fontWeight: 700,
-                        color: '#BB3E00',
+                        color: 'var(--theme-primary)',
                         padding: '8px 16px',
-                        background: '#f7ead9',
+                        background: 'var(--theme-accent)',
                         borderRadius: '6px'
                       }}>
                         ${s.amount.toFixed(2)}
@@ -752,14 +754,14 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               {/* Settlement Instructions */}
               <div className="settlement-instructions" style={{
                 padding: '16px',
-                background: '#e3f2fd',
+                background: 'var(--theme-accent)',
                 borderRadius: '8px',
                 marginBottom: 20
               }}>
-                <h4 style={{ fontSize: '14px', margin: '0 0 8px 0', color: '#1976d2' }}>
+                <h4 style={{ fontSize: '14px', margin: '0 0 8px 0', color: 'var(--theme-primary)' }}>
                   💡 How to settle up:
                 </h4>
-                <ol style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: '#1565c0' }}>
+                <ol style={{ margin: 0, paddingLeft: '20px', fontSize: '13px', color: 'var(--theme-secondary)' }}>
                   <li>Complete settlements in the order shown above</li>
                   <li>Each person who owes money pays the specified amount</li>
                   <li>Use your preferred payment method (cash, bank transfer, etc.)</li>
@@ -771,7 +773,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             <div className="no-settlements" style={{
               textAlign: 'center',
               padding: '40px 20px',
-              color: '#666'
+              color: 'var(--theme-muted)'
             }}>
               <div style={{ fontSize: '48px', marginBottom: '16px' }}>✅</div>
               <div style={{ fontSize: '18px', marginBottom: '8px' }}>All Settled Up!</div>

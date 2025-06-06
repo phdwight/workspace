@@ -105,10 +105,10 @@ const ToastItem = ({ toast, onRemove }: ToastItemProps) => {
     };
 
     const typeStyles = {
-      success: { background: '#4caf50' },
-      error: { background: '#f44336' },
-      warning: { background: '#ff9800' },
-      info: { background: '#2196f3' }
+      success: { background: 'var(--theme-secondary)' },
+      error: { background: 'var(--danger)' },
+      warning: { background: 'var(--accent)' },
+      info: { background: 'var(--theme-primary)' }
     };
 
     return { ...baseStyle, ...typeStyles[type] };

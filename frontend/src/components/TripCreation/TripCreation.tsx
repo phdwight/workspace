@@ -183,8 +183,8 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
             <span style="line-height: 1.3;">${message}</span>
           </div>
           <div style="display: flex; gap: 16px; justify-content: center; margin-top: 16px;">
-            <button id="confirm-yes" style="background: linear-gradient(90deg, ${dangerColor} 0%, #c62828 100%); color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3); transition: all 0.2s ease;">${i18n.tripsList?.delete || 'Delete'}</button>
-            <button id="confirm-no" style="background: ${primaryColor}; color: #fff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(33, 53, 85, 0.3); transition: all 0.2s ease;">${i18n.common?.cancel || 'Cancel'}</button>
+            <button id="confirm-yes" style="background: linear-gradient(90deg, ${dangerColor} 0%, var(--danger) 100%); color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3); transition: all 0.2s ease;">${i18n.tripsList?.delete || 'Delete'}</button>
+            <button id="confirm-no" style="background: ${primaryColor}; color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(33, 53, 85, 0.3); transition: all 0.2s ease;">${i18n.common?.cancel || 'Cancel'}</button>
           </div>
         </div>
       `;
@@ -312,7 +312,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                   style={{ 
                     background: 'none', 
                     border: 'none', 
-                    color: participants.length <= 2 ? '#ccc' : 'var(--danger, #d32f2f)', 
+                    color: participants.length <= 2 ? 'var(--theme-muted)' : 'var(--danger, #d32f2f)', 
                     fontWeight: 700, 
                     fontSize: 20, 
                     cursor: participants.length <= 2 ? 'not-allowed' : 'pointer',
@@ -336,8 +336,8 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
               disabled={loading || participants.length >= 10}
               aria-label={i18n.tripCreation.addParticipant}
               style={{
-                background: participants.length >= 10 ? '#ccc' : 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
-                color: '#fff',
+                background: participants.length >= 10 ? 'var(--theme-muted)' : 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
+                color: 'var(--theme-card)',
                 border: 'none',
                 borderRadius: 8,
                 fontSize: 18,
@@ -453,15 +453,15 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                   <tr
                     key={trip.trip_name}
                     style={{
-                      borderBottom: idx === trips.length - 1 ? 'none' : '1px solid #eee',
-                      background: idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'rgba(216, 196, 182, 0.3)',
+                      borderBottom: idx === trips.length - 1 ? 'none' : '1px solid var(--theme-muted)',
+                      background: idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-accent-light)',
                       transition: 'background 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(216, 196, 182, 0.5)';
+                      e.currentTarget.style.background = 'var(--theme-accent-lighter)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'rgba(216, 196, 182, 0.3)';
+                      e.currentTarget.style.background = idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-accent-light)';
                     }}
                   >
                     <td style={{ 
@@ -518,7 +518,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = 'var(--danger, #d32f2f)';
-                          e.currentTarget.style.color = '#fff';
+                          e.currentTarget.style.color = 'var(--theme-card)';
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = 'none';
@@ -537,7 +537,7 @@ export const TripCreation: React.FC<TripCreationProps> = ({ i18n, onTripCreated,
                         type="button"
                         style={{
                           background: 'linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%)',
-                          color: '#fff',
+                          color: 'var(--theme-card)',
                           border: 'none',
                           borderRadius: 8,
                           fontSize: '0.9rem',

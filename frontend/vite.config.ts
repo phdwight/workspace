@@ -7,6 +7,10 @@ export default defineConfig(({ command, mode }) => {
   const isDevOrPreview = command === 'serve' || mode === 'preview';
   return {
     base: isDevOrPreview ? '/' : '/workspace/',
+    server: {
+      host: true, // Enable external access for GitHub Codespaces
+      port: 5173,
+    },
     plugins: [
       react(),
       VitePWA({

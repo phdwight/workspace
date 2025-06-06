@@ -35,22 +35,22 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="error-boundary" style={{
           padding: '24px',
           textAlign: 'center',
-          background: '#fff',
+          background: 'var(--theme-card)',
           borderRadius: '14px',
           boxShadow: '0 2px 12px rgba(0,0,0,0.1)',
           margin: '24px auto',
           maxWidth: '600px'
         }}>
-          <h2 style={{ color: '#d32f2f', marginBottom: '16px' }}>
+          <h2 style={{ color: 'var(--danger)', marginBottom: '16px' }}>
             Something went wrong
           </h2>
-          <p style={{ color: '#666', marginBottom: '24px' }}>
+          <p style={{ color: 'var(--theme-muted)', marginBottom: '24px' }}>
             We're sorry, but something unexpected happened. Please refresh the page to try again.
           </p>
           <button
             onClick={() => window.location.reload()}
             style={{
-              background: '#BB3E00',
+              background: 'var(--theme-primary)',
               color: 'white',
               border: 'none',
               padding: '12px 24px',
@@ -63,11 +63,11 @@ export class ErrorBoundary extends Component<Props, State> {
           </button>
           {(import.meta.env.MODE === 'development') && this.state.error && (
             <details style={{ marginTop: '24px', textAlign: 'left' }}>
-              <summary style={{ cursor: 'pointer', color: '#666' }}>
+              <summary style={{ cursor: 'pointer', color: 'var(--theme-muted)' }}>
                 Error Details (Development)
               </summary>
               <pre style={{
-                background: '#f5f5f5',
+                background: 'var(--theme-accent)',
                 padding: '12px',
                 borderRadius: '4px',
                 overflow: 'auto',
