@@ -758,7 +758,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                         background: 'var(--theme-accent)',
                         borderRadius: '6px'
                       }}>
-                        ¤{s.amount.toFixed(2)}
+                        {formatCurrency(s.amount)}
                       </div>
                     </div>
                   ))}
