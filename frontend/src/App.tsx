@@ -113,10 +113,10 @@ function App() {
           value={language}
           onChange={e => setLanguage(e.target.value as keyof typeof languages)}
           style={{
-            background: 'rgba(255,255,255,0.2)',
-            border: '1px solid rgba(255,255,255,0.3)',
+            background: 'rgba(255,255,255,0.15)',
+            border: '1px solid rgba(255,255,255,0.25)',
             borderRadius: '6px',
-            color: 'white',
+            color: 'var(--theme-card)',
             padding: '6px 12px',
             fontSize: '14px',
             marginRight: 8
@@ -133,12 +133,12 @@ function App() {
           style={{
             background: 'none',
             border: 'none',
-            color: 'rgba(255,255,255,0.9)',
+            color: 'var(--theme-card)',
             fontSize: 20,
             cursor: 'pointer',
             marginLeft: 4,
             padding: 0,
-            opacity: 0.7,
+            opacity: 0.8,
             transition: 'opacity 0.2s, color 0.2s',
             display: 'flex',
             alignItems: 'center',
@@ -148,7 +148,7 @@ function App() {
             borderRadius: 16
           }}
           onMouseOver={e => (e.currentTarget.style.opacity = '1')}
-          onMouseOut={e => (e.currentTarget.style.opacity = '0.7')}
+          onMouseOut={e => (e.currentTarget.style.opacity = '0.8')}
           aria-label="Switch theme"
         >
           {/* Theme icon changes for each theme */}
@@ -171,12 +171,12 @@ function App() {
           style={{
             background: 'none',
             border: 'none',
-            color: 'white',
+            color: 'var(--theme-card)',
             fontSize: 20,
             cursor: 'pointer',
             marginLeft: 4,
             padding: 0,
-            opacity: 0.7,
+            opacity: 0.8,
             transition: 'opacity 0.2s',
             display: 'flex',
             alignItems: 'center',
@@ -186,7 +186,7 @@ function App() {
             borderRadius: 16
           }}
           onMouseOver={e => (e.currentTarget.style.opacity = '1')}
-          onMouseOut={e => (e.currentTarget.style.opacity = '0.7')}
+          onMouseOut={e => (e.currentTarget.style.opacity = '0.8')}
           aria-label="Force reload app"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

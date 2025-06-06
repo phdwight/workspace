@@ -46,32 +46,32 @@ body.primary {
 
 /* Secondary Theme (Dark/Alternative) */
 body.secondary {
-  --theme-bg: #1a1a2e;
-  --theme-primary: #16213e;
-  --theme-secondary: #0f3460;
-  --theme-accent: #e94560;
-  --theme-accent-light: rgba(233, 69, 96, 0.3);
-  --theme-accent-lighter: rgba(233, 69, 96, 0.5);
-  --theme-card: #16213e;
-  --theme-font: #f5f5f5;
-  --theme-muted: #aaa;
-  --error-bg: #4a1c1c;
+  --theme-bg: #432E54;
+  --theme-primary: #AE445A;
+  --theme-secondary: #4B4376;
+  --theme-accent: #E8BCB9;
+  --theme-accent-light: rgba(232, 188, 185, 0.3);
+  --theme-accent-lighter: rgba(232, 188, 185, 0.5);
+  --theme-card: #432E54;
+  --theme-font: #E8BCB9;
+  --theme-muted: #E8BCB9;
+  --error-bg: #AE445A;
 }
 
 /* Header Theme Styling */
 .header-theme {
   background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
-  color: var(--theme-font) !important;
+  color: var(--theme-card) !important;
 }
 
 body.primary .header-theme {
-  background: linear-gradient(135deg, #BB3E00 0%, #F7AD45 100%) !important;
-  color: white !important;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
+  color: var(--theme-card) !important;
 }
 
 body.secondary .header-theme {
-  background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%) !important;
-  color: #f5f5f5 !important;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
+  color: var(--theme-card) !important;
 }
 
 .App {
@@ -81,22 +81,22 @@ body.secondary .header-theme {
 }
 
 header h1 {
-  color: var(--primary);
+  color: var(--theme-card);
   letter-spacing: 1px;
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
 nav {
-  background: var(--secondary);
+  background: var(--theme-secondary);
   border-radius: 8px;
   padding: 6px 0 6px 0;
   margin-bottom: 18px;
-  box-shadow: 0 1px 4px rgba(187, 62, 0, 0.07);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 nav button {
-  background: var(--primary);
-  color: var(--text-light);
+  background: var(--theme-primary);
+  color: var(--theme-card);
   border: none;
   border-radius: 5px;
   padding: 6px 12px;
@@ -108,10 +108,14 @@ nav button {
   min-width: 90px;
 }
 nav button:disabled {
-  background: #f7ad45;
-  color: #a2b9a7;
-  opacity: 0.7;
+  background: var(--theme-accent);
+  color: var(--theme-muted);
+  opacity: 0.6;
   cursor: not-allowed;
+}
+nav button:hover:not(:disabled) {
+  background: var(--theme-secondary);
+  opacity: 0.9;
 }
 
 #root {
@@ -199,7 +203,7 @@ select {
 
 label {
   font-weight: 600;
-  color: var(--primary);
+  color: var(--theme-font);
   margin-bottom: 6px;
   display: block;
   font-size: 1rem;
@@ -289,13 +293,13 @@ input[type=number] {
   padding: 0;
 }
 .remove-btn:disabled {
-  background: #f7ead9;
-  color: #a2b9a7;
-  border-color: #a2b9a7;
+  background: var(--theme-accent-light);
+  color: var(--theme-muted);
+  border-color: var(--theme-muted);
   cursor: not-allowed;
 }
 .remove-btn:hover:not(:disabled) {
-  background: #f5c6cb;
+  background: var(--theme-accent-lighter);
 }
 
 .submit-btn {
@@ -311,11 +315,11 @@ input[type=number] {
   width: 100%;
 }
 .submit-btn:hover {
-  background: #005fa3;
+  background: var(--theme-secondary);
 }
 .submit-btn:disabled {
-  background: #f7ad45;
-  color: #a2b9a7;
+  background: var(--theme-accent);
+  color: var(--theme-muted);
   cursor: not-allowed;
 }
 
@@ -331,7 +335,7 @@ input[type=number] {
 .created-trip-card h3 {
   margin-top: 0;
   margin-bottom: 16px;
-  color: #0078d4;
+  color: var(--theme-primary);
   font-size: 1.25rem;
   display: flex;
   align-items: center;
@@ -345,7 +349,7 @@ input[type=number] {
 }
 .created-trip-label {
   font-weight: 600;
-  color: var(--primary);
+  color: var(--theme-font);
 }
 .created-trip-value {
   color: var(--text-main);
@@ -392,8 +396,8 @@ input[type=number] {
   justify-content: center;
 }
 .delete-btn:disabled {
-  background: #f7ead9;
-  color: #a2b9a7;
+  background: var(--theme-accent-light);
+  color: var(--theme-muted);
   cursor: not-allowed;
 }
 
@@ -500,7 +504,7 @@ select:focus-visible {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
-  color: var(--text-main);
+  color: var(--theme-font);
 }
 
 .input {
@@ -595,7 +599,7 @@ select:focus-visible {
 .expense-amount-display {
   font-size: 18px;
   font-weight: bold;
-  color: #2e7d32;
+  color: var(--theme-primary);
 }
 
 .participant-helpers {
@@ -620,7 +624,7 @@ select:focus-visible {
 }
 
 .participant-helper-btn:disabled {
-  color: #ccc;
+  color: var(--theme-muted);
   cursor: not-allowed;
   text-decoration: none;
 }
@@ -713,7 +717,7 @@ select:focus-visible {
 .participant-overview-card:hover {
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   transform: translateY(-2px);
-  border-color: #BB3E00;
+  border-color: var(--theme-primary);
 }
 
 .settlement-card {
@@ -730,24 +734,24 @@ select:focus-visible {
 }
 
 .view-mode-tab:hover {
-  background-color: #f5f5f5 !important;
+  background-color: var(--theme-accent-light) !important;
 }
 
 .export-btn {
-  background: #e3f2fd;
-  color: #1976d2;
-  border: 1px solid #bbdefb;
+  background: var(--theme-accent-light);
+  color: var(--theme-primary);
+  border: 1px solid var(--theme-accent);
   border-radius: 6px;
   transition: all 0.2s ease;
 }
 
 .export-btn:hover {
-  background: #1976d2;
-  color: white;
+  background: var(--theme-primary);
+  color: var(--theme-card);
 }
 
 .export-option:hover {
-  background-color: #f5f5f5 !important;
+  background-color: var(--theme-accent-light) !important;
 }
 
 .expense-detail-card {
@@ -841,7 +845,7 @@ select:focus-visible {
   }
 
   .view-mode-tab.active {
-    border-bottom-color: #BB3E00;
+    border-bottom-color: var(--theme-primary);
     border-right: none;
   }
 
