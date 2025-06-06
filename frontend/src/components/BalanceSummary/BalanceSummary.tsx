@@ -517,6 +517,33 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           </div>
         </div>
 
+        {/* View Mode Selector */}
+        <div className="view-mode-selector" style={{
+          display: 'flex',
+          gap: '12px',
+          marginBottom: 32,
+          flexWrap: 'wrap',
+        }}>
+          <button
+            onClick={() => setViewMode('summary')}
+            style={getButtonStyle('summary')}
+          >
+            📊 Summary
+          </button>
+          <button
+            onClick={() => setViewMode('details')}
+            style={getButtonStyle('details')}
+          >
+            👤 Details
+          </button>
+          <button
+            onClick={() => setViewMode('settlements')}
+            style={getButtonStyle('settlements')}
+          >
+            💳 Settlements
+          </button>
+        </div>
+
         {/* Event Overview Stats */}
         <div className="summary-stats" style={{
           display: 'grid',
@@ -661,33 +688,6 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           </div>
         )}
 
-        {/* View Mode Selector */}
-        <div className="view-mode-selector" style={{
-          display: 'flex',
-          gap: '12px',
-          marginBottom: 32,
-          flexWrap: 'wrap',
-        }}>
-          <button
-            onClick={() => setViewMode('summary')}
-            style={getButtonStyle('summary')}
-          >
-            📊 Summary
-          </button>
-          <button
-            onClick={() => setViewMode('details')}
-            style={getButtonStyle('details')}
-          >
-            👤 Details
-          </button>
-          <button
-            onClick={() => setViewMode('settlements')}
-            style={getButtonStyle('settlements')}
-          >
-            💳 Settlements
-          </button>
-        </div>
-
         {/* Navigation buttons */}
         <div style={{ 
           marginTop: 32, 
@@ -759,6 +759,33 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             color: 'var(--theme-primary)',
             letterSpacing: '0.5px',
           }}>👤 Participant Details</h2>
+
+          {/* View Mode Selector */}
+          <div className="view-mode-selector" style={{
+            display: 'flex',
+            gap: '12px',
+            marginBottom: 32,
+            flexWrap: 'wrap',
+          }}>
+            <button
+              onClick={() => setViewMode('summary')}
+              style={getButtonStyle('summary')}
+            >
+              📊 Summary
+            </button>
+            <button
+              onClick={() => setViewMode('details')}
+              style={getButtonStyle('details')}
+            >
+              👤 Details
+            </button>
+            <button
+              onClick={() => setViewMode('settlements')}
+              style={getButtonStyle('settlements')}
+            >
+              💳 Settlements
+            </button>
+          </div>
 
           {/* Participant Selector */}
           <div style={{ marginBottom: 20 }}>
@@ -903,34 +930,6 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             </div>
           )}
 
-          {/* View Mode Selector */}
-          <div className="view-mode-selector" style={{
-            display: 'flex',
-            gap: '12px',
-            marginTop: 32,
-            marginBottom: 24,
-            flexWrap: 'wrap',
-          }}>
-            <button
-              onClick={() => setViewMode('summary')}
-              style={getButtonStyle('summary')}
-            >
-              📊 Summary
-            </button>
-            <button
-              onClick={() => setViewMode('details')}
-              style={getButtonStyle('details')}
-            >
-              👤 Details
-            </button>
-            <button
-              onClick={() => setViewMode('settlements')}
-              style={getButtonStyle('settlements')}
-            >
-              💳 Settlements
-            </button>
-          </div>
-
           {/* Navigation buttons */}
           <div style={{ 
             paddingTop: 24,
@@ -1002,6 +1001,33 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
             color: 'var(--theme-primary)',
             letterSpacing: '0.5px',
           }}>💳 Settlement Recommendations</h2>
+
+          {/* View Mode Selector */}
+          <div className="view-mode-selector" style={{
+            display: 'flex',
+            gap: '12px',
+            marginBottom: 32,
+            flexWrap: 'wrap',
+          }}>
+            <button
+              onClick={() => setViewMode('summary')}
+              style={getButtonStyle('summary')}
+            >
+              📊 Summary
+            </button>
+            <button
+              onClick={() => setViewMode('details')}
+              style={getButtonStyle('details')}
+            >
+              👤 Details
+            </button>
+            <button
+              onClick={() => setViewMode('settlements')}
+              style={getButtonStyle('settlements')}
+            >
+              💳 Settlements
+            </button>
+          </div>
 
           {settlements.length > 0 ? (
             <>
@@ -1106,34 +1132,6 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <div style={{ fontSize: '14px' }}>Everyone has paid their fair share.</div>
             </div>
           )}
-
-          {/* View Mode Selector */}
-          <div className="view-mode-selector" style={{
-            display: 'flex',
-            gap: '12px',
-            marginTop: 32,
-            marginBottom: 24,
-            flexWrap: 'wrap',
-          }}>
-            <button
-              onClick={() => setViewMode('summary')}
-              style={getButtonStyle('summary')}
-            >
-              📊 Summary
-            </button>
-            <button
-              onClick={() => setViewMode('details')}
-              style={getButtonStyle('details')}
-            >
-              👤 Details
-            </button>
-            <button
-              onClick={() => setViewMode('settlements')}
-              style={getButtonStyle('settlements')}
-            >
-              💳 Settlements
-            </button>
-          </div>
 
           {/* Navigation buttons */}
           <div style={{ 
