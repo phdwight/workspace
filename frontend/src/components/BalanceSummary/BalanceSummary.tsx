@@ -54,6 +54,21 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     }
   };
 
+  // Helper function to get button styling based on view mode
+  const getButtonStyle = (targetMode: string) => ({
+    padding: '12px 20px',
+    fontSize: '14px',
+    fontWeight: 600,
+    borderRadius: '8px',
+    border: 'none',
+    background: targetMode === viewMode ? 'var(--theme-primary)' : 'var(--theme-accent)',
+    color: targetMode === viewMode ? 'var(--theme-card)' : 'var(--theme-font)',
+    cursor: 'pointer',
+    minHeight: '44px',
+    flex: 1,
+    minWidth: '80px',
+  });
+
   useEffect(() => {
     loadExpensesAndCalculateBalances();
   }, [event]);
@@ -420,271 +435,331 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
     return sum + amount;
   }, 0);
 
-  return (
-    <div className="balance-summary-container unified-card" style={{ 
-      background: 'var(--theme-card)', 
-      borderRadius: 12, 
-      maxWidth: '600px', 
-      width: '100%',
-      margin: '16px auto', 
-      boxShadow: '0 2px 12px rgba(0,0,0,0.07)', 
-      padding: '16px',
-      boxSizing: 'border-box'
-    }}>
-      {/* Header with title and controls */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: 24,
-        flexWrap: 'wrap',
-        gap: '12px'
+  if (viewMode === 'summary') {
+    return (
+      <div className="balance-summary-container unified-card primary-theme" style={{
+        background: 'var(--theme-bg)',
+        borderRadius: 16,
+        maxWidth: '700px',
+        width: '100%',
+        margin: '20px auto',
+        boxShadow: '0 4px 24px rgba(33,53,85,0.10)',
+        padding: '24px',
+        boxSizing: 'border-box',
+        border: '1.5px solid var(--theme-accent)',
+        position: 'relative',
       }}>
-        <h2 style={{ 
-          margin: 0, 
-          fontSize: 'clamp(18px, 4vw, 24px)', 
-          fontWeight: 700, 
-          color: 'var(--theme-font)',
-          wordBreak: 'break-word'
-        }}>{i18n.balanceSummary.title}</h2>
-        <div style={{ position: 'relative' }}>
-          <button
-            className="export-btn"
-            onClick={() => setShowExportOptions(!showExportOptions)}
-            style={{ 
-              padding: '8px 16px', 
-              fontSize: '14px',
-              minHeight: '44px',
-              minWidth: '44px'
-            }}
-          >
-            📊 Export
-          </button>
-          {showExportOptions && (
-            <div className="export-options-dropdown" style={{
-              position: 'absolute',
-              top: '100%',
-              right: 0,
-              background: 'var(--theme-card)',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              borderRadius: '8px',
-              padding: '8px',
-              minWidth: '150px',
-              zIndex: 10
-            }}>
-              <button
-                className="export-option"
-                onClick={() => handleExportSummary('csv')}
-                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px', color: 'var(--theme-font)' }}
-              >
-                📄 CSV Summary
-              </button>
-              <button
-                className="export-option"
-                onClick={() => handleExportSummary('detailed')}
-                style={{ display: 'block', width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '4px', fontSize: '14px', color: 'var(--theme-font)' }}
-              >
-                📋 Detailed Report
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Event Overview Stats */}
-      <div className="summary-stats" style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-        gap: '16px', 
-        marginBottom: 24,
-        padding: '16px',
-        background: 'var(--theme-card)',
-        borderRadius: '8px',
-        border: '1px solid var(--theme-accent)'
-      }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{formatCurrency(totalExpenses)}</div>
-          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Total Spent</div>
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{expenses.length}</div>
-          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Expenses</div>
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{Object.keys(categoryBreakdown).length}</div>
-          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Categories</div>
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: 'var(--theme-primary)' }}>{settlements.length}</div>
-          <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>Settlements</div>
-        </div>
-      </div>
-
-      {/* View Mode Tabs */}
-      <div className="view-mode-tabs" style={{ 
-        display: 'flex', 
-        marginBottom: 20, 
-        borderBottom: '1px solid var(--theme-accent)',
-        overflow: 'hidden',
-        borderRadius: '8px 8px 0 0'
-      }}>
-        {[
-          { key: 'summary', label: 'Balance Summary', icon: '💰' },
-          { key: 'details', label: 'Participant Details', icon: '👥' },
-          { key: 'settlements', label: 'Settlements', icon: '💳' }
-        ].map(tab => (
-          <button
-            key={tab.key}
-            onClick={() => setViewMode(tab.key as any)}
-            className={`view-mode-tab ${viewMode === tab.key ? 'active' : ''}`}
-            style={{
-              flex: 1,
-              padding: '12px 8px',
-              border: 'none',
-              background: 'transparent',
-              borderBottom: viewMode === tab.key ? '2px solid var(--theme-primary)' : '2px solid transparent',
-              color: viewMode === tab.key ? 'var(--theme-primary)' : 'var(--theme-font)',
-              opacity: viewMode === tab.key ? 1 : 0.7,
-              fontWeight: viewMode === tab.key ? 600 : 400,
-              fontSize: 'clamp(12px, 3vw, 14px)',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              minHeight: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '4px'
-            }}
-          >
-            <span style={{ fontSize: 'clamp(14px, 4vw, 16px)' }}>{tab.icon}</span>
-            <span className="tab-label" style={{ 
-              fontSize: 'clamp(10px, 2.5vw, 12px)',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis'
-            }}>{tab.label}</span>
-          </button>
-        ))}
-      </div>
-      {/* Content based on view mode */}
-      {viewMode === 'summary' && (
-        <div className="balance-summary-view">
-          {/* Balance Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: 24 }}>
-            {balances.map((bal, idx) => (
-              <div 
-                key={bal.participant} 
-                className="balance-card"
-                style={{
-                  padding: '16px',
-                  background: idx % 2 ? 'var(--theme-card)' : 'var(--theme-bg)',
-                  borderRadius: '8px',
-                  border: '1px solid var(--theme-accent)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  minHeight: '60px',
-                  flexWrap: 'wrap',
-                  gap: '8px'
-                }}
-                onClick={() => {
-                  setSelectedParticipant(selectedParticipant === bal.participant ? null : bal.participant);
-                  setViewMode('details');
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = 'none';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <div style={{ flex: 1, minWidth: '150px' }}>
-                  <div style={{ 
-                    fontWeight: 600, 
-                    fontSize: 'clamp(14px, 4vw, 16px)', 
-                    color: 'var(--theme-font)', 
-                    marginBottom: '4px',
-                    wordBreak: 'break-word'
-                  }}>
-                    {bal.participant}
-                  </div>
-                  <div style={{ 
-                    fontSize: 'clamp(10px, 3vw, 12px)', 
-                    color: 'var(--theme-font)', 
-                    opacity: 0.7,
-                    wordBreak: 'break-word'
-                  }}>
-                    Paid: {formatCurrency(bal.totalPaid)} • Owes: {formatCurrency(bal.totalOwes)}
-                  </div>
-                </div>
-                <div style={{ textAlign: 'right', minWidth: '80px' }}>
-                  <div style={{ 
-                    fontSize: 'clamp(16px, 5vw, 18px)', 
-                    fontWeight: 700, 
-                    color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)',
-                    marginBottom: '4px'
-                  }}>
-                    {formatCurrency(bal.balance, true)}
-                  </div>
-                  <div style={{ 
-                    fontSize: 'clamp(9px, 2.5vw, 10px)', 
-                    color: 'var(--theme-font)', 
-                    opacity: 0.6 
-                  }}>
-                    {bal.balance < 0 ? 'Owes' : bal.balance > 0 ? 'Gets back' : 'Even'}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Category Breakdown */}
-          {Object.keys(categoryBreakdown).length > 0 && (
-            <div className="category-breakdown" style={{ marginBottom: 24 }}>
-              <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
-                📊 Spending by Category
-              </h3>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
-                gap: '12px'
+        {/* Header with title and controls */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 32,
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}>
+          <h2 style={{
+            margin: 0,
+            fontSize: 'clamp(22px, 5vw, 28px)',
+            fontWeight: 800,
+            color: 'var(--theme-primary)',
+            letterSpacing: '0.5px',
+            wordBreak: 'break-word',
+          }}>{i18n.balanceSummary.title}</h2>
+          <div style={{ position: 'relative' }}>
+            <button
+              className="export-btn"
+              onClick={() => setShowExportOptions(!showExportOptions)}
+              style={{
+                padding: '10px 20px',
+                fontSize: '15px',
+                minHeight: '48px',
+                minWidth: '48px',
+                background: 'var(--theme-primary)',
+                color: 'var(--theme-card)',
+                border: 'none',
+                borderRadius: '8px',
+                fontWeight: 700,
+                boxShadow: '0 2px 8px rgba(33,53,85,0.08)',
+              }}
+            >
+              📊 Export
+            </button>
+            {showExportOptions && (
+              <div className="export-options-dropdown" style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                background: 'var(--theme-card)',
+                boxShadow: '0 4px 16px rgba(33,53,85,0.15)',
+                borderRadius: '10px',
+                padding: '10px',
+                minWidth: '170px',
+                zIndex: 10,
+                border: '1px solid var(--theme-accent)',
               }}>
-                {Object.entries(categoryBreakdown)
-                  .sort(([,a], [,b]) => b - a)
-                  .map(([category, amount]) => {
-                    const percentage = ((amount / totalExpenses) * 100);
-                    return (
-                      <div key={category} className="category-card" style={{
-                        padding: '12px',
-                        background: 'var(--theme-card)',
-                        borderRadius: '8px',
-                        border: '1px solid var(--theme-accent)',
-                        textAlign: 'center'
-                      }}>
-                        <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px', color: 'var(--theme-font)' }}>
-                          {getCategoryLabel(category)}
-                        </div>
-                        <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--theme-primary)', marginBottom: '4px' }}>
-                          {formatCurrency(amount)}
-                        </div>
-                        <div style={{ fontSize: '11px', color: 'var(--theme-font)', opacity: 0.7 }}>
-                          {percentage.toFixed(1)}%
-                        </div>
-                      </div>
-                    );
-                  })}
+                <button
+                  className="export-option"
+                  onClick={() => handleExportSummary('csv')}
+                  style={{ display: 'block', width: '100%', padding: '10px 14px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '6px', fontSize: '15px', color: 'var(--theme-font)', fontWeight: 600 }}
+                >
+                  📄 CSV Summary
+                </button>
+                <button
+                  className="export-option"
+                  onClick={() => handleExportSummary('detailed')}
+                  style={{ display: 'block', width: '100%', padding: '10px 14px', border: 'none', background: 'transparent', textAlign: 'left', borderRadius: '6px', fontSize: '15px', color: 'var(--theme-font)', fontWeight: 600 }}
+                >
+                  📋 Detailed Report
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Event Overview Stats */}
+        <div className="summary-stats" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: '20px',
+          marginBottom: 32,
+          padding: '20px',
+          background: 'var(--theme-card)',
+          borderRadius: '12px',
+          border: '1.5px solid var(--theme-accent)',
+          boxShadow: '0 2px 8px rgba(33,53,85,0.06)',
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--theme-primary)' }}>{formatCurrency(totalExpenses)}</div>
+            <div style={{ fontSize: '13px', color: 'var(--theme-font)', opacity: 0.7 }}>Total Spent</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--theme-primary)' }}>{expenses.length}</div>
+            <div style={{ fontSize: '13px', color: 'var(--theme-font)', opacity: 0.7 }}>Expenses</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--theme-primary)' }}>{Object.keys(categoryBreakdown).length}</div>
+            <div style={{ fontSize: '13px', color: 'var(--theme-font)', opacity: 0.7 }}>Categories</div>
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: 'var(--theme-primary)' }}>{settlements.length}</div>
+            <div style={{ fontSize: '13px', color: 'var(--theme-font)', opacity: 0.7 }}>Settlements</div>
+          </div>
+        </div>
+
+        {/* Balance Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: 32 }}>
+          {balances.map((bal, idx) => (
+            <div
+              key={bal.participant}
+              className="balance-card"
+              style={{
+                padding: '18px',
+                background: idx % 2 ? 'var(--theme-card)' : 'var(--theme-bg)',
+                borderRadius: '10px',
+                border: '1.5px solid var(--theme-accent)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                minHeight: '64px',
+                flexWrap: 'wrap',
+                gap: '10px',
+                boxShadow: idx % 2 ? '0 2px 8px rgba(33,53,85,0.06)' : 'none',
+              }}
+              onClick={() => {
+                setSelectedParticipant(selectedParticipant === bal.participant ? null : bal.participant);
+                setViewMode('details');
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(33,53,85,0.12)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.boxShadow = idx % 2 ? '0 2px 8px rgba(33,53,85,0.06)' : 'none';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              <div style={{ flex: 1, minWidth: '160px' }}>
+                <div style={{
+                  fontWeight: 700,
+                  fontSize: 'clamp(16px, 4vw, 20px)',
+                  color: 'var(--theme-font)',
+                  marginBottom: '6px',
+                  wordBreak: 'break-word',
+                }}>
+                  {bal.participant}
+                </div>
+                <div style={{
+                  fontSize: 'clamp(12px, 3vw, 14px)',
+                  color: 'var(--theme-font)',
+                  opacity: 0.7,
+                  wordBreak: 'break-word',
+                }}>
+                  Paid: {formatCurrency(bal.totalPaid)} • Owes: {formatCurrency(bal.totalOwes)}
+                </div>
+              </div>
+              <div style={{ textAlign: 'right', minWidth: '90px' }}>
+                <div style={{
+                  fontSize: 'clamp(18px, 5vw, 22px)',
+                  fontWeight: 900,
+                  color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)',
+                  marginBottom: '6px',
+                }}>
+                  {formatCurrency(bal.balance, true)}
+                </div>
+                <div style={{
+                  fontSize: 'clamp(10px, 2.5vw, 12px)',
+                  color: 'var(--theme-font)',
+                  opacity: 0.6,
+                }}>
+                  {bal.balance < 0 ? 'Owes' : bal.balance > 0 ? 'Gets back' : 'Even'}
+                </div>
               </div>
             </div>
-          )}
+          ))}
         </div>
-      )}
 
-      {viewMode === 'details' && (
+        {/* Category Breakdown */}
+        {Object.keys(categoryBreakdown).length > 0 && (
+          <div className="category-breakdown" style={{ marginBottom: 32 }}>
+            <h3 style={{ fontSize: '18px', margin: '0 0 18px 0', color: 'var(--theme-primary)', fontWeight: 700 }}>
+              📊 Spending by Category
+            </h3>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+              gap: '14px',
+            }}>
+              {Object.entries(categoryBreakdown)
+                .sort(([, a], [, b]) => b - a)
+                .map(([category, amount]) => {
+                  const percentage = ((amount / totalExpenses) * 100);
+                  return (
+                    <div key={category} className="category-card" style={{
+                      padding: '14px',
+                      background: 'var(--theme-card)',
+                      borderRadius: '10px',
+                      border: '1.5px solid var(--theme-accent)',
+                      textAlign: 'center',
+                      boxShadow: '0 2px 8px rgba(33,53,85,0.06)',
+                    }}>
+                      <div style={{ fontSize: '15px', fontWeight: 700, marginBottom: '6px', color: 'var(--theme-font)' }}>
+                        {getCategoryLabel(category)}
+                      </div>
+                      <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--theme-primary)', marginBottom: '6px' }}>
+                        {formatCurrency(amount)}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>
+                        {percentage.toFixed(1)}%
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
+        {/* View Mode Selector */}
+        <div className="view-mode-selector" style={{
+          display: 'flex',
+          gap: '12px',
+          marginBottom: 32,
+          flexWrap: 'wrap',
+        }}>
+          <button
+            onClick={() => setViewMode('summary')}
+            style={getButtonStyle('summary')}
+          >
+            📊 Summary
+          </button>
+          <button
+            onClick={() => setViewMode('details')}
+            style={getButtonStyle('details')}
+          >
+            👤 Details
+          </button>
+          <button
+            onClick={() => setViewMode('settlements')}
+            style={getButtonStyle('settlements')}
+          >
+            💳 Settlements
+          </button>
+        </div>
+
+        {/* Navigation buttons */}
+        <div style={{ 
+          marginTop: 32, 
+          paddingTop: 24,
+          borderTop: '1px solid var(--theme-accent)',
+          display: 'flex', 
+          gap: 12,
+          flexDirection: 'column'
+        }}>
+          <button
+            type="button"
+            className="submit-btn"
+            style={{ 
+              width: '100%', 
+              fontWeight: 600,
+              minHeight: '44px',
+              fontSize: 'clamp(14px, 4vw, 16px)'
+            }}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.dispatchEvent) {
+                window.dispatchEvent(new CustomEvent('navigateToExpenses'));
+              }
+            }}
+          >
+            {i18n.balanceSummary.backToExpenses || 'Back to Expenses'}
+          </button>
+          <button
+            type="button"
+            className="submit-btn"
+            style={{ 
+              width: '100%', 
+              fontWeight: 600,
+              minHeight: '44px',
+              fontSize: 'clamp(14px, 4vw, 16px)'
+            }}
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.dispatchEvent) {
+                window.dispatchEvent(new CustomEvent('navigateToEvents'));
+              }
+            }}
+          >
+            Back to Events
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (viewMode === 'details') {
+    return (
+      <div className="balance-summary-container unified-card primary-theme" style={{
+        background: 'var(--theme-bg)',
+        borderRadius: 16,
+        maxWidth: '700px',
+        width: '100%',
+        margin: '20px auto',
+        boxShadow: '0 4px 24px rgba(33,53,85,0.10)',
+        padding: '24px',
+        boxSizing: 'border-box',
+        border: '1.5px solid var(--theme-accent)',
+        position: 'relative',
+      }}>
         <div className="participant-details-view">
+          {/* Header */}
+          <h2 style={{
+            margin: '0 0 24px 0',
+            fontSize: 'clamp(22px, 5vw, 28px)',
+            fontWeight: 800,
+            color: 'var(--theme-primary)',
+            letterSpacing: '0.5px',
+          }}>👤 Participant Details</h2>
+
           {/* Participant Selector */}
           <div style={{ marginBottom: 20 }}>
             <label style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px', display: 'block', color: 'var(--theme-font)' }}>
@@ -775,7 +850,7 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                                     {getCategoryLabel(exp.category)} • {new Date(exp.date).toLocaleDateString()}
                                   </div>
                                 </div>
-                                <div style={{ fontWeight: 700, color: 'var(--theme-primary)' }}>
+                                <div style={{ fontWeight: 700, color: 'var(--theme-primary' }}>
                                   {formatCurrency(exp.amount)}
                                 </div>
                               </div>
@@ -827,11 +902,107 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               </div>
             </div>
           )}
-        </div>
-      )}
 
-      {viewMode === 'settlements' && (
+          {/* View Mode Selector */}
+          <div className="view-mode-selector" style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: 32,
+            marginBottom: 24,
+            flexWrap: 'wrap',
+          }}>
+            <button
+              onClick={() => setViewMode('summary')}
+              style={getButtonStyle('summary')}
+            >
+              📊 Summary
+            </button>
+            <button
+              onClick={() => setViewMode('details')}
+              style={getButtonStyle('details')}
+            >
+              👤 Details
+            </button>
+            <button
+              onClick={() => setViewMode('settlements')}
+              style={getButtonStyle('settlements')}
+            >
+              💳 Settlements
+            </button>
+          </div>
+
+          {/* Navigation buttons */}
+          <div style={{ 
+            paddingTop: 24,
+            borderTop: '1px solid var(--theme-accent)',
+            display: 'flex', 
+            gap: 12,
+            flexDirection: 'column'
+          }}>
+            <button
+              type="button"
+              className="submit-btn"
+              style={{ 
+                width: '100%', 
+                fontWeight: 600,
+                minHeight: '44px',
+                fontSize: 'clamp(14px, 4vw, 16px)'
+              }}
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('navigateToExpenses'));
+                }
+              }}
+            >
+              {i18n.balanceSummary.backToExpenses || 'Back to Expenses'}
+            </button>
+            <button
+              type="button"
+              className="submit-btn"
+              style={{ 
+                width: '100%', 
+                fontWeight: 600,
+                minHeight: '44px',
+                fontSize: 'clamp(14px, 4vw, 16px)'
+              }}
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('navigateToEvents'));
+                }
+              }}
+            >
+              Back to Events
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (viewMode === 'settlements') {
+    return (
+      <div className="balance-summary-container unified-card primary-theme" style={{
+        background: 'var(--theme-bg)',
+        borderRadius: 16,
+        maxWidth: '700px',
+        width: '100%',
+        margin: '20px auto',
+        boxShadow: '0 4px 24px rgba(33,53,85,0.10)',
+        padding: '24px',
+        boxSizing: 'border-box',
+        border: '1.5px solid var(--theme-accent)',
+        position: 'relative',
+      }}>
         <div className="settlements-view">
+          {/* Header */}
+          <h2 style={{
+            margin: '0 0 24px 0',
+            fontSize: 'clamp(22px, 5vw, 28px)',
+            fontWeight: 800,
+            color: 'var(--theme-primary)',
+            letterSpacing: '0.5px',
+          }}>💳 Settlement Recommendations</h2>
+
           {settlements.length > 0 ? (
             <>
               <div style={{ marginBottom: 20 }}>
@@ -935,52 +1106,83 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <div style={{ fontSize: '14px' }}>Everyone has paid their fair share.</div>
             </div>
           )}
+
+          {/* View Mode Selector */}
+          <div className="view-mode-selector" style={{
+            display: 'flex',
+            gap: '12px',
+            marginTop: 32,
+            marginBottom: 24,
+            flexWrap: 'wrap',
+          }}>
+            <button
+              onClick={() => setViewMode('summary')}
+              style={getButtonStyle('summary')}
+            >
+              📊 Summary
+            </button>
+            <button
+              onClick={() => setViewMode('details')}
+              style={getButtonStyle('details')}
+            >
+              👤 Details
+            </button>
+            <button
+              onClick={() => setViewMode('settlements')}
+              style={getButtonStyle('settlements')}
+            >
+              💳 Settlements
+            </button>
+          </div>
+
+          {/* Navigation buttons */}
+          <div style={{ 
+            paddingTop: 24,
+            borderTop: '1px solid var(--theme-accent)',
+            display: 'flex', 
+            gap: 12,
+            flexDirection: 'column'
+          }}>
+            <button
+              type="button"
+              className="submit-btn"
+              style={{ 
+                width: '100%', 
+                fontWeight: 600,
+                minHeight: '44px',
+                fontSize: 'clamp(14px, 4vw, 16px)'
+              }}
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('navigateToExpenses'));
+                }
+              }}
+            >
+              {i18n.balanceSummary.backToExpenses || 'Back to Expenses'}
+            </button>
+            <button
+              type="button"
+              className="submit-btn"
+              style={{ 
+                width: '100%', 
+                fontWeight: 600,
+                minHeight: '44px',
+                fontSize: 'clamp(14px, 4vw, 16px)'
+              }}
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.dispatchEvent) {
+                  window.dispatchEvent(new CustomEvent('navigateToEvents'));
+                }
+              }}
+            >
+              Back to Events
+            </button>
+          </div>
         </div>
-      )}
-      {/* Navigation buttons */}
-      <div style={{ 
-        marginTop: 32, 
-        paddingTop: 24,
-        borderTop: '1px solid var(--theme-accent)',
-        display: 'flex', 
-        gap: 12,
-        flexDirection: 'column'
-      }}>
-        <button
-          type="button"
-          className="submit-btn"
-          style={{ 
-            width: '100%', 
-            fontWeight: 600,
-            minHeight: '44px',
-            fontSize: 'clamp(14px, 4vw, 16px)'
-          }}
-          onClick={() => {
-            if (typeof window !== 'undefined' && window.dispatchEvent) {
-              window.dispatchEvent(new CustomEvent('navigateToExpenses'));
-            }
-          }}
-        >
-          {i18n.balanceSummary.backToExpenses || 'Back to Expenses'}
-        </button>
-        <button
-          type="button"
-          className="submit-btn"
-          style={{ 
-            width: '100%', 
-            fontWeight: 600,
-            minHeight: '44px',
-            fontSize: 'clamp(14px, 4vw, 16px)'
-          }}
-          onClick={() => {
-            if (typeof window !== 'undefined' && window.dispatchEvent) {
-              window.dispatchEvent(new CustomEvent('navigateToEvents'));
-            }
-          }}
-        >
-          Back to Events
-        </button>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // This should never be reached
+  return null;
 };
