@@ -314,8 +314,22 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (loading) {
     return (
-      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
-        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+      <div className="event-creation-container unified-card" style={{ 
+        maxWidth: '600px', 
+        width: '100%',
+        margin: '16px auto', 
+        background: 'var(--theme-card)', 
+        borderRadius: 12, 
+        boxShadow: '0 2px 12px rgba(0,0,0,0.07)', 
+        padding: '16px', 
+        color: 'var(--theme-font)',
+        boxSizing: 'border-box'
+      }}>
+        <h2 style={{ 
+          marginBottom: 20, 
+          color: 'var(--theme-font)',
+          fontSize: 'clamp(18px, 4vw, 24px)'
+        }}>{i18n.balanceSummary.title}</h2>
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <div className="loading-spinner" style={{ margin: '0 auto 16px' }}></div>
           <div style={{ color: 'var(--theme-muted)' }}>{i18n.common.loading}</div>
@@ -326,13 +340,31 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (error) {
     return (
-      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
-        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+      <div className="event-creation-container unified-card" style={{ 
+        maxWidth: '600px', 
+        width: '100%',
+        margin: '16px auto', 
+        background: 'var(--theme-card)', 
+        borderRadius: 12, 
+        boxShadow: '0 2px 12px rgba(0,0,0,0.07)', 
+        padding: '16px', 
+        color: 'var(--theme-font)',
+        boxSizing: 'border-box'
+      }}>
+        <h2 style={{ 
+          marginBottom: 20, 
+          color: 'var(--theme-font)',
+          fontSize: 'clamp(18px, 4vw, 24px)'
+        }}>{i18n.balanceSummary.title}</h2>
         <div className="error-message" role="alert" style={{ marginBottom: 16, padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '8px', border: '1px solid var(--danger)', color: 'var(--danger, #d32f2f)' }}>{error}</div>
         <button 
           onClick={loadExpensesAndCalculateBalances}
           className="add-btn"
-          style={{ marginTop: '16px' }}
+          style={{ 
+            marginTop: '16px',
+            minHeight: '44px',
+            fontSize: 'clamp(14px, 4vw, 16px)'
+          }}
         >
           Try Again
         </button>
@@ -342,14 +374,32 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
 
   if (expenses.length === 0) {
     return (
-      <div className="event-creation-container unified-card" style={{ maxWidth: 600, margin: '32px auto', background: 'var(--theme-card)', borderRadius: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24, color: 'var(--theme-font)' }}>
-        <h2 style={{ marginBottom: 20, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+      <div className="event-creation-container unified-card" style={{ 
+        maxWidth: '600px', 
+        width: '100%',
+        margin: '16px auto', 
+        background: 'var(--theme-card)', 
+        borderRadius: 12, 
+        boxShadow: '0 2px 12px rgba(0,0,0,0.07)', 
+        padding: '16px', 
+        color: 'var(--theme-font)',
+        boxSizing: 'border-box'
+      }}>
+        <h2 style={{ 
+          marginBottom: 20, 
+          color: 'var(--theme-font)',
+          fontSize: 'clamp(18px, 4vw, 24px)'
+        }}>{i18n.balanceSummary.title}</h2>
         <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--theme-muted)' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>💸</div>
           <div style={{ fontSize: '18px', marginBottom: '8px', color: 'var(--theme-font)' }}>{i18n.balanceSummary.noExpenses}</div>
           <div style={{ fontSize: '14px', marginBottom: '24px', color: 'var(--theme-muted)' }}>Add some expenses to see the balance summary</div>
           <button
             className="submit-btn"
+            style={{
+              minHeight: '44px',
+              fontSize: 'clamp(14px, 4vw, 16px)'
+            }}
             onClick={() => {
               if (typeof window !== 'undefined' && window.dispatchEvent) {
                 window.dispatchEvent(new CustomEvent('navigateToExpenses'));
@@ -371,15 +421,42 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
   }, 0);
 
   return (
-    <div className="balance-summary-container unified-card" style={{ background: 'var(--theme-card)', borderRadius: 12, maxWidth: 600, margin: '32px auto', boxShadow: '0 2px 12px rgba(0,0,0,0.07)', padding: 24 }}>
+    <div className="balance-summary-container unified-card" style={{ 
+      background: 'var(--theme-card)', 
+      borderRadius: 12, 
+      maxWidth: '600px', 
+      width: '100%',
+      margin: '16px auto', 
+      boxShadow: '0 2px 12px rgba(0,0,0,0.07)', 
+      padding: '16px',
+      boxSizing: 'border-box'
+    }}>
       {/* Header with title and controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 700, color: 'var(--theme-font)' }}>{i18n.balanceSummary.title}</h2>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        marginBottom: 24,
+        flexWrap: 'wrap',
+        gap: '12px'
+      }}>
+        <h2 style={{ 
+          margin: 0, 
+          fontSize: 'clamp(18px, 4vw, 24px)', 
+          fontWeight: 700, 
+          color: 'var(--theme-font)',
+          wordBreak: 'break-word'
+        }}>{i18n.balanceSummary.title}</h2>
         <div style={{ position: 'relative' }}>
           <button
             className="export-btn"
             onClick={() => setShowExportOptions(!showExportOptions)}
-            style={{ padding: '8px 16px', fontSize: '14px' }}
+            style={{ 
+              padding: '8px 16px', 
+              fontSize: '14px',
+              minHeight: '44px',
+              minWidth: '44px'
+            }}
           >
             📊 Export
           </button>
@@ -444,7 +521,13 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
       </div>
 
       {/* View Mode Tabs */}
-      <div className="view-mode-tabs" style={{ display: 'flex', marginBottom: 20, borderBottom: '1px solid var(--theme-accent)' }}>
+      <div className="view-mode-tabs" style={{ 
+        display: 'flex', 
+        marginBottom: 20, 
+        borderBottom: '1px solid var(--theme-accent)',
+        overflow: 'hidden',
+        borderRadius: '8px 8px 0 0'
+      }}>
         {[
           { key: 'summary', label: 'Balance Summary', icon: '💰' },
           { key: 'details', label: 'Participant Details', icon: '👥' },
@@ -463,13 +546,23 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               color: viewMode === tab.key ? 'var(--theme-primary)' : 'var(--theme-font)',
               opacity: viewMode === tab.key ? 1 : 0.7,
               fontWeight: viewMode === tab.key ? 600 : 400,
-              fontSize: '14px',
+              fontSize: 'clamp(12px, 3vw, 14px)',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              minHeight: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '4px'
             }}
           >
-            <span style={{ marginRight: '4px' }}>{tab.icon}</span>
-            <span className="tab-label">{tab.label}</span>
+            <span style={{ fontSize: 'clamp(14px, 4vw, 16px)' }}>{tab.icon}</span>
+            <span className="tab-label" style={{ 
+              fontSize: 'clamp(10px, 2.5vw, 12px)',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }}>{tab.label}</span>
           </button>
         ))}
       </div>
@@ -491,7 +584,10 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   cursor: 'pointer',
-                  transition: 'all 0.2s ease'
+                  transition: 'all 0.2s ease',
+                  minHeight: '60px',
+                  flexWrap: 'wrap',
+                  gap: '8px'
                 }}
                 onClick={() => {
                   setSelectedParticipant(selectedParticipant === bal.participant ? null : bal.participant);
@@ -506,24 +602,39 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                   e.currentTarget.style.transform = 'translateY(0)';
                 }}
               >
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: '16px', color: 'var(--theme-font)', marginBottom: '4px' }}>
+                <div style={{ flex: 1, minWidth: '150px' }}>
+                  <div style={{ 
+                    fontWeight: 600, 
+                    fontSize: 'clamp(14px, 4vw, 16px)', 
+                    color: 'var(--theme-font)', 
+                    marginBottom: '4px',
+                    wordBreak: 'break-word'
+                  }}>
                     {bal.participant}
                   </div>
-                  <div style={{ fontSize: '12px', color: 'var(--theme-font)', opacity: 0.7 }}>
+                  <div style={{ 
+                    fontSize: 'clamp(10px, 3vw, 12px)', 
+                    color: 'var(--theme-font)', 
+                    opacity: 0.7,
+                    wordBreak: 'break-word'
+                  }}>
                     Paid: {formatCurrency(bal.totalPaid)} • Owes: {formatCurrency(bal.totalOwes)}
                   </div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
+                <div style={{ textAlign: 'right', minWidth: '80px' }}>
                   <div style={{ 
-                    fontSize: '18px', 
+                    fontSize: 'clamp(16px, 5vw, 18px)', 
                     fontWeight: 700, 
                     color: bal.balance < 0 ? 'var(--danger, #d32f2f)' : bal.balance > 0 ? 'var(--theme-primary)' : 'var(--theme-font)',
                     marginBottom: '4px'
                   }}>
                     {formatCurrency(bal.balance, true)}
                   </div>
-                  <div style={{ fontSize: '10px', color: 'var(--theme-font)', opacity: 0.6 }}>
+                  <div style={{ 
+                    fontSize: 'clamp(9px, 2.5vw, 10px)', 
+                    color: 'var(--theme-font)', 
+                    opacity: 0.6 
+                  }}>
                     {bal.balance < 0 ? 'Owes' : bal.balance > 0 ? 'Gets back' : 'Even'}
                   </div>
                 </div>
@@ -537,7 +648,11 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
                 📊 Spending by Category
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', 
+                gap: '12px'
+              }}>
                 {Object.entries(categoryBreakdown)
                   .sort(([,a], [,b]) => b - a)
                   .map(([category, amount]) => {
@@ -677,7 +792,11 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
               <h3 style={{ fontSize: '16px', margin: '0 0 16px 0', color: 'var(--theme-primary)' }}>
                 👥 All Participants Overview
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', 
+                gap: '16px' 
+              }}>
                 {balances.map(bal => (
                   <div key={bal.participant} 
                     className="participant-overview-card"
@@ -728,38 +847,57 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
                       border: '1px solid var(--theme-accent)',
                       display: 'flex',
                       justifyContent: 'space-between',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '12px',
+                      minHeight: '60px'
                     }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '8px', 
+                        flex: 1,
+                        minWidth: '200px',
+                        justifyContent: 'center'
+                      }}>
                         <div style={{
                           background: 'var(--theme-accent)',
                           color: 'var(--danger, #d32f2f)',
                           padding: '8px 12px',
                           borderRadius: '6px',
                           fontWeight: 600,
-                          fontSize: '14px'
+                          fontSize: 'clamp(12px, 3vw, 14px)',
+                          wordBreak: 'break-word',
+                          textAlign: 'center'
                         }}>
                           {s.from}
                         </div>
-                        <div style={{ fontSize: '16px', color: 'var(--theme-font)' }}>→</div>
+                        <div style={{ 
+                          fontSize: 'clamp(14px, 4vw, 16px)', 
+                          color: 'var(--theme-font)' 
+                        }}>→</div>
                         <div style={{
                           background: 'var(--theme-accent)',
                           color: 'var(--theme-primary)',
                           padding: '8px 12px',
                           borderRadius: '6px',
                           fontWeight: 600,
-                          fontSize: '14px'
+                          fontSize: 'clamp(12px, 3vw, 14px)',
+                          wordBreak: 'break-word',
+                          textAlign: 'center'
                         }}>
                           {s.to}
                         </div>
                       </div>
                       <div style={{
-                        fontSize: '18px',
+                        fontSize: 'clamp(16px, 5vw, 18px)',
                         fontWeight: 700,
                         color: 'var(--theme-primary)',
                         padding: '8px 16px',
                         background: 'var(--theme-accent)',
-                        borderRadius: '6px'
+                        borderRadius: '6px',
+                        minWidth: '80px',
+                        textAlign: 'center'
                       }}>
                         ¤{s.amount.toFixed(2)}
                       </div>
@@ -806,12 +944,17 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         borderTop: '1px solid var(--theme-accent)',
         display: 'flex', 
         gap: 12,
-        flexWrap: 'wrap'
+        flexDirection: 'column'
       }}>
         <button
           type="button"
           className="submit-btn"
-          style={{ flex: 1, minWidth: 140, fontWeight: 600 }}
+          style={{ 
+            width: '100%', 
+            fontWeight: 600,
+            minHeight: '44px',
+            fontSize: 'clamp(14px, 4vw, 16px)'
+          }}
           onClick={() => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
               window.dispatchEvent(new CustomEvent('navigateToExpenses'));
@@ -823,7 +966,12 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
         <button
           type="button"
           className="submit-btn"
-          style={{ flex: 1, minWidth: 140, fontWeight: 600 }}
+          style={{ 
+            width: '100%', 
+            fontWeight: 600,
+            minHeight: '44px',
+            fontSize: 'clamp(14px, 4vw, 16px)'
+          }}
           onClick={() => {
             if (typeof window !== 'undefined' && window.dispatchEvent) {
               window.dispatchEvent(new CustomEvent('navigateToEvents'));
