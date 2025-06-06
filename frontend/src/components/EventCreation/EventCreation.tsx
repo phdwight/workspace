@@ -400,8 +400,8 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
             }}>
               <thead>
                 <tr style={{ 
-                  background: 'var(--theme-accent, #D8C4B6)', 
-                  color: 'var(--theme-primary, #213555)', 
+                  background: 'var(--theme-primary, #213555)', 
+                  color: 'var(--theme-card, #fff)', 
                   fontWeight: 700, 
                   fontSize: 13 
                 }}>
@@ -422,21 +422,21 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                     key={event.event_name}
                     style={{
                       borderBottom: idx === events.length - 1 ? 'none' : '1px solid var(--theme-muted)',
-                      background: idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-accent-light)',
+                      background: idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-bg, #E8ECD7)',
                       transition: 'background 0.2s ease',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = 'var(--theme-accent-lighter)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-accent-light)';
+                      e.currentTarget.style.background = idx % 2 === 0 ? 'var(--theme-card, #fff)' : 'var(--theme-bg, #E8ECD7)';
                     }}
                   >
                     <td style={{ 
                       padding: '12px 8px', 
                       fontWeight: 600, 
                       fontSize: 15, 
-                      color: 'var(--theme-font, #213555)', 
+                      color: 'var(--theme-primary, #213555)', 
                       verticalAlign: 'middle',
                       width: '50%'
                     }}>
@@ -451,7 +451,7 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
                     </td>
                     <td style={{ 
                       padding: '12px 8px', 
-                      color: 'var(--theme-font, #213555)', 
+                      color: 'var(--theme-primary, #213555)', 
                       fontSize: 13, 
                       verticalAlign: 'middle', 
                       width: '35%',
