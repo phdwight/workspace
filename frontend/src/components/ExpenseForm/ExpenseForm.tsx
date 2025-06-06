@@ -23,6 +23,20 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
     { value: 'other', label: i18n.expenseForm.categories?.other || 'Other' }
   ];
 
+  // Helper function to format currency amounts with proper negative sign placement
+  const formatCurrency = (amount: number, showPositiveSign: boolean = false): string => {
+    const absAmount = Math.abs(amount);
+    const formattedAmount = `¤${absAmount.toFixed(2)}`;
+    
+    if (amount < 0) {
+      return `-${formattedAmount}`;
+    } else if (amount > 0 && showPositiveSign) {
+      return `+${formattedAmount}`;
+    } else {
+      return formattedAmount;
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
     localStorageService.getExpensesForTrip(tripName, 'local')
@@ -88,7 +102,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
         exp.date,
         `"${exp.description || ''}"`,
         exp.category || '',
-        `"${Array.isArray(exp.payers) ? exp.payers.map((p: any) => `${p.name}: $${p.amount}`).join('; ') : ''}"`,
+        `"${Array.isArray(exp.payers) ? exp.payers.map((p: any) => `${p.name}: ${formatCurrency(p.amount)}`).join('; ') : ''}"`,
         Array.isArray(exp.payers) ? exp.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0).toFixed(2) : '0.00',
         `"${Array.isArray(exp.participants) ? exp.participants.join(', ') : ''}"`
       ].join(','))
@@ -166,7 +180,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
 
           {/* Total Amount Display */}
           <div className="expense-total-display">
-            {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: ${calculateTotal().toFixed(2)}
+            {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: {formatCurrency(calculateTotal())}
             {filteredExpenses.length !== expenses.length && (
               <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--theme-muted)', marginLeft: '8px' }}>
                 (Showing {filteredExpenses.length} of {expenses.length} expenses)
@@ -201,7 +215,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
                       </div>
                       <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
                         <strong>Payers:</strong> {Array.isArray(exp.payers) 
-                          ? exp.payers.map((p: any) => `${p.name} ($${Number(p.amount).toFixed(2)})`).join(', ')
+                          ? exp.payers.map((p: any) => `${p.name} (${formatCurrency(Number(p.amount))})`).join(', ')
                           : '-'}
                       </div>
                       <div style={{ fontSize: '14px', color: 'var(--theme-muted)' }}>
@@ -210,7 +224,7 @@ const ExpensesList: React.FC<{ tripName: string; refreshKey: number; i18n: any }
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
                       <div className="expense-amount-display">
-                        ${totalAmount.toFixed(2)}
+                        {formatCurrency(totalAmount)}
                       </div>
                       <button
                         onClick={() => handleDeleteExpense(exp.id)}
@@ -256,6 +270,20 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     { value: 'utilities', label: 'Utilities' },
     { value: 'other', label: 'Other' }
   ];
+
+  // Helper function to format currency amounts with proper negative sign placement
+  const formatCurrency = (amount: number, showPositiveSign: boolean = false): string => {
+    const absAmount = Math.abs(amount);
+    const formattedAmount = `¤${absAmount.toFixed(2)}`;
+    
+    if (amount < 0) {
+      return `-${formattedAmount}`;
+    } else if (amount > 0 && showPositiveSign) {
+      return `+${formattedAmount}`;
+    } else {
+      return formattedAmount;
+    }
+  };
 
   useEffect(() => {
     if (descriptionRef.current) {
@@ -318,7 +346,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     if (totalAmount > 0 && selectedParticipants.length > 0) {
       const amountPerPerson = totalAmount / selectedParticipants.length;
       addToast(
-        `Amount per person: $${amountPerPerson.toFixed(2)}`,
+        `Amount per person: ¤${amountPerPerson.toFixed(2)}`,
         'success'
       );
     }
