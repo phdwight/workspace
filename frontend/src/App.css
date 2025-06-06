@@ -340,12 +340,12 @@ input[type=number] {
 }
 
 .created-event-card {
-  background: var(--background);
-  border: 1.2px solid var(--primary);
+  background: var(--theme-card);
+  border: 1.2px solid var(--theme-primary);
   border-radius: 7px;
   margin-top: 14px;
   padding: 12px 10px;
-  color: var(--primary);
+  color: var(--theme-primary);
   box-shadow: 0 1px 4px rgba(187, 62, 0, 0.07);
 }
 .created-event-card h3 {
@@ -368,14 +368,14 @@ input[type=number] {
   color: var(--theme-font);
 }
 .created-event-value {
-  color: var(--text-main);
+  color: var(--theme-font);
 }
 .created-event-list {
   padding-left: 16px;
   margin: 0;
 }
 .created-event-participant {
-  color: var(--primary);
+  color: var(--theme-primary);
 }
 
 .events-list {
@@ -384,12 +384,12 @@ input[type=number] {
   margin: 0;
 }
 .events-list-item {
-  background: var(--background);
+  background: var(--theme-card);
   border-radius: 6px;
   margin-bottom: 10px;
   padding: 10px 10px;
   box-shadow: 0 1px 4px rgba(187, 62, 0, 0.07);
-  color: var(--text-main);
+  color: var(--theme-font);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
