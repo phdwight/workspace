@@ -244,6 +244,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const descriptionRef = useRef<HTMLInputElement>(null);
+  const categoryRef = useRef<HTMLSelectElement>(null);
   const { addToast } = useToast();
 
   // Categories for expenses
@@ -258,8 +259,8 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   ];
 
   useEffect(() => {
-    if (descriptionRef.current) {
-      descriptionRef.current.focus();
+    if (categoryRef.current) {
+      categoryRef.current.focus();
     }
     // Mobile-first design - no keyboard shortcuts needed
   }, []);
@@ -442,6 +443,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
           <label htmlFor="category" style={{ minWidth: 110, marginRight: 8 }}>{(i18n.expenseForm as any).categoryLabel || "Category"} *</label>
           <select
+            ref={categoryRef}
             id="category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
