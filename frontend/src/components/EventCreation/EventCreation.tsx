@@ -150,8 +150,8 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
       
       // Get theme colors from CSS variables
       const computedStyle = getComputedStyle(document.documentElement);
-      const primaryColor = computedStyle.getPropertyValue('--theme-primary').trim() || '#213555';
-      const dangerColor = computedStyle.getPropertyValue('--danger').trim() || '#d32f2f';
+      const primaryColor = computedStyle.getPropertyValue('--theme-primary').trim() || '#102E50';
+      const dangerColor = computedStyle.getPropertyValue('--error-text').trim() || '#BE3D2A';
       const cardBg = computedStyle.getPropertyValue('--theme-card').trim() || '#fff';
       
       confirmDialog.innerHTML = `
@@ -161,8 +161,8 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
             <span style="line-height: 1.3;">${message}</span>
           </div>
           <div style="display: flex; gap: 16px; justify-content: center; margin-top: 16px;">
-            <button id="confirm-yes" style="background: linear-gradient(90deg, ${dangerColor} 0%, var(--danger) 100%); color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3); transition: all 0.2s ease;">${i18n.eventsList?.delete || 'Delete'}</button>
-            <button id="confirm-no" style="background: ${primaryColor}; color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(33, 53, 85, 0.3); transition: all 0.2s ease;">${i18n.common?.cancel || 'Cancel'}</button>
+            <button id="confirm-yes" style="background: ${dangerColor}; color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(190, 61, 42, 0.3); transition: all 0.2s ease;">${i18n.eventsList?.delete || 'Delete'}</button>
+            <button id="confirm-no" style="background: ${primaryColor}; color: var(--theme-card); border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; padding: 12px 20px; cursor: pointer; box-shadow: 0 2px 8px rgba(16, 46, 80, 0.3); transition: all 0.2s ease;">${i18n.common?.cancel || 'Cancel'}</button>
           </div>
         </div>
       `;
@@ -196,20 +196,20 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
       // Add hover effects
       noBtn?.addEventListener('mouseenter', (e) => {
         (e.target as HTMLElement).style.transform = 'translateY(-1px)';
-        (e.target as HTMLElement).style.boxShadow = `0 4px 12px rgba(33, 53, 85, 0.4)`;
+        (e.target as HTMLElement).style.boxShadow = `0 4px 12px rgba(16, 46, 80, 0.4)`;
       });
       noBtn?.addEventListener('mouseleave', (e) => {
         (e.target as HTMLElement).style.transform = 'none';
-        (e.target as HTMLElement).style.boxShadow = `0 2px 8px rgba(33, 53, 85, 0.3)`;
+        (e.target as HTMLElement).style.boxShadow = `0 2px 8px rgba(16, 46, 80, 0.3)`;
       });
       
       yesBtn?.addEventListener('mouseenter', (e) => {
         (e.target as HTMLElement).style.transform = 'translateY(-1px)';
-        (e.target as HTMLElement).style.boxShadow = `0 4px 12px rgba(211, 47, 47, 0.4)`;
+        (e.target as HTMLElement).style.boxShadow = `0 4px 12px rgba(190, 61, 42, 0.4)`;
       });
       yesBtn?.addEventListener('mouseleave', (e) => {
         (e.target as HTMLElement).style.transform = 'none';
-        (e.target as HTMLElement).style.boxShadow = `0 2px 8px rgba(211, 47, 47, 0.3)`;
+        (e.target as HTMLElement).style.boxShadow = `0 2px 8px rgba(190, 61, 42, 0.3)`;
       });
       
       noBtn?.addEventListener('click', () => {
@@ -231,17 +231,9 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
       <h2>{i18n.eventCreation.title}</h2>
       <form onSubmit={handleSubmit} className="event-form">
         {error && (
-          <div className="error-message" role="alert" id="error-message" style={{ 
-            marginBottom: 16, 
-            padding: '12px', 
-            backgroundColor: 'var(--error-bg, #ffebee)', 
-            borderRadius: '8px', 
-            border: '1px solid var(--danger)', 
-            color: 'var(--danger, #d32f2f)',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>
-            {error}
+          <div className="error-message" role="alert" id="error-message">
+            <span role="img" aria-label="Error" className="error-icon">⚠️</span>
+            <span>{error}</span>
           </div>
         )}
         {/* Event Name - inline label and input */}
