@@ -50,11 +50,11 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: var(--theme-font, #000000);
+    color: var(--theme-font, #102E50);
     background-color: var(--theme-bg, #F2F2F2);
   }
   a:hover {
-    color: var(--theme-secondary, #B6B09F);
+    color: var(--theme-secondary, #F5C45E);
   }
   button {
     background-color: var(--theme-card, #ffffff);
