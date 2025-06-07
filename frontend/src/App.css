@@ -8,13 +8,10 @@
 }
 
 :root {
-  --primary: #000000;
-  --secondary: #B6B09F;
-  --accent: #EAE4D5;
-  --background: #F2F2F2;
   --text-light: #ffffff;
   --danger: #d32f2f;
 
+  /* Theme variables - primary source of truth for theming */
   --theme-bg: #F2F2F2;
   --theme-primary: #000000;
   --theme-secondary: #B6B09F;
@@ -205,7 +202,7 @@ body .event-list {
 .input, input[type="text"], input[type="email"], input[type="number"], select, textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1.5px solid var(--secondary);
+  border: 1.5px solid var(--theme-secondary);
   border-radius: 8px;
   font-size: 1rem;
   background: var(--theme-card);
@@ -215,7 +212,7 @@ body .event-list {
   outline: none;
 }
 .input:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
-  border-color: var(--primary);
+  border-color: var(--theme-primary);
   box-shadow: 0 0 0 2px #f7ad45aa;
 }
 select {
@@ -322,7 +319,7 @@ input[type=number] {
 }
 
 .submit-btn {
-  background: var(--primary);
+  background: var(--theme-primary);
   color: var(--text-light);
   border: none;
   border-radius: 5px;
@@ -447,7 +444,7 @@ input[type=number] {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -475,7 +472,7 @@ select:focus-visible {
 
 /* Improved button styles */
 .btn-primary {
-  background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
+  background: linear-gradient(90deg, var(--theme-primary) 60%, var(--theme-accent) 100%);
   color: var(--text-light);
   border: none;
   border-radius: 8px;
@@ -499,7 +496,7 @@ select:focus-visible {
 }
 
 .btn-secondary {
-  background: var(--secondary);
+  background: var(--theme-secondary);
   color: var(--text-light);
   border: none;
   border-radius: 8px;
@@ -537,7 +534,7 @@ select:focus-visible {
 }
 
 .input:focus {
-  border-color: var(--primary);
+  border-color: var(--theme-primary);
   outline: none;
 }
 
