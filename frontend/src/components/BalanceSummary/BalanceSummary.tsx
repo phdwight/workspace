@@ -332,6 +332,73 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
           </div>
         ))}
       </div>
+
+      {/* Navigation Buttons */}
+      <div style={{
+        marginTop: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '12px',
+        alignItems: 'center'
+      }}>
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.dispatchEvent) {
+              window.dispatchEvent(new CustomEvent('navigateToExpenses'));
+            }
+          }}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: 'var(--theme-primary)',
+            color: 'var(--theme-card)',
+            border: 'none',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            minWidth: '200px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--theme-secondary)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--theme-primary)';
+          }}
+        >
+          ➕ Add Expense
+        </button>
+        
+        <button
+          type="button"
+          onClick={() => {
+            if (typeof window !== 'undefined' && window.dispatchEvent) {
+              window.dispatchEvent(new CustomEvent('navigateToEvents'));
+            }
+          }}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: 'var(--theme-accent)',
+            color: 'var(--theme-font)',
+            border: '1px solid var(--theme-border)',
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            minWidth: '200px',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--theme-accent-light)';
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.backgroundColor = 'var(--theme-accent)';
+          }}
+        >
+          🎯 Create Event
+        </button>
+      </div>
     </div>
   );
 };
