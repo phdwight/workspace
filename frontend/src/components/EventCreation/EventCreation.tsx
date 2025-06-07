@@ -231,7 +231,22 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
       <h2>{i18n.eventCreation.title}</h2>
       <form onSubmit={handleSubmit} className="event-form">
         {error && (
-          <div className="error-message" role="alert" id="error-message">
+          <div 
+            className="error-message" 
+            role="alert" 
+            id="error-message"
+            style={{
+              // Extra emphasis styles to ensure visibility
+              backgroundColor: '#ffffff',
+              border: '3px solid #BE3D2A',
+              color: '#BE3D2A',
+              fontWeight: '700',
+              fontSize: '15px',
+              boxShadow: '0 4px 16px rgba(190, 61, 42, 0.3), 0 0 0 1px rgba(190, 61, 42, 0.1)',
+              zIndex: 10,
+              position: 'relative'
+            }}
+          >
             <span role="img" aria-label="Error" className="error-icon">⚠️</span>
             <span>{error}</span>
           </div>
