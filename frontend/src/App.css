@@ -8,92 +8,111 @@
 }
 
 :root {
-  --primary: #1F4529;
-  --secondary: #47663B;
-  --accent: #EED3B1;
-  --background: #E8ECD7;
-  --text-main: #1F4529;
   --text-light: #ffffff;
   --danger: #d32f2f;
 
-  --theme-bg: #E8ECD7;
-  --theme-primary: #1F4529;
-  --theme-secondary: #47663B;
-  --theme-accent: #EED3B1;
-  --theme-card: #fff;
-  --theme-font: #1F4529;
-  --theme-muted: #47663B;
+  /* Theme variables - primary source of truth for theming */
+  --theme-bg: #F2F2F2;
+  --theme-primary: #000000;
+  --theme-secondary: #B6B09F;
+  --theme-accent: #EAE4D5;
+  --theme-card: #ffffff;
+  --theme-font: #000000;
+  --theme-muted: #B6B09F;
   --error-bg: #ffebee;
 }
 
-html {
-  background: var(--theme-bg, #E8ECD7) !important;
-  background-color: var(--theme-bg, #E8ECD7) !important;
+/* Base theme application utility classes - using higher specificity instead of !important */
+body .theme-bg,
+.App .theme-bg {
+  background: var(--theme-bg, #F2F2F2);
+  background-color: var(--theme-bg, #F2F2F2);
+}
+
+body .theme-text,
+.App .theme-text {
+  color: var(--theme-font, #000000);
+}
+
+body .theme-gradient,
+.App .theme-gradient {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+  color: var(--theme-card);
+}
+
+body .btn-gradient,
+.App .btn-gradient {
+  background: linear-gradient(90deg, var(--theme-primary, #000000) 60%, var(--theme-secondary, #B6B09F) 100%);
+  color: var(--theme-card);
+}
+
+body .btn-gradient:hover,
+.App .btn-gradient:hover {
+  background: linear-gradient(90deg, var(--theme-secondary, #B6B09F) 40%, var(--theme-primary, #000000) 100%);
+}
+
+body .theme-card,
+.App .theme-card {
+  background: var(--theme-card, #ffffff);
+  color: var(--theme-font);
+}
+
+/* Apply base theme to root elements - using higher specificity for theme inheritance */
+html,
+body,
+.App {
+  background: var(--theme-bg, #F2F2F2);
+  background-color: var(--theme-bg, #F2F2F2);
+  color: var(--theme-font, #000000);
 }
 
 body, .App {
-  background: var(--theme-bg, #E8ECD7) !important;
-  background-color: var(--theme-bg, #E8ECD7) !important;
-  color: var(--theme-font, #1F4529) !important;
   font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
   overflow-x: hidden;
 }
-body {
-  background: var(--theme-bg, #E8ECD7) !important;
-  background-color: var(--theme-bg, #E8ECD7) !important;
-  color: var(--theme-font, #1F4529) !important;
-}
 
 /* Primary Theme (Default) */
 body.primary {
-  --theme-bg: #E8ECD7;
-  --theme-primary: #1F4529;
-  --theme-secondary: #47663B;
-  --theme-accent: #EED3B1;
-  --theme-accent-light: rgba(238, 211, 177, 0.3);
-  --theme-accent-lighter: rgba(238, 211, 177, 0.5);
-  --theme-card: #fff;
-  --theme-font: #1F4529;
-  --theme-muted: #47663B;
+  --theme-bg: #F2F2F2;
+  --theme-primary: #000000;
+  --theme-secondary: #B6B09F;
+  --theme-accent: #EAE4D5;
+  --theme-accent-light: rgba(234, 228, 213, 0.3);
+  --theme-accent-lighter: rgba(234, 228, 213, 0.5);
+  --theme-card: #ffffff;
+  --theme-font: #000000;
+  --theme-muted: #B6B09F;
   --error-bg: #ffebee;
 }
 
 /* Secondary Theme (Dark/Alternative) */
 body.secondary {
-  --theme-bg: #384B70;
-  --theme-primary: #507687;
-  --theme-secondary: #FCFAEE;
-  --theme-accent: #B8001F;
-  --theme-accent-light: rgba(184, 0, 31, 0.3);
-  --theme-accent-lighter: rgba(184, 0, 31, 0.5);
-  --theme-card: #FCFAEE;
-  --theme-font: #FCFAEE;
-  --theme-muted: #507687;
-  --error-bg: #B8001F;
+  --theme-bg: #432E54;
+  --theme-primary: #AE445A;
+  --theme-secondary: #4B4376;
+  --theme-accent: #E8BCB9;
+  --theme-accent-light: rgba(232, 188, 185, 0.3);
+  --theme-accent-lighter: rgba(232, 188, 185, 0.5);
+  --theme-card: #432E54;
+  --theme-font: #E8BCB9;
+  --theme-muted: #E8BCB9;
+  --error-bg: #AE445A;
 }
 
-/* Header Theme Styling */
-.header-theme {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
-  color: var(--theme-card) !important;
-}
-
-body.primary .header-theme {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
-  color: var(--theme-card) !important;
-}
-
+/* Header Theme Styling - using higher specificity for theme inheritance */
+body .header-theme,
+body.primary .header-theme,
 body.secondary .header-theme {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%) !important;
-  color: var(--theme-card) !important;
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-secondary) 100%);
+  color: var(--theme-card);
 }
 
-.App {
+body .App {
   min-height: 100vh;
-  background: var(--theme-bg, #E8ECD7) !important;
-  color: var(--theme-font, #1F4529) !important;
+  background: var(--theme-bg, #F2F2F2);
+  color: var(--theme-font, #000000);
 }
 
 header h1 {
@@ -169,44 +188,31 @@ nav button:hover:not(:disabled) {
   }
 }
 
-.card, .table, .balance-summary, .expense-list, .event-list {
-  background: var(--theme-card, #fff) !important;
+body .card, 
+body .table, 
+body .balance-summary, 
+body .expense-list, 
+body .event-list {
+  background: var(--theme-card, #fff);
   border-radius: 10px;
   box-shadow: 0 2px 8px #0001;
-  color: var(--theme-font, #213555) !important;
-}
-
-button, .submit-btn, .add-btn {
-  background: linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%) !important;
-  color: var(--theme-card) !important;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-
-button:disabled, .submit-btn:disabled, .add-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  color: var(--theme-font, #000000);
 }
 
 .input, input[type="text"], input[type="email"], input[type="number"], select, textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1.5px solid var(--secondary);
+  border: 1.5px solid var(--theme-secondary);
   border-radius: 8px;
   font-size: 1rem;
   background: var(--theme-card);
-  color: var(--theme-primary, #213555);
+  color: var(--theme-primary, #000000);
   transition: border 0.2s, color 0.2s;
   margin-bottom: 10px;
   outline: none;
 }
 .input:focus, input[type="text"]:focus, input[type="email"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
-  border-color: var(--primary);
+  border-color: var(--theme-primary);
   box-shadow: 0 0 0 2px #f7ad45aa;
 }
 select {
@@ -225,26 +231,42 @@ label {
   font-size: 1rem;
 }
 
-button, .submit-btn, .add-btn, .remove-btn, .delete-btn {
+/* Consolidated button styles - using higher specificity for theme inheritance */
+body button, 
+body .submit-btn, 
+body .add-btn, 
+body .remove-btn, 
+body .delete-btn {
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
   padding: 10px 18px;
   border: none;
-  background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
-  color: #fff;
+  background: linear-gradient(90deg, var(--theme-primary, #000000) 60%, var(--theme-secondary, #B6B09F) 100%);
+  color: var(--theme-card);
   box-shadow: 0 2px 8px rgba(187, 62, 0, 0.08);
   transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
   cursor: pointer;
   margin-bottom: 8px;
 }
-button:hover, .submit-btn:hover, .add-btn:hover, .remove-btn:hover, .delete-btn:hover {
-  background: linear-gradient(90deg, var(--accent) 40%, var(--primary) 100%);
+
+body button:hover, 
+body .submit-btn:hover, 
+body .add-btn:hover, 
+body .remove-btn:hover, 
+body .delete-btn:hover {
+  background: linear-gradient(90deg, var(--theme-secondary, #B6B09F) 40%, var(--theme-primary, #000000) 100%);
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 4px 16px rgba(187, 62, 0, 0.12);
 }
+
 button:active, .submit-btn:active, .add-btn:active, .remove-btn:active, .delete-btn:active {
   transform: scale(0.98);
+}
+
+button:disabled, .submit-btn:disabled, .add-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Remove default arrow for number inputs */
@@ -264,32 +286,10 @@ input[type=number] {
   margin-bottom: 4px;
 }
 
+/* Additional button customizations for specific styles */
 .add-btn {
-  /* Remove width and margin overrides to match .submit-btn */
-  background: linear-gradient(90deg, var(--theme-primary, #213555) 60%, var(--theme-secondary, #3E5879) 100%) !important;
-  color: var(--theme-card) !important;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 8px 0; /* Match .submit-btn vertical padding */
-  box-shadow: 0 2px 8px rgba(187, 62, 0, 0.08);
-  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-  cursor: pointer;
-  margin-bottom: 8px;
-  width: 100%; /* Match .submit-btn width */
-}
-.add-btn:hover {
-  background: linear-gradient(90deg, var(--theme-secondary, #3E5879) 40%, var(--theme-primary, #213555) 100%) !important;
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 4px 16px rgba(187, 62, 0, 0.12);
-}
-.add-btn:active {
-  transform: scale(0.98);
-}
-.add-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  padding: 8px 0;
+  width: 100%;
 }
 
 .remove-btn {
@@ -319,7 +319,7 @@ input[type=number] {
 }
 
 .submit-btn {
-  background: var(--primary);
+  background: var(--theme-primary);
   color: var(--text-light);
   border: none;
   border-radius: 5px;
@@ -444,7 +444,7 @@ input[type=number] {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--theme-primary);
   outline-offset: 2px;
 }
 
@@ -459,7 +459,7 @@ select:focus-visible {
   width: 16px;
   height: 16px;
   border: 2px solid #f3f3f3;
-  border-top: 2px solid var(--theme-primary, #213555);
+  border-top: 2px solid var(--theme-primary, #000000);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -472,7 +472,7 @@ select:focus-visible {
 
 /* Improved button styles */
 .btn-primary {
-  background: linear-gradient(90deg, var(--primary) 60%, var(--accent) 100%);
+  background: linear-gradient(90deg, var(--theme-primary) 60%, var(--theme-accent) 100%);
   color: var(--text-light);
   border: none;
   border-radius: 8px;
@@ -496,7 +496,7 @@ select:focus-visible {
 }
 
 .btn-secondary {
-  background: var(--secondary);
+  background: var(--theme-secondary);
   color: var(--text-light);
   border: none;
   border-radius: 8px;
@@ -534,7 +534,7 @@ select:focus-visible {
 }
 
 .input:focus {
-  border-color: var(--primary);
+  border-color: var(--theme-primary);
   outline: none;
 }
 
@@ -582,13 +582,13 @@ select:focus-visible {
   border-radius: 4px;
   font-size: 14px;
   background: var(--theme-card, #fff);
-  color: var(--theme-font, #213555);
+  color: var(--theme-font, #000000);
 }
 
 .expense-filter-controls input:focus,
 .expense-filter-controls select:focus {
   outline: none;
-  border-color: var(--theme-primary, #213555);
+  border-color: var(--theme-primary, #000000);
   box-shadow: 0 0 0 2px rgba(33, 53, 85, 0.1);
 }
 
@@ -601,7 +601,7 @@ select:focus-visible {
   text-align: center;
   font-size: 16px;
   font-weight: bold;
-  color: var(--theme-font, #213555);
+  color: var(--theme-font, #000000);
 }
 
 .expense-category-tag {
@@ -730,8 +730,8 @@ select:focus-visible {
 }
 
 .balance-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
 }
 
 .category-card {
@@ -763,11 +763,11 @@ select:focus-visible {
 }
 
 .view-mode-tab {
-  transition: all 0.2s ease !important;
+  transition: all 0.2s ease;
 }
 
 .view-mode-tab:hover {
-  background-color: var(--theme-accent-light) !important;
+  background-color: var(--theme-accent-light);
 }
 
 .export-btn {
@@ -784,7 +784,7 @@ select:focus-visible {
 }
 
 .export-option:hover {
-  background-color: var(--theme-accent-light) !important;
+  background-color: var(--theme-accent-light);
 }
 
 .expense-detail-card {
@@ -810,6 +810,7 @@ select:focus-visible {
 }
 
 /* Responsive Design for Balance Summary */
+/* Consolidated Mobile and Tablet Responsive Design */
 @media (max-width: 768px) {
   .balance-summary-container {
     margin: 16px;
@@ -830,22 +831,29 @@ select:focus-visible {
   .view-mode-tab {
     padding: 12px 4px;
     font-size: 20px;
+    min-height: 44px;
   }
 
   .balance-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    min-height: 60px;
+    padding: 16px;
   }
 
   .settlement-card {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
+    min-height: 60px;
+    padding: 16px;
   }
 
   .settlement-card > div:first-child {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .settlement-card > div:last-child {
@@ -855,9 +863,35 @@ select:focus-visible {
   .participant-details-view select {
     font-size: 16px; /* Prevents zoom on iOS */
   }
+
+  /* Better text sizing for mobile */
+  .balance-summary-container h2 {
+    font-size: clamp(18px, 5vw, 24px);
+  }
+
+  .balance-summary-container h3 {
+    font-size: clamp(14px, 4vw, 16px);
+  }
+
+  /* Improved category breakdown for mobile */
+  .category-breakdown div[style*="grid-template-columns"] {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  /* Ensure navigation buttons are touch-friendly */
+  .balance-summary-container button {
+    min-height: 44px;
+    font-size: clamp(14px, 4vw, 16px);
+  }
 }
 
+/* Very small screens - consolidated */
 @media (max-width: 480px) {
+  .balance-summary-container {
+    margin: 8px;
+    padding: 12px;
+  }
+
   .balance-summary-container h2 {
     font-size: 20px;
   }
@@ -875,11 +909,28 @@ select:focus-visible {
     border-bottom: 1px solid #e0e0e0;
     border-right: none;
     padding: 16px;
+    width: 100%;
   }
 
   .view-mode-tab.active {
     border-bottom-color: var(--theme-primary);
     border-right: none;
+  }
+
+  .balance-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .balance-card > div:last-child {
+    width: 100%;
+    text-align: left;
+  }
+
+  .settlement-card {
+    flex-direction: column;
+    align-items: center;
   }
 
   .participant-summary {
@@ -932,102 +983,18 @@ select:focus-visible {
 /* Print styles for Balance Summary */
 @media print {
   .balance-summary-container {
-    box-shadow: none !important;
-    border: 1px solid #ddd !important;
+    box-shadow: none;
+    border: 1px solid #ddd;
   }
 
   .view-mode-tabs,
   .export-btn,
   .balance-summary-container button {
-    display: none !important;
+    display: none;
   }
 
   .balance-card,
   .settlement-card {
     break-inside: avoid;
-  }
-}
-
-/* Enhanced Mobile Support for Balance Summary */
-@media (max-width: 768px) {
-  /* Ensure minimum touch targets */
-  .view-mode-tab {
-    min-height: 44px !important;
-    padding: 12px 8px !important;
-  }
-  
-  .balance-card {
-    min-height: 60px !important;
-    padding: 16px !important;
-  }
-  
-  .settlement-card {
-    min-height: 60px !important;
-    padding: 16px !important;
-  }
-  
-  /* Better text sizing for mobile */
-  .balance-summary-container h2 {
-    font-size: clamp(18px, 5vw, 24px) !important;
-  }
-  
-  .balance-summary-container h3 {
-    font-size: clamp(14px, 4vw, 16px) !important;
-  }
-  
-  /* Improved category breakdown for mobile */
-  .category-breakdown div[style*="grid-template-columns"] {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
-  }
-  
-  /* Better settlement card layout */
-  .settlement-card > div:first-child {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 8px !important;
-  }
-  
-  /* Ensure navigation buttons are touch-friendly */
-  .balance-summary-container button {
-    min-height: 44px !important;
-    font-size: clamp(14px, 4vw, 16px) !important;
-  }
-}
-
-/* Very small screens */
-@media (max-width: 480px) {
-  .balance-summary-container {
-    margin: 8px !important;
-    padding: 12px !important;
-  }
-  
-  .view-mode-tabs {
-    flex-direction: column !important;
-  }
-  
-  .view-mode-tab {
-    border-bottom: 1px solid #e0e0e0 !important;
-    border-right: none !important;
-    width: 100% !important;
-  }
-  
-  .balance-card {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    text-align: left !important;
-  }
-  
-  .balance-card > div:last-child {
-    width: 100% !important;
-    text-align: left !important;
-  }
-  
-  .settlement-card {
-    flex-direction: column !important;
-    align-items: center !important;
-  }
-  
-  .summary-stats {
-    grid-template-columns: 1fr 1fr !important;
   }
 }
