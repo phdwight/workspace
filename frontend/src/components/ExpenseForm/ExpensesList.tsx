@@ -109,7 +109,7 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ eventName, refreshKe
   };
 
   if (loading) return <div style={{ margin: '16px 0', textAlign: 'center', color: 'var(--theme-muted)' }}>{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
-  if (error) return <div style={{ color: 'var(--danger, #d32f2f)', margin: '16px 0', textAlign: 'center', padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '4px' }}>{error}</div>;
+  if (error) return <div className="error-message" role="alert"><span role="img" aria-label="Error" className="error-icon">⚠️</span><span>{error}</span></div>;
 
   return (
     <div style={{ margin: '24px 0' }}>

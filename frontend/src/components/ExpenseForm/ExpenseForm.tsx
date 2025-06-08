@@ -176,16 +176,10 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
       
       <form onSubmit={handleSubmit} className="event-form">
         {error && (
-          <div className="error-message" role="alert" style={{ 
-            marginBottom: 16, 
-            padding: '12px', 
-            backgroundColor: 'var(--error-bg, #ffebee)', 
-            borderRadius: '8px', 
-            border: '1px solid var(--danger)', 
-            color: 'var(--danger, #d32f2f)',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>{error}</div>
+          <div className="error-message" role="alert">
+            <span role="img" aria-label="Error" className="error-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
         )}
         
         {/* Date */}
