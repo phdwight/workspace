@@ -108,13 +108,13 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ eventName, refreshKe
     }, 0);
   };
 
-  if (loading) return <div style={{ margin: '16px 0', textAlign: 'center', color: 'var(--theme-muted)' }}>{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
+  if (loading) return <div className="loading-message">{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
   if (error) return <div className="error-message" role="alert"><span role="img" aria-label="Error" className="error-icon">⚠️</span><span>{error}</span></div>;
 
   return (
-    <div style={{ margin: '24px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h3 style={{ margin: 0 }}>{(i18n.expenseForm as any).expensesList || 'Expenses List'}</h3>
+    <div className="expenses-container">
+      <div className="expenses-header">
+        <h3 className="expenses-title">{(i18n.expenseForm as any).expensesList || 'Expenses List'}</h3>
         {expenses.length > 0 && (
           <button
             onClick={handleExportExpenses}
@@ -126,39 +126,45 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ eventName, refreshKe
       </div>
 
       {expenses.length === 0 ? (
-        <div className="expense-empty-state">
+        <div className="no-expenses-message">
           {(i18n.expenseForm as any).noExpenses || 'No expenses yet.'}
         </div>
       ) : (
         <>
           {/* Filter Controls */}
-          <div className="expense-filter-controls">
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="">{(i18n.expenseForm as any).filterByCategory || 'All Categories'}</option>
-              {categories.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
-              ))}
-            </select>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="date">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Date</option>
-              <option value="amount">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Amount</option>
-              <option value="description">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Description</option>
-            </select>
+          <div className="expenses-controls">
+            <div className="expenses-filters">
+              <select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                className="input"
+              >
+                <option value="">{(i18n.expenseForm as any).filterByCategory || 'All Categories'}</option>
+                {categories.map(cat => (
+                  <option key={cat.value} value={cat.value}>{cat.label}</option>
+                ))}
+              </select>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="input"
+              >
+                <option value="date">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Date</option>
+                <option value="amount">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Amount</option>
+                <option value="description">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Description</option>
+              </select>
+            </div>
           </div>
 
           {/* Total Amount Display */}
-          <div className="expense-total-display">
-            {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: {formatCurrency(calculateTotal())}
+          <div className="expenses-stats">
+            <div className="expenses-total">
+              {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: {formatCurrency(calculateTotal())}
+            </div>
             {filteredExpenses.length !== expenses.length && (
-              <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--theme-muted)', marginLeft: '8px' }}>
-                (Showing {filteredExpenses.length} of {expenses.length} expenses)
-              </span>
+              <div className="expenses-count">
+                Showing {filteredExpenses.length} of {expenses.length} expenses
+              </div>
             )}
           </div>
 
@@ -174,32 +180,32 @@ export const ExpensesList: React.FC<ExpensesListProps> = ({ eventName, refreshKe
               return (
                 <div 
                   key={exp.id || idx} 
-                  className="expense-card"
+                  className="expense-item"
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>{categoryLabel}</h4>
-                        <span style={{ fontSize: '14px', color: 'var(--theme-muted)', fontWeight: 'normal' }}>
-                          {desc}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
-                        <strong>Date:</strong> {exp.date}
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
-                        <strong>Payers:</strong> {Array.isArray(exp.payers) 
-                          ? exp.payers.map((p: any) => `${p.name} (${formatCurrency(Number(p.amount))})`).join(', ')
-                          : '-'}
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)' }}>
-                        <strong>Participants:</strong> {Array.isArray(exp.participants) ? exp.participants.join(', ') : '-'}
+                  <div className="expense-header">
+                    <div>
+                      <div className="expense-description">{categoryLabel}</div>
+                      <div className="expense-meta">
+                        <span>{desc}</span>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                      <div className="expense-amount-display">
-                        {formatCurrency(totalAmount)}
-                      </div>
+                    <div className="expense-amount">
+                      {formatCurrency(totalAmount)}
+                    </div>
+                  </div>
+                  <div className="expense-details">
+                    <div className="expense-meta">
+                      <span><strong>Date:</strong> {exp.date}</span>
+                    </div>
+                    <div className="expense-meta">
+                      <span><strong>Payers:</strong> {Array.isArray(exp.payers) 
+                        ? exp.payers.map((p: any) => `${p.name} (${formatCurrency(Number(p.amount))})`).join(', ')
+                        : '-'}</span>
+                    </div>
+                    <div className="expense-meta">
+                      <span><strong>Participants:</strong> {Array.isArray(exp.participants) ? exp.participants.join(', ') : '-'}</span>
+                    </div>
+                    <div style={{ marginTop: '12px', textAlign: 'right' }}>
                       <button
                         onClick={() => handleDeleteExpense(exp.id)}
                         className="delete-btn"
