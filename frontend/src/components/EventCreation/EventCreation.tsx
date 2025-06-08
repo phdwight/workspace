@@ -235,19 +235,18 @@ export const EventCreation: React.FC<EventCreationProps> = ({ i18n, onEventCreat
             className="error-message" 
             role="alert" 
             id="error-message"
-            style={{
-              // Extra emphasis styles to ensure visibility
-              backgroundColor: '#ffffff',
-              border: '3px solid #BE3D2A',
-              color: '#BE3D2A',
-              fontWeight: '700',
-              fontSize: '15px',
-              boxShadow: '0 4px 16px rgba(190, 61, 42, 0.3), 0 0 0 1px rgba(190, 61, 42, 0.1)',
-              zIndex: 10,
-              position: 'relative'
+            style={{ 
+              marginBottom: 16, 
+              padding: '12px', 
+              backgroundColor: 'var(--error-bg, #ffebee)', 
+              borderRadius: '8px', 
+              border: '1px solid var(--danger, #d32f2f)', 
+              color: 'var(--danger, #d32f2f)',
+              fontSize: '14px',
+              fontWeight: '500'
             }}
           >
-            <span role="img" aria-label="Error" className="error-icon">⚠️</span>
+            <span role="img" aria-label="Error" className="error-icon" style={{ marginRight: '8px' }}>⚠️</span>
             <span>{error}</span>
           </div>
         )}
