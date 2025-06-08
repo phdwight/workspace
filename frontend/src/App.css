@@ -1034,9 +1034,9 @@ select:focus-visible {
   border: 2px solid var(--error-border, #BE3D2A);
   border-radius: 8px;
   color: var(--error-text, #BE3D2A);
-  font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(190, 61, 42, 0.15);
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(190, 61, 42, 0.25);
   display: flex;
   align-items: center;
   gap: 8px;
