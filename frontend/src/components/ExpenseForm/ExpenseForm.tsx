@@ -2,233 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { ExpenseFormProps } from '../../types';
 import { useToast } from '../shared/Toast';
 import { localStorageService } from '../../services/localStorage';
-
-const ExpensesList: React.FC<{ eventName: string; refreshKey: number; i18n: any }> = ({ eventName, refreshKey, i18n }) => {
-  const [expenses, setExpenses] = useState<any[]>([]);
-  const [filteredExpenses, setFilteredExpenses] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [sortBy, setSortBy] = useState('date');
-  const { addToast } = useToast();
-
-  const categories = [
-    { value: 'food', label: i18n.expenseForm.categories?.food || 'Food & Dining' },
-    { value: 'transportation', label: i18n.expenseForm.categories?.transportation || 'Transportation' },
-    { value: 'accommodation', label: i18n.expenseForm.categories?.accommodation || 'Accommodation' },
-    { value: 'entertainment', label: i18n.expenseForm.categories?.entertainment || 'Entertainment' },
-    { value: 'shopping', label: i18n.expenseForm.categories?.shopping || 'Shopping' },
-    { value: 'utilities', label: i18n.expenseForm.categories?.utilities || 'Utilities' },
-    { value: 'other', label: i18n.expenseForm.categories?.other || 'Other' }
-  ];
-
-  // Helper function to format currency amounts with proper negative sign placement
-  const formatCurrency = (amount: number, showPositiveSign: boolean = false): string => {
-    const absAmount = Math.abs(amount);
-    const formattedAmount = `¤${absAmount.toFixed(2)}`;
-    
-    if (amount < 0) {
-      return `-${formattedAmount}`;
-    } else if (amount > 0 && showPositiveSign) {
-      return `+${formattedAmount}`;
-    } else {
-      return formattedAmount;
-    }
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    localStorageService.getExpensesForEvent(eventName, 'local')
-      .then(setExpenses)
-      .catch(err => setError(err.message || 'Failed to load expenses'))
-      .finally(() => setLoading(false));
-  }, [eventName, refreshKey]);
-
-  useEffect(() => {
-    let filtered = expenses.filter(exp => {
-      const matchesCategory = !categoryFilter || exp.category === categoryFilter;
-      return matchesCategory;
-    });
-
-    // Sort expenses
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'date':
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        case 'amount':
-          const totalA = Array.isArray(a.payers) ? a.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0) : 0;
-          const totalB = Array.isArray(b.payers) ? b.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0) : 0;
-          return totalB - totalA;
-        case 'description':
-          return (a.description || '').localeCompare(b.description || '');
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredExpenses(filtered);
-  }, [expenses, categoryFilter, sortBy]);
-
-  const handleDeleteExpense = async (expenseId: string) => {
-    if (!confirm((i18n.expenseForm as any).confirmDeleteExpense || 'Are you sure you want to delete this expense?')) {
-      return;
-    }
-
-    try {
-      await localStorageService.deleteExpense(expenseId, 'local');
-      setExpenses(prev => prev.filter(exp => exp.id !== expenseId));
-      addToast((i18n.expenseForm as any).expenseDeleted || 'Expense deleted successfully!', 'success');
-    } catch (err) {
-      addToast('Failed to delete expense', 'error');
-    }
-  };
-
-  const handleExportExpenses = () => {
-    if (expenses.length === 0) {
-      addToast('No expenses to export', 'error');
-      return;
-    }
-
-    const csvContent = [
-      ['Date', 'Description', 'Category', 'Payers', 'Amount', 'Participants'].join(','),
-      ...expenses.map(exp => [
-        exp.date,
-        `"${exp.description || ''}"`,
-        exp.category || '',
-        `"${Array.isArray(exp.payers) ? exp.payers.map((p: any) => `${p.name}: ${formatCurrency(p.amount)}`).join('; ') : ''}"`,
-        Array.isArray(exp.payers) ? exp.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0).toFixed(2) : '0.00',
-        `"${Array.isArray(exp.participants) ? exp.participants.join(', ') : ''}"`
-      ].join(','))
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${eventName}-expenses.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    addToast((i18n.expenseForm as any).expensesExported || 'Expenses exported successfully!', 'success');
-  };
-
-  const calculateTotal = () => {
-    return filteredExpenses.reduce((total, exp) => {
-      const expenseTotal = Array.isArray(exp.payers) 
-        ? exp.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0) 
-        : 0;
-      return total + expenseTotal;
-    }, 0);
-  };
-
-  if (loading) return <div style={{ margin: '16px 0', textAlign: 'center', color: 'var(--theme-muted)' }}>{(i18n.expenseForm as any).loadingExpenses || 'Loading expenses...'}</div>;
-  if (error) return <div style={{ color: 'var(--danger, #d32f2f)', margin: '16px 0', textAlign: 'center', padding: '12px', backgroundColor: 'var(--error-bg, #ffebee)', borderRadius: '4px' }}>{error}</div>;
-
-  return (
-    <div style={{ margin: '24px 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <h3 style={{ margin: 0 }}>{(i18n.expenseForm as any).expensesList || 'Expenses List'}</h3>
-        {expenses.length > 0 && (
-          <button
-            onClick={handleExportExpenses}
-            className="export-btn"
-          >
-            {(i18n.expenseForm as any).exportExpenses || 'Export CSV'}
-          </button>
-        )}
-      </div>
-
-      {expenses.length === 0 ? (
-        <div className="expense-empty-state">
-          {(i18n.expenseForm as any).noExpenses || 'No expenses yet.'}
-        </div>
-      ) : (
-        <>
-          {/* Filter Controls */}
-          <div className="expense-filter-controls">
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-            >
-              <option value="">{(i18n.expenseForm as any).filterByCategory || 'All Categories'}</option>
-              {categories.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
-              ))}
-            </select>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="date">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Date</option>
-              <option value="amount">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Amount</option>
-              <option value="description">{(i18n.expenseForm as any).sortBy || 'Sort by'}: Description</option>
-            </select>
-          </div>
-
-          {/* Total Amount Display */}
-          <div className="expense-total-display">
-            {(i18n.expenseForm as any).totalAmount || 'Total Amount'}: {formatCurrency(calculateTotal())}
-            {filteredExpenses.length !== expenses.length && (
-              <span style={{ fontSize: '14px', fontWeight: 'normal', color: 'var(--theme-muted)', marginLeft: '8px' }}>
-                (Showing {filteredExpenses.length} of {expenses.length} expenses)
-              </span>
-            )}
-          </div>
-
-          {/* Expenses Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {filteredExpenses.map((exp: any, idx: number) => {
-              const desc = typeof exp.description === 'string' && exp.description.trim().length > 0 ? exp.description : '(No description)';
-              const totalAmount = Array.isArray(exp.payers) 
-                ? exp.payers.reduce((sum: number, p: any) => sum + Number(p.amount), 0) 
-                : 0;
-              const categoryLabel = categories.find(cat => cat.value === exp.category)?.label || exp.category || 'Other';
-              
-              return (
-                <div 
-                  key={exp.id || idx} 
-                  className="expense-card"
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                        <h4 style={{ margin: 0, fontSize: '16px', fontWeight: '600' }}>{categoryLabel}</h4>
-                        <span style={{ fontSize: '14px', color: 'var(--theme-muted)', fontWeight: 'normal' }}>
-                          {desc}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
-                        <strong>Date:</strong> {exp.date}
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)', marginBottom: '4px' }}>
-                        <strong>Payers:</strong> {Array.isArray(exp.payers) 
-                          ? exp.payers.map((p: any) => `${p.name} (${formatCurrency(Number(p.amount))})`).join(', ')
-                          : '-'}
-                      </div>
-                      <div style={{ fontSize: '14px', color: 'var(--theme-muted)' }}>
-                        <strong>Participants:</strong> {Array.isArray(exp.participants) ? exp.participants.join(', ') : '-'}
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                      <div className="expense-amount-display">
-                        {formatCurrency(totalAmount)}
-                      </div>
-                      <button
-                        onClick={() => handleDeleteExpense(exp.id)}
-                        className="delete-btn"
-                      >
-                        {(i18n.expenseForm as any).deleteExpense || 'Delete'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
+import { formatCurrency } from '../../utils/currency';
+import { EXPENSE_CATEGORIES } from '../../constants/expenseCategories';
+import { ExpensesList } from './ExpensesList';
 
 export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   i18n,
@@ -246,17 +22,6 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
   const descriptionRef = useRef<HTMLInputElement>(null);
   const categoryRef = useRef<HTMLSelectElement>(null);
   const { addToast } = useToast();
-
-  // Categories for expenses
-  const categories = [
-    { value: 'food', label: 'Food & Dining' },
-    { value: 'transportation', label: 'Transportation' },
-    { value: 'accommodation', label: 'Accommodation' },
-    { value: 'entertainment', label: 'Entertainment' },
-    { value: 'shopping', label: 'Shopping' },
-    { value: 'utilities', label: 'Utilities' },
-    { value: 'other', label: 'Other' }
-  ];
 
   useEffect(() => {
     if (categoryRef.current) {
@@ -319,7 +84,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     if (totalAmount > 0 && selectedParticipants.length > 0) {
       const amountPerPerson = totalAmount / selectedParticipants.length;
       addToast(
-        `Amount per person: ¤${amountPerPerson.toFixed(2)}`,
+        `Amount per person: ${formatCurrency(amountPerPerson)}`,
         'success'
       );
     }
@@ -366,7 +131,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
         description,
         category
       );
-      const displayName = description.trim() || categories.find(cat => cat.value === category)?.label || category;
+      const displayName = description.trim() || EXPENSE_CATEGORIES.find(cat => cat.value === category)?.label || category;
       addToast(`Expense "${displayName}" added successfully!`, 'success');
       setDescription("");
       setCategory("");
@@ -409,21 +174,14 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
     <div className="event-creation-container">
       <h2>{i18n.expenseForm.title}</h2>
       
-
-      
       <form onSubmit={handleSubmit} className="event-form">
         {error && (
-          <div className="error-message" role="alert" style={{ 
-            marginBottom: 16, 
-            padding: '12px', 
-            backgroundColor: 'var(--error-bg, #ffebee)', 
-            borderRadius: '8px', 
-            border: '1px solid var(--danger)', 
-            color: 'var(--danger, #d32f2f)',
-            fontSize: '14px',
-            fontWeight: '500'
-          }}>{error}</div>
+          <div className="error-message" role="alert">
+            <span role="img" aria-label="Error" className="error-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
         )}
+        
         {/* Date */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
           <label htmlFor="date" style={{ minWidth: 110, marginRight: 8 }}>{i18n.expenseForm.dateLabel}</label>
@@ -453,7 +211,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             required
           >
             <option value="">{(i18n.expenseForm as any).categoryPlaceholder || "Select category"}</option>
-            {categories.map((cat) => (
+            {EXPENSE_CATEGORIES.map((cat) => (
               <option key={cat.value} value={cat.value}>
                 {(i18n.expenseForm as any).categories?.[cat.value] || cat.label}
               </option>
@@ -476,6 +234,7 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
             style={{ flex: 1 }}
           />
         </div>
+        
         {/* Payers */}
         <div className="form-group" style={{ marginBottom: 12 }}>
           <label style={{ minWidth: 110, marginRight: 8 }}>{i18n.expenseForm.payerLabel}</label>
@@ -505,12 +264,42 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                   className="input"
                   style={{ flex: 1 }}
                 />
-                <button type="button" onClick={() => removePayer(idx)} disabled={loading || payers.length === 1} style={{ fontSize: 18, color: 'var(--danger, #d32f2f)', background: 'none', border: 'none', cursor: 'pointer' }} aria-label="Remove payer">×</button>
+                <button 
+                  type="button" 
+                  onClick={() => removePayer(idx)} 
+                  disabled={loading || payers.length === 1} 
+                  style={{ 
+                    fontSize: 18, 
+                    color: 'var(--danger, #d32f2f)', 
+                    background: 'none', 
+                    border: 'none', 
+                    cursor: 'pointer' 
+                  }} 
+                  aria-label="Remove payer"
+                >
+                  ×
+                </button>
               </div>
             ))}
-            <button type="button" onClick={addPayer} disabled={loading} style={{ marginTop: 4, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ Add another payer</button>
+            <button 
+              type="button" 
+              onClick={addPayer} 
+              disabled={loading} 
+              style={{ 
+                marginTop: 4, 
+                fontSize: 14, 
+                color: 'var(--theme-primary)', 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer', 
+                textAlign: 'left' 
+              }}
+            >
+              + Add another payer
+            </button>
           </div>
         </div>
+        
         {/* Participants */}
         <div className="form-group" style={{ display: 'flex', alignItems: 'flex-start', marginBottom: 12 }}>
           <label style={{ minWidth: 110, marginRight: 8, marginTop: 2 }}>{i18n.expenseForm.participantsLabel}</label>
@@ -561,9 +350,25 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
                 <span>{participant}</span>
               </label>
             ))}
-            <button type="button" onClick={handleAddParticipantToEvent} disabled={loading} style={{ marginTop: 6, fontSize: 14, color: 'var(--theme-primary)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}>+ {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}</button>
+            <button 
+              type="button" 
+              onClick={handleAddParticipantToEvent} 
+              disabled={loading} 
+              style={{ 
+                marginTop: 6, 
+                fontSize: 14, 
+                color: 'var(--theme-primary)', 
+                background: 'none', 
+                border: 'none', 
+                cursor: 'pointer', 
+                textAlign: 'left' 
+              }}
+            >
+              + {(i18n.expenseForm as any).addParticipantToEvent || "Add participant to event"}
+            </button>
           </div>
         </div>
+        
         <div style={{ display: 'flex', gap: '12px', marginTop: '20px', flexDirection: 'column' }}>
           <div className="submit-button-row" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
@@ -577,7 +382,9 @@ export const ExpenseForm: React.FC<Omit<ExpenseFormProps, 'user'>> = ({
           </div>
         </div>
       </form>
+      
       <ExpensesList eventName={event.event_name} refreshKey={refreshKey} i18n={i18n} />
+      
       {/* Add link to summary/balances page */}
       <div style={{ marginTop: 24, textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 12 }}>
         <button

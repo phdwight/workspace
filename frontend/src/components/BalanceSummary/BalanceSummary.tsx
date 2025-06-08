@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { BalanceSummaryProps } from '../../types';
 import { localStorageService } from '../../services/localStorage';
+import { formatCurrency } from '../../utils/currency';
 
 interface ParticipantSummary {
   participant: string;
@@ -17,11 +18,6 @@ export const BalanceSummary: React.FC<Omit<BalanceSummaryProps, 'user'>> = ({
   const [participantSummaries, setParticipantSummaries] = useState<ParticipantSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Simple currency formatter
-  const formatCurrency = (amount: number): string => {
-    return `¤${amount.toFixed(2)}`;
-  };
 
   useEffect(() => {
     calculateParticipantSummaries();
